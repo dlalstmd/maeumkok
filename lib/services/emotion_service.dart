@@ -94,4 +94,28 @@ class EmotionService {
           .limit(limit)
           .snapshots()
           .map((s) => s.docs.map(ReactionEvent.fromDoc).toList());
+
+  /// 타임라인 페이지: createdAt 내림차순, [after] 다음부터 [limit]개
+  Future<QuerySnapshot<Map<String, dynamic>>> page(
+    String coupleId, {
+    DocumentSnapshot? after,
+    int limit = 30,
+  }) {
+    Query<Map<String, dynamic>> q = _emotions(coupleId)
+        .orderBy('createdAt', descending: true)
+        .limit(limit);
+    if (after != null) q = q.startAfterDocument(after);
+    return q.get();
+  }
+
+  /// 감정 문서 id 목록에 달린 반응 (whereIn 30개 단위)
+  Future<List<ReactionEvent>> reactionsFor(String coupleId, List<String> ids) async {
+    final out = <ReactionEvent>[];
+    for (var i = 0; i < ids.length; i += 30) {
+      final chunk = ids.sublist(i, i + 30 > ids.length ? ids.length : i + 30);
+      final r = await _reactions(coupleId).where('emotionDocId', whereIn: chunk).get();
+      out.addAll(r.docs.map(ReactionEvent.fromDoc));
+    }
+    return out;
+  }
 }

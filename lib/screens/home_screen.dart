@@ -12,7 +12,9 @@ import '../services/notify_service.dart';
 import '../services/push_service.dart';
 import 'connect_screen.dart';
 import 'couple_home_screen.dart';
+import 'avatar_edit_screen.dart';
 import 'header_edit_screen.dart';
+import 'timeline_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.auth, required this.user});
@@ -84,6 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   : _couples.watchUser(partnerUid),
               builder: (context, ps) {
                 final partnerName = ps.data?.data()?['displayName'] as String?;
+                final partnerAvatar = ((ps.data?.data()?['avatar'] as Map?) ?? const {}).cast<String, String>();
+                final myAvatar = ((me?['avatar'] as Map?) ?? const {}).cast<String, String>();
                 final prefs = HeaderPrefs.fromUser(
                   me,
                   coupleCreatedAt: created,
@@ -146,6 +150,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               IconButton(
+                                tooltip: '내 아바타 꾸미기',
+                                icon: const Icon(LucideIcons.smile),
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => AvatarEditScreen(uid: widget.user.uid, initial: myAvatar),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                tooltip: '타임라인',
+                                icon: const Icon(LucideIcons.clock),
+                                onPressed: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => TimelineScreen(
+                                      uid: widget.user.uid,
+                                      coupleId: coupleId,
+                                      emotions: _emotions,
+                                      partnerName: partnerName,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
                                 onPressed: _signOut,
                                 icon: const Icon(LucideIcons.logOut),
                                 tooltip: '로그아웃',
@@ -161,6 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             emotions: _emotions,
                             notify: _notify,
                             partnerName: partnerName,
+                          partnerAvatar: partnerAvatar,
                           ),
                         ),
                       ],

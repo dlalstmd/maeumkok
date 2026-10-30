@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../avatar/avatar_view.dart';
 import '../core/emotions.dart';
 import '../core/lucide_map.dart';
 import '../core/theme.dart';
@@ -18,12 +19,14 @@ class CoupleHomeScreen extends StatefulWidget {
     required this.emotions,
     required this.notify,
     this.partnerName,
+    this.partnerAvatar = const {},
   });
   final String uid;
   final String coupleId;
   final EmotionService emotions;
   final NotifyService notify;
   final String? partnerName;
+  final Map<String, String> partnerAvatar;
 
   @override
   State<CoupleHomeScreen> createState() => _CoupleHomeScreenState();
@@ -35,6 +38,8 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   bool _first = true;
   List<EmotionEvent> _list = const [];
   String? _selected;
+  String? _playKey;
+  Object? _playToken;
 
   @override
   void initState() {
@@ -47,6 +52,8 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
         if (_seen.add(ev.id) && !_first && ev.senderUid != widget.uid) {
           final e = emotionById(ev.emotionId);
           if (e != null) {
+            _playKey = e.animationKey;
+            _playToken = ev.id;
             widget.notify.vibrateFor(e);
             widget.notify.showEmotion(e, from: widget.partnerName ?? '상대');
           }
@@ -105,7 +112,18 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const _Blob(),
+              GestureDetector(
+            onTap: () => setState(() {
+              _playKey = 'jump';
+              _playToken = Object();
+            }),
+            child: LiveAvatar(
+              selection: widget.partnerAvatar,
+              size: 240,
+              playKey: _playKey,
+              playToken: _playToken,
+            ),
+          ),
               const SizedBox(height: 24),
               if (lastFromPartner != null) _lastChip(lastFromPartner),
               if (lastFromPartner != null) _reactions(lastFromPartner),
@@ -300,51 +318,3 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   }
 }
 
-/// 아바타 C(떡 블롭) 임시 정적 버전. Rive 애니메이션은 11/1~2 단계.
-class _Blob extends StatelessWidget {
-  const _Blob();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 216,
-      height: 168,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(120),
-          bottom: Radius.circular(84),
-        ),
-        border: Border.all(color: MkColors.border, width: 2),
-      ),
-      child: const Stack(
-        alignment: Alignment.center,
-        children: [
-          Positioned(top: 74, left: 62, child: _Dot(8, 14, Colors.black)),
-          Positioned(top: 74, right: 62, child: _Dot(8, 14, Colors.black)),
-          Positioned(top: 98, left: 40, child: _Dot(22, 10, Color(0xFFFFC9BD))),
-          Positioned(
-            top: 98,
-            right: 40,
-            child: _Dot(22, 10, Color(0xFFFFC9BD)),
-          ),
-          Positioned(top: 100, child: _Dot(14, 3, Colors.black)),
-        ],
-      ),
-    );
-  }
-}
-
-class _Dot extends StatelessWidget {
-  const _Dot(this.w, this.h, this.color);
-  final double w, h;
-  final Color color;
-  @override
-  Widget build(BuildContext context) => Container(
-    width: w,
-    height: h,
-    decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(h),
-    ),
-  );
-}

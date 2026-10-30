@@ -1,0 +1,440 @@
+{
+  "version": 1,
+  "style": "C_rice_cake_blob",
+  "canvas": [
+    512,
+    512
+  ],
+  "layer_order_bottom_to_top": [
+    "shadow",
+    "body",
+    "blush",
+    "eyes",
+    "mouth",
+    "accessory",
+    "fx"
+  ],
+  "default": {
+    "shadow": "shadow_default",
+    "body": "body_white",
+    "blush": "blush_round",
+    "eyes": "eyes_dot",
+    "mouth": "mouth_smile",
+    "accessory": "acc_none"
+  },
+  "anchors": {
+    "body_center": [
+      256,
+      268
+    ],
+    "eye_left": [
+      206,
+      276
+    ],
+    "eye_right": [
+      306,
+      276
+    ],
+    "mouth": [
+      256,
+      316
+    ],
+    "head_top": [
+      256,
+      132
+    ],
+    "pivot_bottom": [
+      256,
+      404
+    ]
+  },
+  "notes": "헤어/옷 레이어는 블롭 스타일에선 accessory(head/face 슬롯)로 통합. eyes·mouth는 감정 애니메이션 중 오버라이드됨. body는 fill/stroke 재색칠 가능.",
+  "parts": [
+    {
+      "id": "shadow_default",
+      "category": "shadow",
+      "file": "parts/shadow/shadow_default.svg"
+    },
+    {
+      "id": "body_white",
+      "category": "body",
+      "file": "parts/body/body_white.svg",
+      "fill": "#FFFFFF",
+      "stroke": "#E2E2E2",
+      "recolorable": true
+    },
+    {
+      "id": "body_cream",
+      "category": "body",
+      "file": "parts/body/body_cream.svg",
+      "fill": "#FFF6E8",
+      "stroke": "#EADBC4",
+      "recolorable": true
+    },
+    {
+      "id": "body_peach",
+      "category": "body",
+      "file": "parts/body/body_peach.svg",
+      "fill": "#FFE3D3",
+      "stroke": "#EFC7B1",
+      "recolorable": true
+    },
+    {
+      "id": "body_gray",
+      "category": "body",
+      "file": "parts/body/body_gray.svg",
+      "fill": "#EDEDED",
+      "stroke": "#D2D2D2",
+      "recolorable": true
+    },
+    {
+      "id": "body_mocha",
+      "category": "body",
+      "file": "parts/body/body_mocha.svg",
+      "fill": "#E6D3C3",
+      "stroke": "#C9B19C",
+      "recolorable": true
+    },
+    {
+      "id": "body_charcoal",
+      "category": "body",
+      "file": "parts/body/body_charcoal.svg",
+      "fill": "#3A3A3A",
+      "stroke": "#222222",
+      "recolorable": true
+    },
+    {
+      "id": "eyes_dot",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_dot.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_round",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_round.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_smile",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_smile.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_sleepy",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_sleepy.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_sparkle",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_sparkle.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_line",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_line.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_x",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_x.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "eyes_teary",
+      "category": "eyes",
+      "file": "parts/eyes/eyes_teary.svg",
+      "anchor": {
+        "left": [
+          206,
+          276
+        ],
+        "right": [
+          306,
+          276
+        ]
+      }
+    },
+    {
+      "id": "mouth_smile",
+      "category": "mouth",
+      "file": "parts/mouth/mouth_smile.svg",
+      "anchor": [
+        256,
+        316
+      ]
+    },
+    {
+      "id": "mouth_cat",
+      "category": "mouth",
+      "file": "parts/mouth/mouth_cat.svg",
+      "anchor": [
+        256,
+        316
+      ]
+    },
+    {
+      "id": "mouth_o",
+      "category": "mouth",
+      "file": "parts/mouth/mouth_o.svg",
+      "anchor": [
+        256,
+        316
+      ]
+    },
+    {
+      "id": "mouth_flat",
+      "category": "mouth",
+      "file": "parts/mouth/mouth_flat.svg",
+      "anchor": [
+        256,
+        316
+      ]
+    },
+    {
+      "id": "mouth_grin",
+      "category": "mouth",
+      "file": "parts/mouth/mouth_grin.svg",
+      "anchor": [
+        256,
+        316
+      ]
+    },
+    {
+      "id": "mouth_pout",
+      "category": "mouth",
+      "file": "parts/mouth/mouth_pout.svg",
+      "anchor": [
+        256,
+        316
+      ]
+    },
+    {
+      "id": "blush_none",
+      "category": "blush",
+      "file": "parts/blush/blush_none.svg",
+      "anchor": {
+        "left": [
+          166,
+          306
+        ],
+        "right": [
+          346,
+          306
+        ]
+      }
+    },
+    {
+      "id": "blush_round",
+      "category": "blush",
+      "file": "parts/blush/blush_round.svg",
+      "anchor": {
+        "left": [
+          166,
+          306
+        ],
+        "right": [
+          346,
+          306
+        ]
+      }
+    },
+    {
+      "id": "blush_oval",
+      "category": "blush",
+      "file": "parts/blush/blush_oval.svg",
+      "anchor": {
+        "left": [
+          166,
+          306
+        ],
+        "right": [
+          346,
+          306
+        ]
+      }
+    },
+    {
+      "id": "blush_lines",
+      "category": "blush",
+      "file": "parts/blush/blush_lines.svg",
+      "anchor": {
+        "left": [
+          166,
+          306
+        ],
+        "right": [
+          346,
+          306
+        ]
+      }
+    },
+    {
+      "id": "blush_heart",
+      "category": "blush",
+      "file": "parts/blush/blush_heart.svg",
+      "anchor": {
+        "left": [
+          166,
+          306
+        ],
+        "right": [
+          346,
+          306
+        ]
+      }
+    },
+    {
+      "id": "acc_none",
+      "category": "accessory",
+      "file": "parts/accessory/acc_none.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_ribbon",
+      "category": "accessory",
+      "file": "parts/accessory/acc_ribbon.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_beanie",
+      "category": "accessory",
+      "file": "parts/accessory/acc_beanie.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_bear_ears",
+      "category": "accessory",
+      "file": "parts/accessory/acc_bear_ears.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_bunny_ears",
+      "category": "accessory",
+      "file": "parts/accessory/acc_bunny_ears.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_glasses",
+      "category": "accessory",
+      "file": "parts/accessory/acc_glasses.svg",
+      "slot": "face"
+    },
+    {
+      "id": "acc_flower",
+      "category": "accessory",
+      "file": "parts/accessory/acc_flower.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_headphones",
+      "category": "accessory",
+      "file": "parts/accessory/acc_headphones.svg",
+      "slot": "head"
+    },
+    {
+      "id": "acc_cap",
+      "category": "accessory",
+      "file": "parts/accessory/acc_cap.svg",
+      "slot": "head"
+    },
+    {
+      "id": "fx_zzz",
+      "category": "fx",
+      "file": "parts/fx/fx_zzz.svg"
+    },
+    {
+      "id": "fx_heart",
+      "category": "fx",
+      "file": "parts/fx/fx_heart.svg"
+    },
+    {
+      "id": "fx_tear",
+      "category": "fx",
+      "file": "parts/fx/fx_tear.svg"
+    },
+    {
+      "id": "fx_sweat",
+      "category": "fx",
+      "file": "parts/fx/fx_sweat.svg"
+    },
+    {
+      "id": "fx_steam",
+      "category": "fx",
+      "file": "parts/fx/fx_steam.svg"
+    },
+    {
+      "id": "fx_sparkle",
+      "category": "fx",
+      "file": "parts/fx/fx_sparkle.svg"
+    }
+  ]
+}

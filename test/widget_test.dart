@@ -1,3 +1,4 @@
+import 'package:maeumkok_app/avatar/avatar_manifest.dart';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +9,17 @@ import 'package:maeumkok_app/core/lucide_map.dart';
 import 'package:maeumkok_app/core/invite_code.dart';
 
 void main() {
+  test('avatar manifest: 기본값 정규화 + charcoal 제약', () {
+    final m = AvatarManifest.parse(File('assets/avatar/manifest.json').readAsStringSync());
+    final sel = m.normalize({'body': 'body_charcoal', 'eyes': 'nope'});
+    expect(sel['eyes'], 'eyes_dot');
+    final rc = m.recolorsFor(sel);
+    expect(rc['eyes']?['#111111'], '#FFFFFF');
+    expect(m.recolorsFor(m.normalize({}))['eyes'], isNull);
+    final eyes = File('assets/avatar/parts/eyes/eyes_dot.svg').readAsStringSync();
+    expect(applyRecolor(eyes, rc['eyes']).contains('#111111'), isFalse);
+  });
+
   test('emotions.json parses: 40 unique ids, reactions, vibration', () {
     final list = parseEmotions(File('assets/emotions.json').readAsStringSync());
     expect(list.length, 40);

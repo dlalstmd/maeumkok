@@ -43,6 +43,8 @@ dependencies:
   flutter_local_notifications: ^22.3.3
   vibration: ^3.2.1
   lucide_icons_flutter: ^4.0.1
+  flutter_svg: ^2.3.2
+  flutter_animate: ^4.5.2
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +65,14 @@ dev_dependencies:
 flutter:
   assets:
     - assets/emotions.json
+    - assets/avatar/manifest.json
+    - assets/avatar/parts/shadow/
+    - assets/avatar/parts/body/
+    - assets/avatar/parts/blush/
+    - assets/avatar/parts/eyes/
+    - assets/avatar/parts/mouth/
+    - assets/avatar/parts/accessory/
+    - assets/avatar/parts/fx/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
