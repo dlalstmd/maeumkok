@@ -1,0 +1,89 @@
+# 마음콕 iOS → TestFlight (수동 실행 또는 v* 태그)
+# 필요한 시크릿은 docs/ios-release.md 참고. 값은 Repo Settings > Secrets에만 둔다.
+name: iOS TestFlight
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: ios-testflight
+  cancel-in-progress: false
+
+jobs:
+  testflight:
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
+      IOS_DIST_CERT_P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
+      IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+      IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      BUNDLE_ID: com.maeumkok.app
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        run: |
+          for v in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8_BASE64 IOS_DIST_CERT_P12_BASE64 IOS_DIST_CERT_PASSWORD IOS_PROVISION_PROFILE_BASE64 KEYCHAIN_PASSWORD; do
+            [ -n "${!v}" ] || { echo "::error::secret $v 없음"; exit 1; }
+          done
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: ios
+
+      - name: Install signing (임시 키체인)
+        run: |
+          KC=$RUNNER_TEMP/build.keychain-db
+          echo "$IOS_DIST_CERT_P12_BASE64" | base64 --decode > $RUNNER_TEMP/dist.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KC
+          security set-keychain-settings -lut 21600 $KC
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KC
+          security import $RUNNER_TEMP/dist.p12 -P "$IOS_DIST_CERT_PASSWORD" -A -t cert -f pkcs12 -k $KC
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KC
+          security list-keychains -d user -s $KC
+          PP=$RUNNER_TEMP/profile.mobileprovision
+          echo "$IOS_PROVISION_PROFILE_BASE64" | base64 --decode > $PP
+          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< "$(security cms -D -i $PP)")
+          NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /dev/stdin <<< "$(security cms -D -i $PP)")
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
+          echo "PROFILE_NAME=$NAME" >> $GITHUB_ENV
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$ASC_KEY_P8_BASE64" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
+
+      - name: Flutter build (no codesign)
+        run: |
+          flutter pub get
+          flutter build ios --release --no-codesign \
+            --build-number=$(( $(grep '^version:' pubspec.yaml | sed 's/.*+//') + 0 ))
+
+      - name: fastlane beta (archive + TestFlight upload)
+        working-directory: ios
+        run: bundle exec fastlane beta
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ipa
+          path: ios/build/*.ipa
+          retention-days: 7
+
+      - name: Cleanup
+        if: always()
+        run: |
+          security delete-keychain $RUNNER_TEMP/build.keychain-db || true
+          rm -f $RUNNER_TEMP/dist.p12 $RUNNER_TEMP/profile.mobileprovision ~/.appstoreconnect/private_keys/*.p8
