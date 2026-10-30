@@ -14,6 +14,7 @@
 ## 2. 기술 스택
 - Flutter(안드로이드+iOS), Firebase(Auth, Firestore, FCM, Cloud Functions).
 - 애니메이션: **Rive 결정**(콕디자인 10/30). 이유: 아바타 파츠 교체+감정 40종을 상태머신 하나(입력 emotion/play/tap)로 처리, idle/blink 루프 내장, 파일 작고 Flutter `rive` 패키지 지원. Lottie는 감정 FX 오버레이 폴백. 상세: /workspace/maeumkok/avatar_animation.md
+  - **10/30 변경**: .riv는 Rive 에디터 없이 코드로 생성 불가 → 1차는 아바타 C SVG 파츠(/workspace/maeumkok-design/avatar/, manifest.json)를 Flutter(`flutter_svg`+`flutter_animate`)로 조합·모션. Rive는 추후 에디터로 제작해 교체 가능(파츠·animation_key 동일 유지).
 - 코드: /workspace/maeumkok — GitHub: https://github.com/dlalstmd/maeumkok (private)
 - Firebase 프로젝트: maeumkok (Firestore asia-northeast3 서울). Android 패키지/iOS 번들: com.maeumkok.app
 
@@ -115,6 +116,11 @@
 - 10/30 아바타 스타일 C(떡 블롭), 앱 아이콘 C(블롭 얼굴, 미니멀화: 탠저린 #FF6A3D 배경+흰 블롭) 확정. 파일: /workspace/maeumkok-design/app_icon/ (icon_1024, ic_foreground/background/monochrome_432, play_store_512, README에 flutter_launcher_icons 설정)
 - 10/30 디자인 v2: 무채색+포인트 1색, Lucide 라인 아이콘
 - 10/30 포인트 컬러 A 탠저린 #FF6A3D 확정 (사용자 선택)
+- 10/30 애니메이션 구현 방식 변경: Rive → SVG 파츠 + flutter_animate(1차), Rive는 추후 교체. 스토어 스샷 카피 A/B 시안 제작(선택 대기).
+- 10/30 스토어 스크린샷 카피 B(탠저린 배경 + 인용구 + 흰 헤드라인) 확정.
+- 10/30 Blaze 전환 완료 → Cloud Function `onEmotionCreated`(v2, asia-northeast3, nodejs22) 배포 완료(functions:list 확인). Node 20 지원 종료로 Node 22 + firebase-admin 14.
+- 10/30 아바타: manifest 데이터 구동(파츠·contrast_rules·light_variants), 모션은 motion/<key>.json 키프레임을 자체 플레이어로 재생(idle 루프+랜덤 blink, 감정 수신 시 해당 모션 ~2.4초 후 idle 복귀). 아바타 선택은 users/{uid}.avatar(개인), 상대 화면엔 상대 아바타 표시.
+- 10/30 iOS 출시 확정. Apple 로그인(Firebase AppleAuthProvider) + entitlements(Sign in with Apple, Push). 꾸준 Apple 키·인증서는 사용자 승인 전 미사용, 시크릿은 이름만 자리표시.
 
 ## 9. 진행 상황 (각 봇이 갱신)
 - [콕디자인 10/30 16:35 KST] 감정 40개 완료(emotions.json/md, 6번 표). 디자인 시스템(변수·텍스트/그림자 스타일·컴포넌트) 완료. 시안: 로그인, 커플연결 4종, 아바타 꾸미기 완료. 메인 화면(시트 접힘/펼침) 시안 완료. 남음: 수신/타임라인/설정 시안, 사용자 선택용 옵션 시안(색상톤·아바타·앱아이콘·메인 레이아웃), 아바타·애니메이션 에셋(11/1).
@@ -124,3 +130,6 @@
 - [콕디자인 10/30 16:36 KST] v2 추가: 감정 수신(v2_06), 타임라인(v2_07), 설정(v2_08)·연결 끊기 다이얼로그(v2_08b), 상단 문구 편집 줄바꿈 수정. 포인트 탠저린 확정 반영. v2 전 화면 완료(Figma 미반영).
 - [콕개발 10/30 16:45 KST] Play 앱 서명 SHA-1/256 Firebase 등록 완료(내부 테스트 앱 구글 로그인 가능), google-services.json 갱신. 내부 테스트 참여 링크: https://play.google.com/apps/internaltest/4699984733125868374
 - [콕개발 10/30 16:45 KST] v2 미니멀 UI(메인 헤더·편집 화면·감정 40개 라인 아이콘 그리드·블롭 아바타 정적), 앱 아이콘 C, FCM 토큰 저장·백그라운드 핸들러, functions 코드 완성(배포 보류). 다음: 연결 화면 v2 다듬기, 타임라인, Rive 아바타, iOS.
+- [콕디자인 10/30 16:42 KST] 아바타 C SVG 파츠 41개 + manifest.json(/workspace/maeumkok-design/avatar/). 스토어 첫 장 카피 A/B(Play·iOS 6.7") /workspace/maeumkok-docs/store/. 남음: 감정 모션 스펙/미리보기, 스토어 나머지 4장×2, 피처 그래픽.
+- [콕디자인 10/30 KST] 어두운 몸(mocha/charcoal)용 눈·입 _light 변형 14개 + manifest contrast_rules. 모션 스펙 40개(/workspace/maeumkok-design/avatar/motion/<key>.json: 38 animation_key + idle/blink) + avatar_widget.dart(flutter_svg+flutter_animate 샘플, flutter analyze 통과·실기기 미실행) + 프레임 시트 motion_sheet_1/2.png. 스토어 최종: store/play_01..05, ios67_01..05, feature_graphic.png.
+- [콕개발 10/30 16:50 KST] Functions 배포 완료(onEmotionCreated, 백그라운드 푸시 동작). 아바타 꾸미기(편집 화면, 개인 저장, 규칙 반영·배포), SVG 파츠+모션 40종 반영, idle 랜덤 blink, 감정 수신 시 모션 재생, 타임라인(날짜 그룹·30개 페이지·반응 표시), Apple 로그인 코드 완료. 다음: iOS TestFlight 워크플로, 1.0.0+3 AAB.

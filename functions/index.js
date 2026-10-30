@@ -2,9 +2,11 @@
 // 앱(lib/services/push_service.dart)이 users/{uid}.fcmTokens 에 토큰을 저장한다.
 // Android: channelId emotion_<id> → 앱이 만든 감정별 진동 채널로 표시.
 const {onDocumentCreated} = require("firebase-functions/v2/firestore");
-const admin = require("firebase-admin");
-admin.initializeApp();
-const db = admin.firestore();
+const {initializeApp} = require("firebase-admin/app");
+const {getFirestore, FieldValue} = require("firebase-admin/firestore");
+const {getMessaging} = require("firebase-admin/messaging");
+initializeApp();
+const db = getFirestore();
 
 exports.onEmotionCreated = onDocumentCreated(
   {document: "couples/{coupleId}/emotions/{emotionId}", region: "asia-northeast3"},
@@ -17,7 +19,7 @@ exports.onEmotionCreated = onDocumentCreated(
     const partner = (await db.doc(`users/${partnerUid}`).get()).data() || {};
     const tokens = partner.fcmTokens || [];
     if (!tokens.length) return;
-    const res = await admin.messaging().sendEachForMulticast({
+    const res = await getMessaging().sendEachForMulticast({
       tokens,
       data: {type: "emotion", emotionId: e.emotionId, emotionDocId: event.params.emotionId},
       notification: {title: "마음콕", body: "새 마음이 도착했어요"},
@@ -33,7 +35,7 @@ exports.onEmotionCreated = onDocumentCreated(
     });
     if (dead.length) {
       await db.doc(`users/${partnerUid}`).update({
-        fcmTokens: admin.firestore.FieldValue.arrayRemove(...dead),
+        fcmTokens: FieldValue.arrayRemove(...dead),
       });
     }
   });
