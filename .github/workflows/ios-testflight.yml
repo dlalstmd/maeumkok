@@ -1,89 +1,79 @@
-# 마음콕 iOS → TestFlight (수동 실행 또는 v* 태그)
-# 필요한 시크릿은 docs/ios-release.md 참고. 값은 Repo Settings > Secrets에만 둔다.
+# 마음콕 iOS → TestFlight
+# 방식: match/인증서 시크릿 없이 App Store Connect API 키 + xcodebuild -allowProvisioningUpdates 자동 서명, altool 업로드.
+# 시크릿: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8_B64 (docs/ios-release.md)
 name: iOS TestFlight
-
 on:
   workflow_dispatch:
   push:
     tags: ['v*']
-
-concurrency:
-  group: ios-testflight
-  cancel-in-progress: false
-
+concurrency: { group: ios-testflight, cancel-in-progress: false }
 jobs:
-  testflight:
+  build:
     runs-on: macos-15
     timeout-minutes: 60
     env:
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
-      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
-      ASC_KEY_P8_BASE64: ${{ secrets.ASC_KEY_P8_BASE64 }}
-      IOS_DIST_CERT_P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
-      IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
-      IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
-      KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-      BUNDLE_ID: com.maeumkok.app
+      TEAM_ID: 837A3LFV2K
+      KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Check secrets
-        run: |
-          for v in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8_BASE64 IOS_DIST_CERT_P12_BASE64 IOS_DIST_CERT_PASSWORD IOS_PROVISION_PROFILE_BASE64 KEYCHAIN_PASSWORD; do
-            [ -n "${!v}" ] || { echo "::error::secret $v 없음"; exit 1; }
-          done
-
+      - uses: maxim-lobanov/setup-xcode@v1
+        with: { xcode-version: latest-stable }
       - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-          working-directory: ios
-
-      - name: Install signing (임시 키체인)
+        with: { channel: stable, cache: true }
+      - name: API key
         run: |
-          KC=$RUNNER_TEMP/build.keychain-db
-          echo "$IOS_DIST_CERT_P12_BASE64" | base64 --decode > $RUNNER_TEMP/dist.p12
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KC
-          security set-keychain-settings -lut 21600 $KC
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KC
-          security import $RUNNER_TEMP/dist.p12 -P "$IOS_DIST_CERT_PASSWORD" -A -t cert -f pkcs12 -k $KC
-          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KC
-          security list-keychains -d user -s $KC
-          PP=$RUNNER_TEMP/profile.mobileprovision
-          echo "$IOS_PROVISION_PROFILE_BASE64" | base64 --decode > $PP
-          UUID=$(/usr/libexec/PlistBuddy -c "Print UUID" /dev/stdin <<< "$(security cms -D -i $PP)")
-          NAME=$(/usr/libexec/PlistBuddy -c "Print Name" /dev/stdin <<< "$(security cms -D -i $PP)")
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP ~/Library/MobileDevice/Provisioning\ Profiles/$UUID.mobileprovision
-          echo "PROFILE_NAME=$NAME" >> $GITHUB_ENV
-          mkdir -p ~/.appstoreconnect/private_keys
-          echo "$ASC_KEY_P8_BASE64" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_$ASC_KEY_ID.p8
-
-      - name: Flutter build (no codesign)
-        run: |
-          flutter pub get
-          flutter build ios --release --no-codesign \
-            --build-number=$(( $(grep '^version:' pubspec.yaml | sed 's/.*+//') + 0 ))
-
-      - name: fastlane beta (archive + TestFlight upload)
+          for v in KEY_ID ISSUER_ID; do [ -n "${!v}" ] || { echo "::error::secret $v 없음"; exit 1; }; done
+          mkdir -p ~/private_keys
+          echo "${{ secrets.ASC_KEY_P8_B64 }}" | base64 --decode > ~/private_keys/AuthKey_$KEY_ID.p8
+          test -s ~/private_keys/AuthKey_$KEY_ID.p8 || { echo "::error::ASC_KEY_P8_B64 없음"; exit 1; }
+          echo "KEY_PATH=$HOME/private_keys/AuthKey_$KEY_ID.p8" >> $GITHUB_ENV
+      - run: flutter pub get
+      - name: Build (no codesign)
+        # 빌드 번호: pubspec +N 기준(Play versionCode와 동일 체계), 태그 없이 재실행 시 run_number 더함 방지 위해 pubspec 값 사용
+        run: flutter build ios --release --no-codesign
+      - name: Archive & export
         working-directory: ios
-        run: bundle exec fastlane beta
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ipa
-          path: ios/build/*.ipa
-          retention-days: 7
-
-      - name: Cleanup
-        if: always()
         run: |
-          security delete-keychain $RUNNER_TEMP/build.keychain-db || true
-          rm -f $RUNNER_TEMP/dist.p12 $RUNNER_TEMP/profile.mobileprovision ~/.appstoreconnect/private_keys/*.p8
+          cat > ExportOptions.plist <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+          <key>method</key><string>app-store-connect</string>
+          <key>teamID</key><string>$TEAM_ID</string>
+          <key>signingStyle</key><string>automatic</string>
+          <key>destination</key><string>export</string>
+          <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          EOF
+          AUTH="-allowProvisioningUpdates -authenticationKeyPath $KEY_PATH -authenticationKeyID $KEY_ID -authenticationKeyIssuerID $ISSUER_ID"
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath $RUNNER_TEMP/Runner.xcarchive \
+            CODE_SIGNING_ALLOWED=NO archive | tail -50
+          test -d $RUNNER_TEMP/Runner.xcarchive
+          APP=$RUNNER_TEMP/Runner.xcarchive/Products/Applications/Runner.app
+          # 벤더 프레임워크 서명 제거 → export 때 배포 인증서로 재서명
+          for f in "$APP"/Frameworks/*.framework; do codesign --remove-signature "$f" || true; done
+          # 무서명 아카이브에 엔타이틀먼트(Push, Sign in with Apple) 주입 → export가 capability를 읽어 프로필 생성
+          codesign -f -s - --entitlements Runner/Runner.entitlements "$APP"
+          xcodebuild -exportArchive -archivePath $RUNNER_TEMP/Runner.xcarchive \
+            -exportOptionsPlist ExportOptions.plist -exportPath $RUNNER_TEMP/export $AUTH
+      - name: Verify entitlements
+        run: |
+          cd $RUNNER_TEMP/export && unzip -q -o *.ipa -d x
+          E=$(codesign -d --entitlements - --xml x/Payload/Runner.app 2>/dev/null)
+          echo "$E" | plutil -p - || true
+          echo "$E" | grep -q com.apple.developer.applesignin
+          echo "$E" | grep -q aps-environment
+      - name: Upload to TestFlight
+        run: xcrun altool --upload-app -t ios -f $RUNNER_TEMP/export/*.ipa --apiKey $KEY_ID --apiIssuer $ISSUER_ID
+      - name: Cleanup key
+        if: always()
+        run: rm -f ~/private_keys/*.p8
+      - name: Distribution logs (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcdistributionlogs
+          path: /var/folders/**/*.xcdistributionlogs
+          if-no-files-found: ignore
