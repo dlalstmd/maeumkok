@@ -70,6 +70,8 @@
 	<string>101787008056-roc9s1msovau5fjcinl0ik244nu8qcdm.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array><dict><key>CFBundleURLSchemes</key><array><string>com.googleusercontent.apps.101787008056-roc9s1msovau5fjcinl0ik244nu8qcdm</string></array></dict></array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIBackgroundModes</key>
 	<array><string>remote-notification</string></array>
 </dict>
