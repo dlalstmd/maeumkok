@@ -1,0 +1,131 @@
+rules_version = '2';
+// 마음콕 보안 규칙. 커플 연결은 클라이언트 트랜잭션 + 규칙 검증(Blaze 전환 후 Cloud Functions로 이전 가능).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function uid() { return request.auth.uid; }
+    function userDoc(u) { return get(/databases/$(database)/documents/users/$(u)); }
+    function hasNoCouple(u) {
+      return !exists(/databases/$(database)/documents/users/$(u))
+        || userDoc(u).data.get('coupleId', null) == null;
+    }
+    function coupleOf(c) { return get(/databases/$(database)/documents/couples/$(c)); }
+    function isMember(c) {
+      return signedIn() && exists(/databases/$(database)/documents/couples/$(c))
+        && uid() in coupleOf(c).data.members;
+    }
+
+    match /users/{userId} {
+      // 본인, 또는 같은 커플 상대
+      allow read: if signedIn() && (uid() == userId
+        || (resource.data.get('coupleId', null) != null && isMember(resource.data.coupleId)));
+      allow create: if signedIn() && uid() == userId
+        && request.resource.data.get('coupleId', null) == null;
+      // coupleId 외 필드는 본인만 수정
+      allow update: if signedIn() && uid() == userId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['coupleId', 'uid']);
+      // 커플 연결 확정 시: 초대 주인이 자신+상대의 coupleId를 같은 배치로 설정
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coupleId'])
+        && resource.data.get('coupleId', null) == null
+        && request.resource.data.coupleId is string
+        && getAfter(/databases/$(database)/documents/couples/$(request.resource.data.coupleId)).data.members.hasAll([uid(), userId]);
+      allow delete: if false;
+    }
+
+    match /inviteCodes/{code} {
+      allow get: if signedIn();
+      allow list: if false;
+      // 1) A가 코드 생성 (24h)
+      allow create: if signedIn() && code.matches('^[0-9]{6}$')
+        && request.resource.data.keys().hasOnly(['ownerUid', 'status', 'createdAt', 'expiresAt'])
+        && request.resource.data.ownerUid == uid()
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time + duration.value(23, 'h')
+        && request.resource.data.expiresAt <= request.time + duration.value(25, 'h')
+        && hasNoCouple(uid());
+      // 만료/종료된 코드는 새 주인이 덮어쓰기 가능
+      allow update: if signedIn()
+        && (resource.data.expiresAt < request.time || resource.data.status == 'cancelled')
+        && request.resource.data.keys().hasOnly(['ownerUid', 'status', 'createdAt', 'expiresAt'])
+        && request.resource.data.ownerUid == uid()
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time + duration.value(23, 'h')
+        && request.resource.data.expiresAt <= request.time + duration.value(25, 'h')
+        && hasNoCouple(uid());
+      // 2) B가 코드 입력 → claimed (B의 확인)
+      allow update: if signedIn()
+        && resource.data.status == 'pending'
+        && resource.data.expiresAt > request.time
+        && resource.data.ownerUid != uid()
+        && hasNoCouple(uid())
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'claimedBy', 'claimedAt'])
+        && request.resource.data.status == 'claimed'
+        && request.resource.data.claimedBy == uid()
+        && request.resource.data.claimedAt == request.time;
+      // 3) A가 수락 → confirmed + 커플 생성 (A의 확인)
+      allow update: if signedIn()
+        && resource.data.status == 'claimed'
+        && resource.data.expiresAt > request.time
+        && resource.data.ownerUid == uid()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'coupleId'])
+        && request.resource.data.status == 'confirmed'
+        && existsAfter(/databases/$(database)/documents/couples/$(request.resource.data.coupleId));
+      // A가 거절/취소, 또는 B가 철회
+      allow update: if signedIn()
+        && resource.data.status in ['pending', 'claimed']
+        && (resource.data.ownerUid == uid() || resource.data.get('claimedBy', null) == uid())
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status == 'cancelled';
+      allow delete: if false;
+    }
+
+    match /couples/{coupleId} {
+      allow read: if signedIn() && uid() in resource.data.members;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['members', 'inviteCode', 'createdAt'])
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.members.size() == 2
+        && hasNoCouple(request.resource.data.members[0])
+        && hasNoCouple(request.resource.data.members[1])
+        && get(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.ownerUid == uid()
+        && get(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.status == 'claimed'
+        && request.resource.data.members == [uid(),
+             get(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.claimedBy]
+        && getAfter(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.coupleId == coupleId;
+      allow update, delete: if false;
+
+      match /emotions/{emotionId} {
+        allow read: if isMember(coupleId);
+        allow create: if isMember(coupleId)
+          && request.resource.data.keys().hasOnly(['senderUid', 'emotionId', 'createdAt', 'readAt'])
+          && request.resource.data.senderUid == uid()
+          && request.resource.data.emotionId is string
+          && request.resource.data.emotionId.size() <= 40
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.get('readAt', null) == null;
+        // 읽음 표시: 받는 쪽만 readAt 갱신
+        allow update: if isMember(coupleId)
+          && resource.data.senderUid != uid()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt'])
+          && request.resource.data.readAt == request.time;
+        allow delete: if false;
+      }
+
+      match /reactions/{reactionId} {
+        allow read: if isMember(coupleId);
+        allow create: if isMember(coupleId)
+          && request.resource.data.keys().hasOnly(['senderUid', 'emotionDocId', 'reactionId', 'createdAt'])
+          && request.resource.data.senderUid == uid()
+          && request.resource.data.emotionDocId is string
+          && request.resource.data.reactionId is string
+          && request.resource.data.createdAt == request.time;
+        allow update, delete: if false;
+      }
+    }
+  }
+}
