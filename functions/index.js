@@ -39,3 +39,33 @@ exports.onEmotionCreated = onDocumentCreated(
       });
     }
   });
+
+// 계정 삭제(스토어 필수): 본인 users 문서, 소속 커플의 감정·리액션·커플 문서, 초대코드, Auth 계정 삭제.
+// 상대방은 coupleId 해제되어 다시 연결 가능한 상태가 된다.
+const {onCall, HttpsError} = require("firebase-functions/v2/https");
+const {getAuth} = require("firebase-admin/auth");
+exports.deleteAccount = onCall({region: "asia-northeast3"}, async (req) => {
+  const uid = req.auth && req.auth.uid;
+  if (!uid) throw new HttpsError("unauthenticated", "로그인이 필요합니다.");
+  const userRef = db.doc(`users/${uid}`);
+  const me = (await userRef.get()).data() || {};
+  if (me.coupleId) {
+    const coupleRef = db.doc(`couples/${me.coupleId}`);
+    const couple = (await coupleRef.get()).data();
+    await db.recursiveDelete(coupleRef);
+    if (couple) {
+      for (const m of couple.members || []) {
+        if (m !== uid) {
+          await db.doc(`users/${m}`).set({coupleId: FieldValue.delete()}, {merge: true});
+        }
+      }
+    }
+  }
+  const codes = await db.collection("inviteCodes").where("ownerUid", "==", uid).get();
+  for (const d of codes.docs) await d.ref.delete();
+  await db.recursiveDelete(userRef);
+  await getAuth().deleteUser(uid).catch((e) => {
+    if (e.code !== "auth/user-not-found") throw e;
+  });
+  return {ok: true};
+});

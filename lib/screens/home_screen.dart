@@ -14,6 +14,7 @@ import 'connect_screen.dart';
 import 'couple_home_screen.dart';
 import 'avatar_edit_screen.dart';
 import 'header_edit_screen.dart';
+import 'settings_screen.dart';
 import 'timeline_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,6 +45,24 @@ class _HomeScreenState extends State<HomeScreen> {
     await widget.auth.signOut();
   }
 
+  void _openSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SettingsScreen(
+          email: widget.user.email,
+          onSignOut: _signOut,
+          onDeleteAccount: () async {
+            try {
+              await _push.unregister(widget.user.uid);
+            } catch (_) {}
+            await widget.auth.deleteAccount();
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -61,9 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
             appBar: AppBar(
               actions: [
                 IconButton(
-                  onPressed: _signOut,
-                  icon: const Icon(LucideIcons.logOut),
-                  tooltip: '로그아웃',
+                  onPressed: _openSettings,
+                  icon: const Icon(LucideIcons.settings),
+                  tooltip: '설정',
                 ),
               ],
             ),
@@ -181,9 +200,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               IconButton(
-                                onPressed: _signOut,
-                                icon: const Icon(LucideIcons.logOut),
-                                tooltip: '로그아웃',
+                                onPressed: _openSettings,
+                                icon: const Icon(LucideIcons.settings),
+                                tooltip: '설정',
                               ),
                             ],
                           ),

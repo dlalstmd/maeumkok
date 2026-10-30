@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,6 +47,14 @@ class AuthService {
     return result;
   }
 
+  /// 심사용 데모 계정 로그인 (로그인 화면 로고 5번 탭)
+  Future<UserCredential> signInWithEmail(String email, String password) async {
+    final result = await _auth.signInWithEmailAndPassword(
+        email: email.trim(), password: password);
+    await _upsertUser(result.user!);
+    return result;
+  }
+
   Future<void> _upsertUser(User user) async {
     final ref = _db.collection('users').doc(user.uid);
     final snap = await ref.get();
@@ -63,6 +72,18 @@ class AuthService {
   Future<void> signOut() async {
     await _ensureInit();
     await GoogleSignIn.instance.signOut();
+    await _auth.signOut();
+  }
+
+  /// 계정 및 모든 데이터 삭제 (Cloud Function deleteAccount)
+  Future<void> deleteAccount() async {
+    await _ensureInit();
+    await FirebaseFunctions.instanceFor(region: 'asia-northeast3')
+        .httpsCallable('deleteAccount')
+        .call();
+    try {
+      await GoogleSignIn.instance.signOut();
+    } catch (_) {}
     await _auth.signOut();
   }
 }

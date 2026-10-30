@@ -133,3 +133,14 @@
 - [콕디자인 10/30 16:42 KST] 아바타 C SVG 파츠 41개 + manifest.json(/workspace/maeumkok-design/avatar/). 스토어 첫 장 카피 A/B(Play·iOS 6.7") /workspace/maeumkok-docs/store/. 남음: 감정 모션 스펙/미리보기, 스토어 나머지 4장×2, 피처 그래픽.
 - [콕디자인 10/30 KST] 어두운 몸(mocha/charcoal)용 눈·입 _light 변형 14개 + manifest contrast_rules. 모션 스펙 40개(/workspace/maeumkok-design/avatar/motion/<key>.json: 38 animation_key + idle/blink) + avatar_widget.dart(flutter_svg+flutter_animate 샘플, flutter analyze 통과·실기기 미실행) + 프레임 시트 motion_sheet_1/2.png. 스토어 최종: store/play_01..05, ios67_01..05, feature_graphic.png.
 - [콕개발 10/30 16:50 KST] Functions 배포 완료(onEmotionCreated, 백그라운드 푸시 동작). 아바타 꾸미기(편집 화면, 개인 저장, 규칙 반영·배포), SVG 파츠+모션 40종 반영, idle 랜덤 blink, 감정 수신 시 모션 재생, 타임라인(날짜 그룹·30개 페이지·반응 표시), Apple 로그인 코드 완료. 다음: iOS TestFlight 워크플로, 1.0.0+3 AAB.
+
+## Play 등록정보 문구 (10/30, 그로깅 확정, 임시저장만)
+- 간단한 설명: 말 안 해도 콕. 지금 내 마음을 버튼 하나로 연인에게 전해요.
+- 자세한 설명: /workspace/maeumkok-docs/store/full_description_ko.txt
+
+## 2026-10-30 스토어 제출 준비 (executor)
+- Firebase Hosting 배포: 개인정보처리방침 https://maeumkok.web.app/privacy.html , 계정 삭제 안내 https://maeumkok.web.app/delete-account.html (소스: repo hosting/)
+- 계정 삭제: 설정 화면(헤더 톱니바퀴, 로그아웃은 설정 안으로 이동) > 계정 삭제 → callable `deleteAccount`(asia-northeast3) 배포·실호출 검증 완료
+- 이메일/비밀번호 로그인 활성화(firebase.json auth). 심사용 데모 계정 2개 생성, 커플 연결(coupleId tUzGeB81eYD7J1xMaE1U). 로그인 화면 로고 5번 탭 → 심사용 이메일 로그인. 비밀번호는 /workspace/maeumkok-secrets/review_account.txt 에만.
+- 스토어 설문 답안: /workspace/maeumkok-docs/store/compliance.md
+- 버전 1.0.0+4 (다음 업로드 빌드)
