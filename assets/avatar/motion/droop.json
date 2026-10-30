@@ -1,0 +1,54 @@
+{
+ "key": "droop",
+ "duration_ms": 1600,
+ "loop": false,
+ "pivot": "pivot_bottom",
+ "layers": {
+  "body_group": {
+   "applies_to": [
+    "shadow?",
+    "body",
+    "blush",
+    "eyes",
+    "mouth",
+    "accessory"
+   ],
+   "keyframes": [
+    {
+     "t": 0,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeInOut"
+    },
+    {
+     "t": 0.6,
+     "scale": 0.96,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 12,
+     "opacity": 1,
+     "curve": "easeInOut"
+    },
+    {
+     "t": 1,
+     "scale": 0.96,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 12,
+     "opacity": 1,
+     "curve": "easeInOut"
+    }
+   ]
+  }
+ },
+ "part_swap": {
+  "eyes": "eyes_teary",
+  "mouth": "mouth_pout",
+  "at_t": 0.0,
+  "restore_on_end": true
+ },
+ "blink": true
+}

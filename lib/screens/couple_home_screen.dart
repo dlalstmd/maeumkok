@@ -113,17 +113,17 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               GestureDetector(
-            onTap: () => setState(() {
-              _playKey = 'jump';
-              _playToken = Object();
-            }),
-            child: LiveAvatar(
-              selection: widget.partnerAvatar,
-              size: 240,
-              playKey: _playKey,
-              playToken: _playToken,
-            ),
-          ),
+                onTap: () => setState(() {
+                  _playKey = 'jump';
+                  _playToken = Object();
+                }),
+                child: LiveAvatar(
+                  selection: widget.partnerAvatar,
+                  size: 240,
+                  playKey: _playKey,
+                  playToken: _playToken,
+                ),
+              ),
               const SizedBox(height: 24),
               if (lastFromPartner != null) _lastChip(lastFromPartner),
               if (lastFromPartner != null) _reactions(lastFromPartner),
@@ -317,4 +317,3 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
     );
   }
 }
-

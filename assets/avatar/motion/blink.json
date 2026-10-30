@@ -1,0 +1,50 @@
+{
+ "key": "blink",
+ "duration_ms": 220,
+ "loop": false,
+ "pivot": "pivot_bottom",
+ "layers": {
+  "eyes": {
+   "keyframes": [
+    {
+     "t": 0,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeInOut"
+    },
+    {
+     "t": 0.5,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeInOut"
+    },
+    {
+     "t": 1,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeInOut"
+    }
+   ],
+   "swap": [
+    {
+     "t": 0.1,
+     "part": "eyes_line"
+    },
+    {
+     "t": 0.9,
+     "part": "@base"
+    }
+   ]
+  }
+ },
+ "blink": false
+}

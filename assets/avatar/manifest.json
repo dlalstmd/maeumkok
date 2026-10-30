@@ -436,5 +436,41 @@
       "category": "fx",
       "file": "parts/fx/fx_sparkle.svg"
     }
-  ]
+  ],
+  "contrast_rules": {
+    "description": "body 파츠의 tone이 dark면 eyes/mouth를 <id>_light 변형으로 자동 치환",
+    "body_tone": {
+      "body_white": "light",
+      "body_cream": "light",
+      "body_peach": "light",
+      "body_gray": "light",
+      "body_mocha": "dark",
+      "body_charcoal": "dark"
+    },
+    "dark": {
+      "eyes": "{id}_light",
+      "mouth": "{id}_light"
+    },
+    "light": {}
+  },
+  "light_variants": {
+    "eyes": [
+      "eyes_dot_light",
+      "eyes_line_light",
+      "eyes_round_light",
+      "eyes_sleepy_light",
+      "eyes_smile_light",
+      "eyes_sparkle_light",
+      "eyes_teary_light",
+      "eyes_x_light"
+    ],
+    "mouth": [
+      "mouth_cat_light",
+      "mouth_flat_light",
+      "mouth_grin_light",
+      "mouth_o_light",
+      "mouth_pout_light",
+      "mouth_smile_light"
+    ]
+  }
 }

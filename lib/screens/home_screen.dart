@@ -86,8 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   : _couples.watchUser(partnerUid),
               builder: (context, ps) {
                 final partnerName = ps.data?.data()?['displayName'] as String?;
-                final partnerAvatar = ((ps.data?.data()?['avatar'] as Map?) ?? const {}).cast<String, String>();
-                final myAvatar = ((me?['avatar'] as Map?) ?? const {}).cast<String, String>();
+                final partnerAvatar =
+                    ((ps.data?.data()?['avatar'] as Map?) ?? const {})
+                        .cast<String, String>();
+                final myAvatar = ((me?['avatar'] as Map?) ?? const {})
+                    .cast<String, String>();
                 final prefs = HeaderPrefs.fromUser(
                   me,
                   coupleCreatedAt: created,
@@ -155,7 +158,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => AvatarEditScreen(uid: widget.user.uid, initial: myAvatar),
+                                    builder: (_) => AvatarEditScreen(
+                                      uid: widget.user.uid,
+                                      initial: myAvatar,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -190,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             emotions: _emotions,
                             notify: _notify,
                             partnerName: partnerName,
-                          partnerAvatar: partnerAvatar,
+                            partnerAvatar: partnerAvatar,
                           ),
                         ),
                       ],

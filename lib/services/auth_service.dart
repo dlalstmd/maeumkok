@@ -36,6 +36,16 @@ class AuthService {
     return result;
   }
 
+  /// Apple 로그인 (iOS 네이티브 시트, Firebase AppleAuthProvider)
+  Future<UserCredential> signInWithApple() async {
+    final provider = AppleAuthProvider()
+      ..addScope('email')
+      ..addScope('name');
+    final result = await _auth.signInWithProvider(provider);
+    await _upsertUser(result.user!);
+    return result;
+  }
+
   Future<void> _upsertUser(User user) async {
     final ref = _db.collection('users').doc(user.uid);
     final snap = await ref.get();

@@ -9,8 +9,13 @@ import '../services/emotion_service.dart';
 
 /// 감정 타임라인: 날짜별 그룹, 30개씩 페이지네이션, 반응 표시
 class TimelineScreen extends StatefulWidget {
-  const TimelineScreen({super.key, required this.uid, required this.coupleId,
-      required this.emotions, this.partnerName});
+  const TimelineScreen({
+    super.key,
+    required this.uid,
+    required this.coupleId,
+    required this.emotions,
+    this.partnerName,
+  });
   final String uid;
   final String coupleId;
   final EmotionService emotions;
@@ -33,7 +38,9 @@ class _TimelineScreenState extends State<TimelineScreen> {
     super.initState();
     _load();
     _scroll.addListener(() {
-      if (_scroll.position.pixels > _scroll.position.maxScrollExtent - 400) _load();
+      if (_scroll.position.pixels > _scroll.position.maxScrollExtent - 400) {
+        _load();
+      }
     });
   }
 
@@ -43,7 +50,10 @@ class _TimelineScreenState extends State<TimelineScreen> {
     try {
       final snap = await widget.emotions.page(widget.coupleId, after: _last);
       final evs = snap.docs.map(EmotionEvent.fromDoc).toList();
-      final rs = await widget.emotions.reactionsFor(widget.coupleId, evs.map((e) => e.id).toList());
+      final rs = await widget.emotions.reactionsFor(
+        widget.coupleId,
+        evs.map((e) => e.id).toList(),
+      );
       setState(() {
         _items.addAll(evs);
         for (final r in rs) {
@@ -82,26 +92,49 @@ class _TimelineScreenState extends State<TimelineScreen> {
       final day = _dayLabel(t);
       if (day != lastDay) {
         lastDay = day;
-        rows.add(Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-          child: Text(day, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: MkColors.textSub)),
-        ));
+        rows.add(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+            child: Text(
+              day,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: MkColors.textSub,
+              ),
+            ),
+          ),
+        );
       }
       rows.add(_tile(e, t));
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('타임라인', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17)),
+        title: const Text(
+          '타임라인',
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 17),
+        ),
         centerTitle: true,
       ),
       body: _items.isEmpty && !_loading
-          ? const Center(child: Text('아직 주고받은 마음이 없어요', style: TextStyle(color: MkColors.textSub)))
-          : ListView(controller: _scroll, children: [
-              ...rows,
-              if (_loading)
-                const Padding(padding: EdgeInsets.all(24), child: Center(child: CircularProgressIndicator())),
-              const SizedBox(height: 24),
-            ]),
+          ? const Center(
+              child: Text(
+                '아직 주고받은 마음이 없어요',
+                style: TextStyle(color: MkColors.textSub),
+              ),
+            )
+          : ListView(
+              controller: _scroll,
+              children: [
+                ...rows,
+                if (_loading)
+                  const Padding(
+                    padding: EdgeInsets.all(24),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                const SizedBox(height: 24),
+              ],
+            ),
     );
   }
 
@@ -119,35 +152,76 @@ class _TimelineScreenState extends State<TimelineScreen> {
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: MkColors.border),
         ),
-        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Icon(lucideIcon(e?.icon), color: mine ? MkColors.text : MkColors.accent, size: 26),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('$who · ${e?.label ?? ev.emotionId}',
-                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
-              const SizedBox(height: 2),
-              Text(_hm(t), style: const TextStyle(fontSize: 12, color: MkColors.textSub)),
-              if (rs.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Wrap(spacing: 6, runSpacing: 6, children: [
-                  for (final r in rs)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(color: MkColors.background, borderRadius: BorderRadius.circular(99)),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        const Icon(LucideIcons.cornerDownRight, size: 12, color: MkColors.textSub),
-                        const SizedBox(width: 4),
-                        Text(_reactionLabel(e, r.reactionId), style: const TextStyle(fontSize: 12)),
-                      ]),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(
+              lucideIcon(e?.icon),
+              color: mine ? MkColors.text : MkColors.accent,
+              size: 26,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$who · ${e?.label ?? ev.emotionId}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
                     ),
-                ]),
-              ],
-            ]),
-          ),
-          if (!mine && ev.readAt == null)
-            const Icon(Icons.circle, size: 8, color: MkColors.accent),
-        ]),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    _hm(t),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: MkColors.textSub,
+                    ),
+                  ),
+                  if (rs.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final r in rs)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: MkColors.background,
+                              borderRadius: BorderRadius.circular(99),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  LucideIcons.cornerDownRight,
+                                  size: 12,
+                                  color: MkColors.textSub,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  _reactionLabel(e, r.reactionId),
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (!mine && ev.readAt == null)
+              const Icon(Icons.circle, size: 8, color: MkColors.accent),
+          ],
+        ),
       ),
     );
   }

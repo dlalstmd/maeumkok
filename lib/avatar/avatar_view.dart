@@ -2,56 +2,89 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'avatar_manifest.dart';
 import 'avatar_motion.dart';
 
-/// 파츠 SVG를 manifest 레이어 순서대로 Stack. (512x512 동일 캔버스)
-class AvatarLayers extends StatefulWidget {
-  const AvatarLayers({super.key, required this.selection, this.eyesOverride, this.mouthOverride,
-      this.fx, this.size = 220});
+/// 레이어별 변환 (512 캔버스 단위)
+typedef LayerFx = Kf;
+
+/// 파츠 SVG를 manifest 레이어 순서대로 Stack.
+/// [overrides]로 eyes/mouth 교체, [fxPart]로 fx 표시. 대비 규칙 자동 적용.
+class AvatarLayers extends StatelessWidget {
+  const AvatarLayers({
+    super.key,
+    required this.manifest,
+    required this.selection,
+    this.overrides = const {},
+    this.fxPart,
+    this.body,
+    this.fx,
+    this.size = 220,
+  });
+  final AvatarManifest manifest;
   final Map<String, String> selection;
-  final String? eyesOverride;
-  final String? mouthOverride;
-  final String? fx;
+  final Map<String, String> overrides;
+  final String? fxPart;
+  final Kf? body; // body_group 변환
+  final Kf? fx;
   final double size;
 
   @override
-  State<AvatarLayers> createState() => _AvatarLayersState();
-}
-
-class _AvatarLayersState extends State<AvatarLayers> {
-  AvatarManifest? _m;
-
-  @override
-  void initState() {
-    super.initState();
-    loadAvatarManifest().then((m) {
-      if (mounted) setState(() => _m = m);
-    });
+  Widget build(BuildContext context) {
+    final m = manifest;
+    final sel = m.normalize(selection);
+    final recolors = m.recolorsFor(sel);
+    final unit = size / 512;
+    final pv = m.anchors['pivot_bottom'] ?? (256.0, 404.0);
+    final pivot = Alignment(pv.$1 / 256 - 1, pv.$2 / 256 - 1);
+    final group = <Widget>[];
+    Widget? shadow, fxW;
+    for (final cat in m.layerOrder) {
+      String? id = cat == 'fx' ? fxPart : (overrides[cat] ?? sel[cat]);
+      if (id == null) continue;
+      id = m.resolve(cat, id, sel['body']);
+      final p = m.parts[id];
+      if (p == null) continue;
+      final w = _Part(
+        part: p,
+        recolor: recolors[cat],
+        key: ValueKey('$cat:$id'),
+      );
+      if (cat == 'shadow') {
+        shadow = w;
+      } else if (cat == 'fx') {
+        fxW = _xf(w, fx, unit, Alignment.center);
+      } else {
+        group.add(w);
+      }
+    }
+    return SizedBox.square(
+      dimension: size,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          ?shadow,
+          _xf(Stack(fit: StackFit.expand, children: group), body, unit, pivot),
+          ?fxW,
+        ],
+      ),
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final m = _m;
-    if (m == null) return SizedBox.square(dimension: widget.size);
-    final sel = m.normalize(widget.selection);
-    final recolors = m.recolorsFor(sel);
-    final ids = <String, String?>{
-      ...sel,
-      if (widget.eyesOverride != null) 'eyes': widget.eyesOverride,
-      if (widget.mouthOverride != null) 'mouth': widget.mouthOverride,
-      'fx': widget.fx,
-    };
-    return SizedBox.square(
-      dimension: widget.size,
-      child: Stack(fit: StackFit.expand, children: [
-        for (final cat in m.layerOrder)
-          if (ids[cat] != null && m.parts[ids[cat]] != null)
-            _Part(part: m.parts[ids[cat]]!, recolor: recolors[cat], key: ValueKey('$cat:${ids[cat]}')),
-      ]),
+  static Widget _xf(Widget w, Kf? k, double unit, Alignment pivot) {
+    if (k == null) return w;
+    return Opacity(
+      opacity: k.opacity,
+      child: Transform.translate(
+        offset: Offset(k.tx * unit, k.ty * unit),
+        child: Transform.rotate(
+          angle: k.rotate * math.pi / 180,
+          alignment: pivot,
+          child: Transform.scale(scale: k.scale, alignment: pivot, child: w),
+        ),
+      ),
     );
   }
 }
@@ -63,19 +96,40 @@ class _Part extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FutureBuilder<String>(
-        future: loadPartSvg(part),
-        builder: (context, s) =>
-            s.hasData ? SvgPicture.string(applyRecolor(s.data!, recolor)) : const SizedBox.shrink(),
-      );
+    future: loadPartSvg(part),
+    builder: (context, s) => s.hasData
+        ? SvgPicture.string(applyRecolor(s.data!, recolor))
+        : const SizedBox.shrink(),
+  );
 }
 
-/// 살아있는 아바타: idle 숨쉬기 + 랜덤 눈깜빡임 + 감정 재생(play)
-class LiveAvatar extends StatefulWidget {
-  const LiveAvatar({super.key, required this.selection, this.size = 220, this.playKey, this.playToken});
+/// 정적 아바타 (편집기 썸네일 등)
+class StaticAvatar extends StatelessWidget {
+  const StaticAvatar({super.key, required this.selection, this.size = 72});
   final Map<String, String> selection;
   final double size;
 
-  /// 재생할 animation_key. playToken이 바뀔 때마다 1회 재생.
+  @override
+  Widget build(BuildContext context) => FutureBuilder<AvatarManifest>(
+    future: loadAvatarManifest(),
+    builder: (context, s) => s.hasData
+        ? AvatarLayers(manifest: s.data!, selection: selection, size: size)
+        : SizedBox.square(dimension: size),
+  );
+}
+
+/// 살아있는 아바타: idle 루프 + 랜덤 blink + 감정 모션 재생.
+/// [playKey]가 [playToken] 변경 시 1회(루프 모션은 ~2.4초) 재생 후 idle 복귀.
+class LiveAvatar extends StatefulWidget {
+  const LiveAvatar({
+    super.key,
+    required this.selection,
+    this.size = 220,
+    this.playKey,
+    this.playToken,
+  });
+  final Map<String, String> selection;
+  final double size;
   final String? playKey;
   final Object? playToken;
 
@@ -83,16 +137,33 @@ class LiveAvatar extends StatefulWidget {
   State<LiveAvatar> createState() => _LiveAvatarState();
 }
 
-class _LiveAvatarState extends State<LiveAvatar> {
+class _LiveAvatarState extends State<LiveAvatar>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this);
   final _rand = math.Random();
-  Timer? _blink;
-  bool _closed = false;
-  MotionSpec? _playing;
-  int _playId = 0;
+  AvatarManifest? _m;
+  AvatarMotionSpec? _idle, _spec;
+  Duration _blinkDur = const Duration(milliseconds: 220);
+  Timer? _blinkTimer, _endTimer;
+  bool _blinking = false;
 
   @override
   void initState() {
     super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    final m = await loadAvatarManifest();
+    final idle = await loadMotion('idle');
+    final blink = await loadMotion('blink');
+    if (!mounted) return;
+    setState(() {
+      _m = m;
+      _idle = idle;
+      if (blink != null) _blinkDur = blink.duration;
+    });
+    _toIdle();
     _scheduleBlink();
     if (widget.playToken != null) _play();
   }
@@ -103,79 +174,99 @@ class _LiveAvatarState extends State<LiveAvatar> {
     if (widget.playToken != null && widget.playToken != old.playToken) _play();
   }
 
-  void _scheduleBlink() {
-    _blink = Timer(Duration(milliseconds: 2500 + _rand.nextInt(2500)), () async {
-      if (!mounted) return;
-      final twice = _rand.nextDouble() < 0.15;
-      for (var i = 0; i < (twice ? 2 : 1); i++) {
-        setState(() => _closed = true);
-        await Future.delayed(const Duration(milliseconds: 120));
-        if (!mounted) return;
-        setState(() => _closed = false);
-        await Future.delayed(const Duration(milliseconds: 120));
-      }
-      _scheduleBlink();
-    });
+  void _toIdle() {
+    _endTimer?.cancel();
+    setState(() => _spec = _idle);
+    final d = _idle?.duration ?? const Duration(milliseconds: 2400);
+    _c
+      ..duration = d
+      ..repeat();
   }
 
-  void _play() {
-    final id = ++_playId;
-    setState(() => _playing = motionFor(widget.playKey));
-    Future.delayed(const Duration(milliseconds: 2200), () {
-      if (mounted && id == _playId) setState(() => _playing = null);
-    });
+  Future<void> _play() async {
+    final key = widget.playKey;
+    if (key == null || _m == null) return;
+    final spec = await loadMotion(key);
+    if (!mounted) return;
+    if (spec == null) return _toIdle(); // 모션 없는 키 → idle 유지
+    _endTimer?.cancel();
+    setState(() => _spec = spec);
+    _c.duration = spec.duration;
+    final ms = spec.duration.inMilliseconds;
+    final cycles = spec.loop ? math.max(1, (2400 / ms).ceil()) : 1;
+    _c.repeat(count: cycles);
+    _endTimer = Timer(
+      spec.duration * cycles + const Duration(milliseconds: 600),
+      () {
+        if (mounted) _toIdle();
+      },
+    );
+  }
+
+  void _scheduleBlink() {
+    _blinkTimer = Timer(
+      Duration(milliseconds: 2500 + _rand.nextInt(3000)),
+      () async {
+        if (!mounted) return;
+        final allowed = _spec == null || _spec == _idle || _spec!.blink;
+        if (allowed) {
+          final twice = _rand.nextDouble() < 0.15;
+          for (var i = 0; i < (twice ? 2 : 1); i++) {
+            setState(() => _blinking = true);
+            await Future.delayed(_blinkDur);
+            if (!mounted) return;
+            setState(() => _blinking = false);
+            if (twice) await Future.delayed(const Duration(milliseconds: 140));
+          }
+        }
+        _scheduleBlink();
+      },
+    );
   }
 
   @override
   void dispose() {
-    _blink?.cancel();
+    _blinkTimer?.cancel();
+    _endTimer?.cancel();
+    _c.dispose();
     super.dispose();
-  }
-
-  Widget _motion(Widget child, AvatarMotion m) {
-    final a = child.animate(key: ValueKey(_playId));
-    switch (m) {
-      case AvatarMotion.bounce:
-        return a.moveY(begin: 0, end: -18, duration: 220.ms, curve: Curves.easeOut)
-            .then().moveY(begin: 0, end: 18, duration: 220.ms, curve: Curves.easeIn)
-            .then().moveY(begin: 0, end: -12, duration: 200.ms, curve: Curves.easeOut)
-            .then().moveY(begin: 0, end: 12, duration: 200.ms, curve: Curves.easeIn);
-      case AvatarMotion.droop:
-        return a.moveY(begin: 0, end: 8, duration: 600.ms, curve: Curves.easeInOut)
-            .scaleY(begin: 1, end: 0.96, alignment: Alignment.bottomCenter, duration: 600.ms)
-            .then(delay: 800.ms).moveY(begin: 0, end: -8, duration: 500.ms);
-      case AvatarMotion.shake:
-        return a.shakeX(hz: 8, amount: 3, duration: 1200.ms);
-      case AvatarMotion.nod:
-        return a.rotate(begin: 0, end: 0.02, alignment: Alignment.bottomCenter, duration: 500.ms)
-            .then().rotate(begin: 0, end: -0.02, alignment: Alignment.bottomCenter, duration: 500.ms)
-            .then().rotate(begin: 0, end: 0.02, alignment: Alignment.bottomCenter, duration: 500.ms);
-      case AvatarMotion.pulse:
-        return a.scaleXY(begin: 1, end: 1.08, duration: 250.ms).then().scaleXY(begin: 1, end: 1 / 1.08, duration: 250.ms)
-            .then().scaleXY(begin: 1, end: 1.06, duration: 250.ms).then().scaleXY(begin: 1, end: 1 / 1.06, duration: 250.ms);
-      case AvatarMotion.wobble:
-        return a.rotate(begin: -0.015, end: 0.015, alignment: Alignment.bottomCenter, duration: 700.ms, curve: Curves.easeInOut)
-            .then().rotate(begin: 0, end: -0.03, alignment: Alignment.bottomCenter, duration: 700.ms);
-      case AvatarMotion.sway:
-        return a.moveX(begin: -4, end: 4, duration: 700.ms, curve: Curves.easeInOut)
-            .then().moveX(begin: 0, end: -8, duration: 700.ms, curve: Curves.easeInOut);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final p = _playing;
-    Widget avatar = AvatarLayers(
-      selection: widget.selection,
-      size: widget.size,
-      eyesOverride: _closed ? 'eyes_line' : p?.eyes,
-      mouthOverride: p?.mouth,
-      fx: p?.fx,
+    final m = _m;
+    if (m == null) return SizedBox.square(dimension: widget.size);
+    return AnimatedBuilder(
+      animation: _c,
+      builder: (context, _) {
+        final s = _spec;
+        final t = _c.value;
+        final overrides = <String, String>{...?s?.swap};
+        final eyesLayer = s?.layers['eyes'];
+        if (eyesLayer != null) {
+          for (final (st, part) in eyesLayer.swaps) {
+            if (t >= st) {
+              if (part == '@base') {
+                overrides.remove('eyes');
+              } else {
+                overrides['eyes'] = part;
+              }
+            }
+          }
+        }
+        if (_blinking) overrides['eyes'] = 'eyes_line';
+        final fx = s?.layers['fx'];
+        final bg = s?.layers['body_group'];
+        return AvatarLayers(
+          manifest: m,
+          selection: widget.selection,
+          size: widget.size,
+          overrides: overrides,
+          body: bg == null ? null : sampleKfs(bg.keyframes, t),
+          fxPart: fx?.part,
+          fx: fx == null ? null : sampleKfs(fx.keyframes, t),
+        );
+      },
     );
-    if (p != null) avatar = _motion(avatar, p.motion);
-    // idle 숨쉬기 2.4s: scaleY 1→1.02
-    return avatar
-        .animate(onPlay: (c) => c.repeat(reverse: true))
-        .scaleY(begin: 1, end: 1.02, alignment: Alignment.bottomCenter, duration: 1200.ms, curve: Curves.easeInOut);
   }
 }

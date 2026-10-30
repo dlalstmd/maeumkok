@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:maeumkok_app/avatar/avatar_manifest.dart';
+import 'package:maeumkok_app/avatar/avatar_motion.dart';
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -10,14 +14,41 @@ import 'package:maeumkok_app/core/invite_code.dart';
 
 void main() {
   test('avatar manifest: 기본값 정규화 + charcoal 제약', () {
-    final m = AvatarManifest.parse(File('assets/avatar/manifest.json').readAsStringSync());
+    final m = AvatarManifest.parse(
+      File('assets/avatar/manifest.json').readAsStringSync(),
+    );
     final sel = m.normalize({'body': 'body_charcoal', 'eyes': 'nope'});
     expect(sel['eyes'], 'eyes_dot');
-    final rc = m.recolorsFor(sel);
-    expect(rc['eyes']?['#111111'], '#FFFFFF');
-    expect(m.recolorsFor(m.normalize({}))['eyes'], isNull);
-    final eyes = File('assets/avatar/parts/eyes/eyes_dot.svg').readAsStringSync();
-    expect(applyRecolor(eyes, rc['eyes']).contains('#111111'), isFalse);
+    expect(m.resolve('eyes', 'eyes_dot', 'body_charcoal'), 'eyes_dot_light');
+    expect(m.resolve('mouth', 'mouth_grin', 'body_mocha'), 'mouth_grin_light');
+    expect(m.resolve('eyes', 'eyes_dot', 'body_white'), 'eyes_dot');
+    expect(m.byCategory('eyes').any((p) => p.id.endsWith('_light')), isFalse);
+    for (final p in m.parts.values) {
+      expect(
+        File('assets/avatar/${p.file}').existsSync(),
+        isTrue,
+        reason: p.id,
+      );
+    }
+  });
+
+  test('모든 animation_key에 모션 JSON', () {
+    final keys =
+        (jsonDecode(File('assets/emotions.json').readAsStringSync())['emotions']
+                as List)
+            .map((e) => e['animation_key'] as String)
+            .toSet()
+          ..addAll(['idle', 'blink']);
+    for (final k in keys) {
+      final spec = AvatarMotionSpec.parse(
+        File('assets/avatar/motion/$k.json').readAsStringSync(),
+      );
+      expect(spec.duration.inMilliseconds, greaterThan(0));
+      final bg = spec.layers['body_group'];
+      if (bg != null) {
+        expect(sampleKfs(bg.keyframes, 0.5).scale, greaterThan(0));
+      }
+    }
   });
 
   test('emotions.json parses: 40 unique ids, reactions, vibration', () {

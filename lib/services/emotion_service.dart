@@ -109,11 +109,16 @@ class EmotionService {
   }
 
   /// 감정 문서 id 목록에 달린 반응 (whereIn 30개 단위)
-  Future<List<ReactionEvent>> reactionsFor(String coupleId, List<String> ids) async {
+  Future<List<ReactionEvent>> reactionsFor(
+    String coupleId,
+    List<String> ids,
+  ) async {
     final out = <ReactionEvent>[];
     for (var i = 0; i < ids.length; i += 30) {
       final chunk = ids.sublist(i, i + 30 > ids.length ? ids.length : i + 30);
-      final r = await _reactions(coupleId).where('emotionDocId', whereIn: chunk).get();
+      final r = await _reactions(coupleId)
+          .where('emotionDocId', whereIn: chunk)
+          .get();
       out.addAll(r.docs.map(ReactionEvent.fromDoc));
     }
     return out;

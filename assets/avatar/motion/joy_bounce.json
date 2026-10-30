@@ -1,0 +1,114 @@
+{
+ "key": "joy_bounce",
+ "duration_ms": 900,
+ "loop": true,
+ "pivot": "pivot_bottom",
+ "layers": {
+  "body_group": {
+   "applies_to": [
+    "shadow?",
+    "body",
+    "blush",
+    "eyes",
+    "mouth",
+    "accessory"
+   ],
+   "keyframes": [
+    {
+     "t": 0,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    },
+    {
+     "t": 0.2,
+     "scale": 1.08,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 10,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    },
+    {
+     "t": 0.5,
+     "scale": 0.95,
+     "rotate": 0,
+     "tx": 0,
+     "ty": -36,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    },
+    {
+     "t": 0.8,
+     "scale": 1.05,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 6,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    },
+    {
+     "t": 1,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    }
+   ]
+  },
+  "fx": {
+   "part": "fx_sparkle",
+   "anchor": "head_top",
+   "keyframes": [
+    {
+     "t": 0,
+     "scale": 0.6,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 0,
+     "curve": "easeOut"
+    },
+    {
+     "t": 0.3,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": -24.0,
+     "opacity": 1,
+     "curve": "easeOut"
+    },
+    {
+     "t": 0.8,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": -60,
+     "opacity": 1,
+     "curve": "easeOut"
+    },
+    {
+     "t": 1,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": -72.0,
+     "opacity": 0,
+     "curve": "easeOut"
+    }
+   ]
+  }
+ },
+ "part_swap": {
+  "eyes": "eyes_smile",
+  "mouth": "mouth_grin",
+  "at_t": 0.0,
+  "restore_on_end": false
+ },
+ "blink": true
+}
