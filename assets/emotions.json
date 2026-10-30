@@ -26,7 +26,8 @@
         120
       ],
       "vibration_name": "heart",
-      "animation_key": "joy_bounce"
+      "animation_key": "joy_bounce",
+      "icon": "lucide:smile"
     },
     {
       "emoji": "🥰",
@@ -47,7 +48,8 @@
         30
       ],
       "vibration_name": "triple",
-      "animation_key": "jump"
+      "animation_key": "jump",
+      "icon": "lucide:party-popper"
     },
     {
       "emoji": "😢",
@@ -67,7 +69,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "cry"
+      "animation_key": "cry",
+      "icon": "lucide:frown"
     },
     {
       "emoji": "😠",
@@ -89,7 +92,8 @@
         80
       ],
       "vibration_name": "buzz",
-      "animation_key": "fume"
+      "animation_key": "fume",
+      "icon": "lucide:angry"
     },
     {
       "emoji": "😰",
@@ -108,7 +112,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "shiver"
+      "animation_key": "shiver",
+      "icon": "lucide:cloud-lightning"
     },
     {
       "emoji": "😌",
@@ -125,7 +130,8 @@
         120
       ],
       "vibration_name": "soft",
-      "animation_key": "breathe"
+      "animation_key": "breathe",
+      "icon": "lucide:leaf"
     },
     {
       "emoji": "🥺",
@@ -145,7 +151,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "droop"
+      "animation_key": "droop",
+      "icon": "lucide:cloud-rain"
     },
     {
       "emoji": "😑",
@@ -162,7 +169,8 @@
         40
       ],
       "vibration_name": "short",
-      "animation_key": "sway"
+      "animation_key": "sway",
+      "icon": "lucide:meh"
     },
     {
       "emoji": "😤",
@@ -184,7 +192,8 @@
         80
       ],
       "vibration_name": "buzz",
-      "animation_key": "sigh"
+      "animation_key": "sigh",
+      "icon": "lucide:flame"
     },
     {
       "emoji": "🤩",
@@ -205,7 +214,8 @@
         30
       ],
       "vibration_name": "triple",
-      "animation_key": "sparkle"
+      "animation_key": "sparkle",
+      "icon": "lucide:trophy"
     },
     {
       "emoji": "😴",
@@ -223,7 +233,8 @@
         400
       ],
       "vibration_name": "long",
-      "animation_key": "doze"
+      "animation_key": "doze",
+      "icon": "lucide:moon"
     },
     {
       "emoji": "🍚",
@@ -243,7 +254,8 @@
         40
       ],
       "vibration_name": "double",
-      "animation_key": "tummy"
+      "animation_key": "tummy",
+      "icon": "lucide:utensils"
     },
     {
       "emoji": "🤒",
@@ -263,7 +275,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "sick_wobble"
+      "animation_key": "sick_wobble",
+      "icon": "lucide:thermometer"
     },
     {
       "emoji": "😩",
@@ -281,7 +294,8 @@
         400
       ],
       "vibration_name": "long",
-      "animation_key": "slump"
+      "animation_key": "slump",
+      "icon": "lucide:battery-low"
     },
     {
       "emoji": "🥵",
@@ -298,7 +312,8 @@
         40
       ],
       "vibration_name": "short",
-      "animation_key": "sweat"
+      "animation_key": "sweat",
+      "icon": "lucide:sun"
     },
     {
       "emoji": "🥶",
@@ -319,7 +334,8 @@
         80
       ],
       "vibration_name": "buzz",
-      "animation_key": "shiver"
+      "animation_key": "shiver",
+      "icon": "lucide:snowflake"
     },
     {
       "emoji": "🤕",
@@ -338,7 +354,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "head_hold"
+      "animation_key": "head_hold",
+      "icon": "lucide:brain-circuit"
     },
     {
       "emoji": "💪",
@@ -359,7 +376,8 @@
         30
       ],
       "vibration_name": "triple",
-      "animation_key": "flex"
+      "animation_key": "flex",
+      "icon": "lucide:dumbbell"
     },
     {
       "emoji": "🤢",
@@ -376,7 +394,8 @@
         120
       ],
       "vibration_name": "soft",
-      "animation_key": "tummy_pat"
+      "animation_key": "tummy_pat",
+      "icon": "lucide:cookie"
     },
     {
       "emoji": "🏃",
@@ -393,7 +412,8 @@
         40
       ],
       "vibration_name": "short",
-      "animation_key": "rush"
+      "animation_key": "rush",
+      "icon": "lucide:timer"
     },
     {
       "emoji": "🫂",
@@ -412,7 +432,8 @@
         120
       ],
       "vibration_name": "heart",
-      "animation_key": "arms_open"
+      "animation_key": "arms_open",
+      "icon": "lucide:hand-heart"
     },
     {
       "emoji": "📞",
@@ -431,7 +452,8 @@
         40
       ],
       "vibration_name": "double",
-      "animation_key": "phone"
+      "animation_key": "phone",
+      "icon": "lucide:phone"
     },
     {
       "emoji": "👀",
@@ -450,7 +472,8 @@
         120
       ],
       "vibration_name": "heart",
-      "animation_key": "look_around"
+      "animation_key": "look_around",
+      "icon": "lucide:eye"
     },
     {
       "emoji": "🍰",
@@ -469,7 +492,8 @@
         40
       ],
       "vibration_name": "double",
-      "animation_key": "drool"
+      "animation_key": "drool",
+      "icon": "lucide:cake-slice"
     },
     {
       "emoji": "🎬",
@@ -486,7 +510,8 @@
         40
       ],
       "vibration_name": "short",
-      "animation_key": "popcorn"
+      "animation_key": "popcorn",
+      "icon": "lucide:clapperboard"
     },
     {
       "emoji": "🚶",
@@ -503,7 +528,8 @@
         40
       ],
       "vibration_name": "short",
-      "animation_key": "walk"
+      "animation_key": "walk",
+      "icon": "lucide:footprints"
     },
     {
       "emoji": "✈️",
@@ -524,7 +550,8 @@
         30
       ],
       "vibration_name": "triple",
-      "animation_key": "dream"
+      "animation_key": "dream",
+      "icon": "lucide:plane"
     },
     {
       "emoji": "🍻",
@@ -543,7 +570,8 @@
         40
       ],
       "vibration_name": "double",
-      "animation_key": "cheers"
+      "animation_key": "cheers",
+      "icon": "lucide:wine"
     },
     {
       "emoji": "🎮",
@@ -564,7 +592,8 @@
         30
       ],
       "vibration_name": "triple",
-      "animation_key": "play"
+      "animation_key": "play",
+      "icon": "lucide:gamepad-2"
     },
     {
       "emoji": "🛌",
@@ -581,7 +610,8 @@
         400
       ],
       "vibration_name": "long",
-      "animation_key": "lie_down"
+      "animation_key": "lie_down",
+      "icon": "lucide:bed"
     },
     {
       "emoji": "❤️",
@@ -600,7 +630,8 @@
         120
       ],
       "vibration_name": "heart",
-      "animation_key": "heart_pop"
+      "animation_key": "heart_pop",
+      "icon": "lucide:heart"
     },
     {
       "emoji": "😘",
@@ -619,7 +650,8 @@
         120
       ],
       "vibration_name": "heart",
-      "animation_key": "kiss"
+      "animation_key": "kiss",
+      "icon": "lucide:message-circle-heart"
     },
     {
       "emoji": "🥹",
@@ -638,7 +670,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "longing"
+      "animation_key": "longing",
+      "icon": "lucide:hourglass"
     },
     {
       "emoji": "🙏",
@@ -655,7 +688,8 @@
         120
       ],
       "vibration_name": "soft",
-      "animation_key": "bow"
+      "animation_key": "bow",
+      "icon": "lucide:thumbs-up"
     },
     {
       "emoji": "🙇",
@@ -675,7 +709,8 @@
         200
       ],
       "vibration_name": "slow",
-      "animation_key": "bow_deep"
+      "animation_key": "bow_deep",
+      "icon": "lucide:heart-crack"
     },
     {
       "emoji": "🌸",
@@ -692,7 +727,8 @@
         120
       ],
       "vibration_name": "soft",
-      "animation_key": "daydream"
+      "animation_key": "daydream",
+      "icon": "lucide:flower"
     },
     {
       "emoji": "🫶",
@@ -711,7 +747,8 @@
         120
       ],
       "vibration_name": "heart",
-      "animation_key": "cheer"
+      "animation_key": "cheer",
+      "icon": "lucide:sparkles"
     },
     {
       "emoji": "💌",
@@ -732,7 +769,8 @@
         30
       ],
       "vibration_name": "triple",
-      "animation_key": "sparkle"
+      "animation_key": "sparkle",
+      "icon": "lucide:medal"
     },
     {
       "emoji": "😳",
@@ -753,7 +791,8 @@
         80
       ],
       "vibration_name": "buzz",
-      "animation_key": "pout"
+      "animation_key": "pout",
+      "icon": "lucide:zap"
     },
     {
       "emoji": "🌙",
@@ -771,7 +810,9 @@
         400
       ],
       "vibration_name": "long",
-      "animation_key": "sleep_wave"
+      "animation_key": "sleep_wave",
+      "icon": "lucide:moon-star"
     }
-  ]
+  ],
+  "icon_note": "아이콘: Lucide (lucide_icons Flutter 패키지), stroke 1.75, 24px 그리드. emoji 필드는 푸시 알림 텍스트용으로 유지"
 }

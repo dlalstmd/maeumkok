@@ -1,11 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../core/emotions.dart';
+import '../core/lucide_map.dart';
+import '../core/theme.dart';
 import '../services/emotion_service.dart';
 import '../services/notify_service.dart';
 
+/// 메인 (v2_04a/b): 상대 아바타 + 마지막 마음 + 하단 시트 감정 그리드
 class CoupleHomeScreen extends StatefulWidget {
   const CoupleHomeScreen({
     super.key,
@@ -13,11 +17,13 @@ class CoupleHomeScreen extends StatefulWidget {
     required this.coupleId,
     required this.emotions,
     required this.notify,
+    this.partnerName,
   });
   final String uid;
   final String coupleId;
   final EmotionService emotions;
   final NotifyService notify;
+  final String? partnerName;
 
   @override
   State<CoupleHomeScreen> createState() => _CoupleHomeScreenState();
@@ -27,22 +33,30 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   StreamSubscription<List<EmotionEvent>>? _sub;
   final _seen = <String>{};
   bool _first = true;
+  List<EmotionEvent> _list = const [];
+  String? _selected;
 
   @override
   void initState() {
     super.initState();
     widget.notify.init();
-    _sub = widget.emotions.watchEmotions(widget.coupleId).listen((list) {
+    _sub = widget.emotions.watchEmotions(widget.coupleId, limit: 20).listen((
+      list,
+    ) {
       for (final ev in list) {
         if (_seen.add(ev.id) && !_first && ev.senderUid != widget.uid) {
           final e = emotionById(ev.emotionId);
           if (e != null) {
             widget.notify.vibrateFor(e);
-            widget.notify.showEmotion(e);
+            widget.notify.showEmotion(e, from: widget.partnerName ?? '상대');
           }
+        }
+        if (ev.senderUid != widget.uid && ev.readAt == null) {
+          widget.emotions.markRead(widget.coupleId, ev.id);
         }
       }
       _first = false;
+      if (mounted) setState(() => _list = list);
     });
   }
 
@@ -52,57 +66,125 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
     super.dispose();
   }
 
+  String _ago(DateTime? t) {
+    if (t == null) return '방금';
+    final d = DateTime.now().difference(t);
+    if (d.inMinutes < 1) return '방금';
+    if (d.inHours < 1) return '${d.inMinutes}분 전';
+    if (d.inDays < 1) return '${d.inHours}시간 전';
+    return '${d.inDays}일 전';
+  }
+
+  Future<void> _send(Emotion e) async {
+    setState(() => _selected = e.id);
+    await widget.emotions.sendEmotion(widget.coupleId, widget.uid, e.id);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text('${e.label} 마음을 보냈어요'),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (mounted) setState(() => _selected = null);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
+    final lastFromPartner = _list
+        .where((e) => e.senderUid != widget.uid)
+        .firstOrNull;
+    final lastMine = _list.where((e) => e.senderUid == widget.uid).firstOrNull;
+    return Stack(
       children: [
-        Expanded(
-          child: StreamBuilder<List<EmotionEvent>>(
-            stream: widget.emotions.watchEmotions(widget.coupleId),
-            builder: (context, snap) {
-              final list = snap.data ?? const <EmotionEvent>[];
-              if (list.isEmpty) {
-                return const Center(child: Text('아직 주고받은 마음이 없어요'));
-              }
-              return StreamBuilder<List<ReactionEvent>>(
-                stream: widget.emotions.watchReactions(widget.coupleId),
-                builder: (context, rs) {
-                  final reactions = rs.data ?? const <ReactionEvent>[];
-                  return ListView.builder(
-                    reverse: true,
-                    itemCount: list.length,
-                    itemBuilder: (context, i) => _tile(list[i], reactions),
-                  );
-                },
-              );
-            },
+        Align(
+          alignment: const Alignment(0, -0.55),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const _Blob(),
+              const SizedBox(height: 24),
+              if (lastFromPartner != null) _lastChip(lastFromPartner),
+              if (lastFromPartner != null) _reactions(lastFromPartner),
+              if (lastMine != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    '내가 보낸 ${emotionById(lastMine.emotionId)?.label ?? ''} · ${lastMine.readAt != null ? '읽음' : '전송됨'}',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: MkColors.textSub,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
-        const Divider(height: 1),
-        SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxHeight: 220),
-              child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    for (final e in kEmotions)
-                      ActionChip(
-                        label: Text('${e.emoji} ${e.label}'),
-                        onPressed: () => widget.emotions.sendEmotion(
-                          widget.coupleId,
-                          widget.uid,
-                          e.id,
+        DraggableScrollableSheet(
+          initialChildSize: 0.27,
+          minChildSize: 0.27,
+          maxChildSize: 0.85,
+          snap: true,
+          builder: (context, controller) => Container(
+            decoration: const BoxDecoration(
+              color: MkColors.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x14000000),
+                  blurRadius: 16,
+                  offset: Offset(0, -2),
+                ),
+              ],
+            ),
+            child: CustomScrollView(
+              controller: controller,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      Container(
+                        width: 36,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: MkColors.border,
+                          borderRadius: BorderRadius.circular(2),
                         ),
                       ),
-                  ],
+                      const SizedBox(height: 14),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(LucideIcons.chevronUp, size: 18),
+                          SizedBox(width: 6),
+                          Text(
+                            '올려서 마음 보내기',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                    ],
+                  ),
                 ),
-              ),
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                  sliver: SliverGrid.count(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 76 / 80,
+                    children: [for (final e in kEmotions) _emotionCard(e)],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -110,64 +192,159 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
     );
   }
 
-  Widget _tile(EmotionEvent ev, List<ReactionEvent> reactions) {
-    final e = emotionById(ev.emotionId);
-    final mine = ev.senderUid == widget.uid;
-    final myReaction = reactions.where((r) => r.emotionDocId == ev.id).toList();
-    if (!mine && ev.readAt == null) {
-      widget.emotions.markRead(widget.coupleId, ev.id);
-    }
-    return Align(
-      alignment: mine ? Alignment.centerRight : Alignment.centerLeft,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: mine
-                ? CrossAxisAlignment.end
-                : CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${e?.emoji ?? '💬'} ${e?.label ?? ev.emotionId}',
-                style: const TextStyle(fontSize: 18),
+  Widget _emotionCard(Emotion e) {
+    final sel = _selected == e.id;
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () => _send(e),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        decoration: BoxDecoration(
+          color: sel ? MkColors.accent : MkColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: sel ? MkColors.accent : MkColors.border),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              lucideIcon(e.icon),
+              size: 26,
+              color: sel ? Colors.white : MkColors.text,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              e.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 12,
+                color: sel ? Colors.white : MkColors.text,
               ),
-              if (mine)
-                Text(
-                  ev.readAt != null ? '읽음' : '전송됨',
-                  style: const TextStyle(fontSize: 12),
-                ),
-              for (final r in myReaction)
-                Text(
-                  '↳ ${_reactionLabel(e, r.reactionId)}',
-                  style: const TextStyle(fontSize: 13),
-                ),
-              if (!mine && e != null && myReaction.isEmpty)
-                Wrap(
-                  spacing: 6,
-                  children: [
-                    for (final r in e.reactions)
-                      OutlinedButton(
-                        onPressed: () => widget.emotions.react(
-                          widget.coupleId,
-                          widget.uid,
-                          ev.id,
-                          r.id,
-                        ),
-                        child: Text(r.label),
-                      ),
-                  ],
-                ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  String _reactionLabel(Emotion? e, String id) {
-    for (final r in e?.reactions ?? const <Reaction>[]) {
-      if (r.id == id) return r.label;
-    }
-    return id;
+  Widget _lastChip(EmotionEvent ev) {
+    final e = emotionById(ev.emotionId);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF0F0F0),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(lucideIcon(e?.icon), size: 14),
+          const SizedBox(width: 6),
+          Text(
+            '마지막 마음 · ${e?.label ?? ev.emotionId} · ${_ago(ev.createdAt)}',
+            style: const TextStyle(fontSize: 13),
+          ),
+        ],
+      ),
+    );
   }
+
+  Widget _reactions(EmotionEvent ev) {
+    final e = emotionById(ev.emotionId);
+    if (e == null) return const SizedBox.shrink();
+    return StreamBuilder<List<ReactionEvent>>(
+      stream: widget.emotions.watchReactions(widget.coupleId, limit: 20),
+      builder: (context, snap) {
+        final mine = (snap.data ?? const <ReactionEvent>[])
+            .where((r) => r.emotionDocId == ev.id && r.senderUid == widget.uid)
+            .firstOrNull;
+        if (mine != null) {
+          final label = e.reactions
+              .where((r) => r.id == mine.reactionId)
+              .firstOrNull
+              ?.label;
+          return Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(
+              '↳ ${label ?? ''}',
+              style: const TextStyle(fontSize: 13, color: MkColors.textSub),
+            ),
+          );
+        }
+        return Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Wrap(
+            spacing: 6,
+            children: [
+              for (final r in e.reactions)
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: MkColors.text,
+                    side: const BorderSide(color: MkColors.border),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  onPressed: () => widget.emotions.react(
+                    widget.coupleId,
+                    widget.uid,
+                    ev.id,
+                    r.id,
+                  ),
+                  child: Text(r.label, style: const TextStyle(fontSize: 13)),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// 아바타 C(떡 블롭) 임시 정적 버전. Rive 애니메이션은 11/1~2 단계.
+class _Blob extends StatelessWidget {
+  const _Blob();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 216,
+      height: 168,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(120),
+          bottom: Radius.circular(84),
+        ),
+        border: Border.all(color: MkColors.border, width: 2),
+      ),
+      child: const Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(top: 74, left: 62, child: _Dot(8, 14, Colors.black)),
+          Positioned(top: 74, right: 62, child: _Dot(8, 14, Colors.black)),
+          Positioned(top: 98, left: 40, child: _Dot(22, 10, Color(0xFFFFC9BD))),
+          Positioned(
+            top: 98,
+            right: 40,
+            child: _Dot(22, 10, Color(0xFFFFC9BD)),
+          ),
+          Positioned(top: 100, child: _Dot(14, 3, Colors.black)),
+        ],
+      ),
+    );
+  }
+}
+
+class _Dot extends StatelessWidget {
+  const _Dot(this.w, this.h, this.color);
+  final double w, h;
+  final Color color;
+  @override
+  Widget build(BuildContext context) => Container(
+    width: w,
+    height: h,
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(h),
+    ),
+  );
 }

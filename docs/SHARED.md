@@ -35,6 +35,17 @@
   - 글꼴: Pretendard (Figma는 Noto Sans KR 대체). Display 32B/40, Title1 24B/32, Title2 20B/28, Headline 17M/24, Body 15R/22, Callout 14M/20, Caption 12R/16, Micro 11M/14, 자간 -1%.
   - 간격: 4pt (4~48), 화면 좌우 24. 라운드 sm8/md12/lg16/xl24/full. 그림자 Soft/Card/Sheet.
   - 컴포넌트: Button(Primary/Secondary/Ghost/Danger), EmotionButton(카테고리 4종, 76x84), Card, Toast, Input, AvatarFrame, TabBar, BottomSheet.
+  - **v2 (10/30 사용자 피드백 반영, v1 핑크 톤 대체)**: 무채색 + 포인트 1색 미니멀. #111111 텍스트, #6B6B6B 보조, #E5E5E5 보더, #FAFAFA 배경, #FFFFFF 표면, 포인트 **탠저린 #FF6A3D 확정**(10/30 사용자 선택, 코발트·포레스트안 탈락). 위험 #E5484D. 감정 카테고리별 색 폐지 → 흰 카드+라인 아이콘, 선택 시 포인트색.
+  - 아이콘: Lucide 라인 세트(Flutter `lucide_icons`), stroke 1.75, 24px. 감정 40개 아이콘은 emotions.json `icon` 필드(`lucide:<name>`). 시트: /workspace/maeumkok-docs/shots/v2_icon_set.png
+  - 아바타: C 스타일(떡 블롭). v2 시안: /workspace/maeumkok-docs/shots/v2_*.png (HTML 소스 /workspace/maeumkok-design/v2/). Figma는 MCP 한도 초과로 v2 미반영(v1만 있음).
+  - 메인 상단 문구·날짜 커스터마이즈(사용자별, 상대에게 영향 없음) — 개발 데이터 필드 `users/{uid}`:
+    - `headerText`: string, 최대 20자, 기본 "{상대 닉네임}랑"
+    - `startDate`: date(YYYY-MM-DD), 기본 = 커플 연결일
+    - `dDayFormat`: enum `dPlus`(D+128) | `days`(128일째) | `monthsDays`(4개월 4일) | `hidden`
+    - `countStartAsDayOne`: bool, 기본 true (시작일을 1일로 세기)
+  - 화면 동작 스펙(시안에서 제거한 설계 메모):
+    - 감정 수신(v2_06): 수신 시 상대 아바타가 emotions.json `animation_key` 재생(예: 졸려→`doze`), 진동은 `vibration_pattern_ms`(졸려=long [0,400]). 추천 반응 탭 즉시 전송, 보낸 쪽 아바타 반응.
+    - 메인 펼침(v2_04b): 카테고리 탭 4개 × 감정 10개, 탭 전환 + 좌우 스와이프로 카테고리 이동.
 
 ## 6. 감정 목록 (콕디자인이 채움, 콕개발은 이 표를 그대로 코드에 반영)
 | id | 이름 | 이모지 | 카테고리 | 추천 반응 | 진동 패턴 | 애니메이션 |
@@ -87,14 +98,29 @@
 - couples/{id}: members[2], inviteCode, createdAt
 - couples/{id}/emotions/{id}: senderUid, emotionId, createdAt, readAt(읽음)
 - couples/{id}/reactions/{id}: senderUid, emotionDocId, reactionId(추천 반응 인덱스)
-- 감정 목록은 앱 assets/emotions.json에서 로드(6번 표/JSON 교체만으로 반영)
+- 감정 목록은 앱 assets/emotions.json에서 로드(6번 표/JSON 교체만으로 반영). 아이콘은 `icon`(lucide:<name>) → lib/core/lucide_map.dart
+- users 개인 헤더 필드(커플 공유 아님, 5번 스펙): headerText(≤20), startDate('YYYY-MM-DD', 기본 커플 연결일), dDayFormat(dPlus|days|monthsDays|hidden), countStartAsDayOne(기본 true)
+- users.fcmTokens: 기기별 FCM 토큰(≤10), 앱이 저장·갱신·로그아웃 시 제거
 
 ## 8. 결정 기록
 - 10/30 프로젝트명 '마음콕' 확정, 기획안 승인.
 - 10/30 일정은 봇 작업 속도 기준.
 - 10/30 애니메이션 Rive 확정(콕디자인).
+- 10/30 디자인 v2 미니멀 확정: 무채색 + 포인트 탠저린 #FF6A3D(코드: lib/core/theme.dart MkColors.accent 한 곳), 아바타 C, 라인 아이콘(Lucide).
+- 10/30 앱 아이콘 C안 확정·적용(assets/app_icon, flutter_launcher_icons). 콕디자인 수정본이 오면 같은 파일 교체 후 `dart run flutter_launcher_icons`.
+- 10/30 메인 상단 문구·날짜는 사용자별 개인 설정(users 문서), 상대에게 영향 없음.
+- 10/30 시안 PNG의 설계 주석(애니메이션·진동 메모)은 UI 텍스트로 넣지 않음. 스펙은 이 문서와 emotions.json 기준.
+- 10/30 Blaze 전환 보류(결제 계정 한도) → Cloud Functions(FCM 백그라운드 푸시) 배포 보류, 코드만 완성.
 - 10/30 Blaze 미전환이라 커플 연결은 Firestore 트랜잭션+보안 규칙으로 구현, 백그라운드 FCM 푸시는 Blaze 전환 후 Cloud Function 배포.
+- 10/30 아바타 스타일 C(떡 블롭), 앱 아이콘 C(블롭 얼굴, 미니멀화: 탠저린 #FF6A3D 배경+흰 블롭) 확정. 파일: /workspace/maeumkok-design/app_icon/ (icon_1024, ic_foreground/background/monochrome_432, play_store_512, README에 flutter_launcher_icons 설정)
+- 10/30 디자인 v2: 무채색+포인트 1색, Lucide 라인 아이콘
+- 10/30 포인트 컬러 A 탠저린 #FF6A3D 확정 (사용자 선택)
 
 ## 9. 진행 상황 (각 봇이 갱신)
 - [콕디자인 10/30 16:35 KST] 감정 40개 완료(emotions.json/md, 6번 표). 디자인 시스템(변수·텍스트/그림자 스타일·컴포넌트) 완료. 시안: 로그인, 커플연결 4종, 아바타 꾸미기 완료. 메인 화면(시트 접힘/펼침) 시안 완료. 남음: 수신/타임라인/설정 시안, 사용자 선택용 옵션 시안(색상톤·아바타·앱아이콘·메인 레이아웃), 아바타·애니메이션 에셋(11/1).
 - [콕개발 10/30 16:40 KST] 저장소·Firebase(Android/iOS 앱 등록, Firestore·구글 로그인 활성화, 규칙 배포) 완료. 구글 로그인, 초대코드 연결, 감정 40개 전송/수신(앱 실행 중 진동+로컬 알림), 원탭 반응, 읽음 표시 구현. 릴리스 서명 AAB 빌드 완료(/workspace/maeumkok-release-1.0.0+1.aab). 남은 것: FCM 백그라운드 푸시(Blaze 필요), 규칙 에뮬레이터 테스트, iOS 빌드, Play 앱 서명 SHA 등록.
+- [콕디자인 10/30 16:30 KST] 화면 PNG: /workspace/maeumkok-docs/shots/ (01~04b, 04b는 Figma MCP 한도 초과로 HTML 재현 렌더). 선택용 시안 A/B/C PNG 12장: /workspace/maeumkok-design/options/. Figma MCP Starter 호출 한도 도달 → 남은 Figma 작업 보류. 남음: 수신/타임라인/설정 시안, Emotions & Avatar 페이지.
+- [콕디자인 10/30 16:35 KST] v2 완료: 색상 톤 3안, 아이콘 세트, 로그인·연결 4장(버튼 라벨 버그 해결), 메인 접힘/펼침, 상단 문구 편집 화면 → shots/v2_*. emotions.json에 icon 필드 추가. 앱 아이콘 최종본 app_icon/. Figma 반영은 MCP 한도로 보류. 남음: 수신/타임라인/설정 v2, Rive 에셋(11/1).
+- [콕디자인 10/30 16:36 KST] v2 추가: 감정 수신(v2_06), 타임라인(v2_07), 설정(v2_08)·연결 끊기 다이얼로그(v2_08b), 상단 문구 편집 줄바꿈 수정. 포인트 탠저린 확정 반영. v2 전 화면 완료(Figma 미반영).
+- [콕개발 10/30 16:45 KST] Play 앱 서명 SHA-1/256 Firebase 등록 완료(내부 테스트 앱 구글 로그인 가능), google-services.json 갱신. 내부 테스트 참여 링크: https://play.google.com/apps/internaltest/4699984733125868374
+- [콕개발 10/30 16:45 KST] v2 미니멀 UI(메인 헤더·편집 화면·감정 40개 라인 아이콘 그리드·블롭 아바타 정적), 앱 아이콘 C, FCM 토큰 저장·백그라운드 핸들러, functions 코드 완성(배포 보류). 다음: 연결 화면 v2 다듬기, 타임라인, Rive 아바타, iOS.

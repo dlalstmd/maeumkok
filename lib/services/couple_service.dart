@@ -25,6 +25,8 @@ class CoupleService {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> watchUser(String uid) =>
       userRef(uid).snapshots();
+  Stream<DocumentSnapshot<Map<String, dynamic>>> watchCouple(String id) =>
+      _db.collection('couples').doc(id).snapshots();
   Stream<DocumentSnapshot<Map<String, dynamic>>> watchInvite(String code) =>
       inviteRef(code).snapshots();
 

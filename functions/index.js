@@ -1,5 +1,6 @@
 // 감정 전송 시 상대에게 FCM 푸시. Blaze 요금제 전환 후 `firebase deploy --only functions`.
-// 앱은 users/{uid}.fcmTokens 에 토큰을 저장해야 한다(2단계에서 연결).
+// 앱(lib/services/push_service.dart)이 users/{uid}.fcmTokens 에 토큰을 저장한다.
+// Android: channelId emotion_<id> → 앱이 만든 감정별 진동 채널로 표시.
 const {onDocumentCreated} = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
 admin.initializeApp();
@@ -16,11 +17,23 @@ exports.onEmotionCreated = onDocumentCreated(
     const partner = (await db.doc(`users/${partnerUid}`).get()).data() || {};
     const tokens = partner.fcmTokens || [];
     if (!tokens.length) return;
-    await admin.messaging().sendEachForMulticast({
+    const res = await admin.messaging().sendEachForMulticast({
       tokens,
       data: {type: "emotion", emotionId: e.emotionId, emotionDocId: event.params.emotionId},
       notification: {title: "마음콕", body: "새 마음이 도착했어요"},
       android: {priority: "high", notification: {channelId: `emotion_${e.emotionId}`}},
-      apns: {payload: {aps: {sound: "default"}}},
+      apns: {payload: {aps: {sound: "default", "content-available": 1}}},
     });
+    // 만료/무효 토큰 정리
+    const dead = [];
+    res.responses.forEach((r, i) => {
+      const code = r.error && r.error.code;
+      if (code === "messaging/registration-token-not-registered" ||
+          code === "messaging/invalid-registration-token") dead.push(tokens[i]);
+    });
+    if (dead.length) {
+      await db.doc(`users/${partnerUid}`).update({
+        fcmTokens: admin.firestore.FieldValue.arrayRemove(...dead),
+      });
+    }
   });

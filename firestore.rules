@@ -15,6 +15,15 @@ service cloud.firestore {
         && uid() in coupleOf(c).data.members;
     }
 
+    // 개인 필드(커플 공유 아님): headerText, startDate, dDayFormat, countStartAsDayOne, fcmTokens
+    function validPersonal(d) {
+      return (d.get('headerText', null) == null || (d.headerText is string && d.headerText.size() <= 20))
+        && (d.get('startDate', null) == null || (d.startDate is string && d.startDate.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')))
+        && (d.get('dDayFormat', null) == null || d.dDayFormat in ['dPlus', 'days', 'monthsDays', 'hidden'])
+        && (d.get('countStartAsDayOne', null) == null || d.countStartAsDayOne is bool)
+        && (d.get('fcmTokens', null) == null || (d.fcmTokens is list && d.fcmTokens.size() <= 10));
+    }
+
     match /users/{userId} {
       // 본인, 또는 같은 커플 상대
       allow read: if signedIn() && (uid() == userId
@@ -23,7 +32,8 @@ service cloud.firestore {
         && request.resource.data.get('coupleId', null) == null;
       // coupleId 외 필드는 본인만 수정
       allow update: if signedIn() && uid() == userId
-        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['coupleId', 'uid']);
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['coupleId', 'uid'])
+        && validPersonal(request.resource.data);
       // 커플 연결 확정 시: 초대 주인이 자신+상대의 coupleId를 같은 배치로 설정
       allow update: if signedIn()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['coupleId'])

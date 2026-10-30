@@ -14,6 +14,7 @@ class Emotion {
     required this.vibrationPattern,
     required this.reactions,
     required this.animationKey,
+    this.icon,
   });
 
   final String id;
@@ -29,6 +30,9 @@ class Emotion {
   final List<Reaction> reactions;
   final String animationKey;
 
+  /// `lucide:<name>` (lib/core/lucide_map.dart)
+  final String? icon;
+
   factory Emotion.fromJson(Map<String, dynamic> j) {
     final rs = (j['reactions'] as List).cast<String>();
     return Emotion(
@@ -42,6 +46,7 @@ class Emotion {
           .toList(),
       reactions: [for (var i = 0; i < rs.length; i++) Reaction('$i', rs[i])],
       animationKey: (j['animation_key'] ?? '') as String,
+      icon: j['icon'] as String?,
     );
   }
 }
