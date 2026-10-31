@@ -61,6 +61,7 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -129,3 +130,13 @@ flutter_launcher_icons:
   adaptive_icon_background: "#FF6A3D"
   adaptive_icon_foreground: "assets/app_icon/ic_foreground_432.png"
   adaptive_icon_monochrome: "assets/app_icon/ic_monochrome_432.png"
+
+# 스플래시(에셋 미확정: 지금은 배경색만, 인위적 지연 없음)
+# 에셋 확정 시 image / android_12.image 경로 주석 해제 후 `dart run flutter_native_splash:create`
+flutter_native_splash:
+  color: "#FAFAFA"
+  # image: assets/splash/splash_logo.png
+  android_12:
+    color: "#FAFAFA"
+    # image: assets/splash/splash_logo_android12.png
+  fullscreen: false
