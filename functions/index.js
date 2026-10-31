@@ -40,6 +40,34 @@ exports.onEmotionCreated = onDocumentCreated(
     }
   });
 
+// 반응 생성 시 감정을 보낸 사람(상대)에게 푸시.
+const emotionsJson = require("./emotions.json");
+function reactionText(emotionId, reactionId) {
+  const e = (emotionsJson.emotions || []).find((x) => x.id === emotionId);
+  const label = e && e.reactions && e.reactions[Number(reactionId)];
+  return label || "반응이 도착했어요";
+}
+exports.onReactionCreated = onDocumentCreated(
+  {document: "couples/{coupleId}/reactions/{reactionId}", region: "asia-northeast3"},
+  async (event) => {
+    const r = event.data && event.data.data();
+    if (!r) return;
+    const couple = (await db.doc(`couples/${event.params.coupleId}`).get()).data();
+    if (!couple) return;
+    const partnerUid = couple.members.find((m) => m !== r.senderUid);
+    const emo = (await db.doc(`couples/${event.params.coupleId}/emotions/${r.emotionDocId}`).get()).data() || {};
+    const partner = (await db.doc(`users/${partnerUid}`).get()).data() || {};
+    const tokens = partner.fcmTokens || [];
+    if (!tokens.length) return;
+    await getMessaging().sendEachForMulticast({
+      tokens,
+      data: {type: "reaction", emotionDocId: r.emotionDocId, reactionId: r.reactionId},
+      notification: {title: "마음콕", body: reactionText(emo.emotionId, r.reactionId)},
+      android: {priority: "high"},
+      apns: {payload: {aps: {sound: "default"}}},
+    });
+  });
+
 // 계정 삭제(스토어 필수): 본인 users 문서, 소속 커플의 감정·리액션·커플 문서, 초대코드, Auth 계정 삭제.
 // 상대방은 coupleId 해제되어 다시 연결 가능한 상태가 된다.
 const {onCall, HttpsError} = require("firebase-functions/v2/https");

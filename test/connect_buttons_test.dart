@@ -8,13 +8,17 @@ Widget _row({required bool expanded}) {
     theme: buildTheme(),
     home: Scaffold(
       body: Card(
-        child: Column(children: [
-          Row(children: [
-            wrap(FilledButton(onPressed: () {}, child: const Text('수락'))),
-            const SizedBox(width: 8),
-            wrap(OutlinedButton(onPressed: () {}, child: const Text('거절'))),
-          ]),
-        ]),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                wrap(FilledButton(onPressed: () {}, child: const Text('수락'))),
+                const SizedBox(width: 8),
+                wrap(OutlinedButton(onPressed: () {}, child: const Text('거절'))),
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );

@@ -22,6 +22,7 @@ service cloud.firestore {
         && (d.get('dDayFormat', null) == null || d.dDayFormat in ['dPlus', 'days', 'monthsDays', 'hidden'])
         && (d.get('countStartAsDayOne', null) == null || d.countStartAsDayOne is bool)
         && (d.get('avatar', null) == null || (d.avatar is map && d.avatar.size() <= 10))
+        && (d.get('avatarAdjust', null) == null || (d.avatarAdjust is map && d.avatarAdjust.size() <= 10))
         && (d.get('fcmTokens', null) == null || (d.fcmTokens is list && d.fcmTokens.size() <= 10));
     }
 

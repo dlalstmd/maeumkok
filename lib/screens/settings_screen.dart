@@ -33,15 +33,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (c) => AlertDialog(
         title: const Text('계정을 삭제할까요?'),
         content: const Text(
-            '계정과 함께 감정·리액션 기록, 아바타, 헤더 설정이 모두 삭제되고 커플 연결도 해제돼요. 되돌릴 수 없어요.'),
+          '계정과 함께 감정·리액션 기록, 아바타, 헤더 설정이 모두 삭제되고 커플 연결도 해제돼요. 되돌릴 수 없어요.',
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(c, false),
-              child: const Text('취소')),
+            onPressed: () => Navigator.pop(c, false),
+            child: const Text('취소'),
+          ),
           TextButton(
-              key: const Key('confirmDelete'),
-              onPressed: () => Navigator.pop(c, true),
-              child: const Text('삭제', style: TextStyle(color: Colors.red))),
+            key: const Key('confirmDelete'),
+            onPressed: () => Navigator.pop(c, true),
+            child: const Text('삭제', style: TextStyle(color: Colors.red)),
+          ),
         ],
       ),
     );
@@ -54,7 +57,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (!mounted) return;
       setState(() => _busy = false);
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('삭제에 실패했어요. 잠시 후 다시 시도해 주세요.')));
+        const SnackBar(content: Text('삭제에 실패했어요. 잠시 후 다시 시도해 주세요.')),
+      );
     }
   }
 
@@ -67,17 +71,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
           : ListView(
               children: [
                 if (widget.email != null)
-                  ListTile(title: const Text('계정'), subtitle: Text(widget.email!)),
+                  ListTile(
+                    title: const Text('계정'),
+                    subtitle: Text(widget.email!),
+                  ),
                 ListTile(
                   title: const Text('개인정보처리방침'),
-                  onTap: () => launchUrl(Uri.parse(privacyUrl),
-                      mode: LaunchMode.externalApplication),
+                  onTap: () => launchUrl(
+                    Uri.parse(privacyUrl),
+                    mode: LaunchMode.externalApplication,
+                  ),
                 ),
                 ListTile(title: const Text('로그아웃'), onTap: _signOut),
                 ListTile(
                   key: const Key('deleteAccount'),
-                  title: const Text('계정 삭제',
-                      style: TextStyle(color: Colors.red)),
+                  title: const Text(
+                    '계정 삭제',
+                    style: TextStyle(color: Colors.red),
+                  ),
                   onTap: _delete,
                 ),
               ],

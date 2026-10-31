@@ -50,7 +50,9 @@ class AuthService {
   /// 심사용 데모 계정 로그인 (로그인 화면 로고 5번 탭)
   Future<UserCredential> signInWithEmail(String email, String password) async {
     final result = await _auth.signInWithEmailAndPassword(
-        email: email.trim(), password: password);
+      email: email.trim(),
+      password: password,
+    );
     await _upsertUser(result.user!);
     return result;
   }

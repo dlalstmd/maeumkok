@@ -66,4 +66,22 @@ class NotifyService {
       ),
     );
   }
+
+  Future<void> showReaction(String text, {String from = '상대'}) async {
+    await init();
+    await _plugin.show(
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title: '$from님이 반응했어요',
+      body: text,
+      notificationDetails: const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'reaction',
+          '반응',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+        iOS: DarwinNotificationDetails(),
+      ),
+    );
+  }
 }

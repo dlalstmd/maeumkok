@@ -1,3 +1,5 @@
+import '../avatar/part_adjust.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 final partnerAvatar =
                     ((ps.data?.data()?['avatar'] as Map?) ?? const {})
                         .cast<String, String>();
+                final partnerAdjusts = parseAdjusts(
+                  ps.data?.data()?['avatarAdjust'],
+                );
+                final myAdjusts = parseAdjusts(me?['avatarAdjust']);
                 final myAvatar = ((me?['avatar'] as Map?) ?? const {})
                     .cast<String, String>();
                 final prefs = HeaderPrefs.fromUser(
@@ -180,6 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     builder: (_) => AvatarEditScreen(
                                       uid: widget.user.uid,
                                       initial: myAvatar,
+                                      initialAdjusts: myAdjusts,
                                     ),
                                   ),
                                 ),
@@ -216,6 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             notify: _notify,
                             partnerName: partnerName,
                             partnerAvatar: partnerAvatar,
+                            partnerAdjusts: partnerAdjusts,
                           ),
                         ),
                       ],

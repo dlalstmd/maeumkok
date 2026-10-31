@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'avatar_manifest.dart';
 import 'avatar_motion.dart';
+import 'part_adjust.dart';
 
 /// 레이어별 변환 (512 캔버스 단위)
 typedef LayerFx = Kf;
@@ -22,7 +23,9 @@ class AvatarLayers extends StatelessWidget {
     this.body,
     this.fx,
     this.size = 220,
+    this.adjusts = const {},
   });
+  final Map<String, PartAdjust> adjusts;
   final AvatarManifest manifest;
   final Map<String, String> selection;
   final Map<String, String> overrides;
@@ -47,11 +50,13 @@ class AvatarLayers extends StatelessWidget {
       id = m.resolve(cat, id, sel['body']);
       final p = m.parts[id];
       if (p == null) continue;
-      final w = _Part(
+      Widget w = _Part(
         part: p,
         recolor: recolors[cat],
         key: ValueKey('$cat:$id'),
       );
+      final adj = cat == 'accessory' ? adjusts[id] : null;
+      if (adj != null && !adj.isIdentity) w = adjustPart(w, adj, unit);
       if (cat == 'shadow') {
         shadow = w;
       } else if (cat == 'fx') {
@@ -89,6 +94,19 @@ class AvatarLayers extends StatelessWidget {
   }
 }
 
+/// 액세서리 조절값 적용(파츠 중심 기준 회전·크기·가로 늘이기 후 이동)
+Widget adjustPart(Widget w, PartAdjust a, double unit) => Transform.translate(
+  offset: Offset(a.dx * unit, a.dy * unit),
+  child: Transform.rotate(
+    angle: a.radians,
+    child: Transform(
+      alignment: Alignment.center,
+      transform: Matrix4.diagonal3Values(a.scale * a.stretchX, a.scale, 1),
+      child: w,
+    ),
+  ),
+);
+
 class _Part extends StatelessWidget {
   const _Part({super.key, required this.part, this.recolor});
   final AvatarPart part;
@@ -105,15 +123,26 @@ class _Part extends StatelessWidget {
 
 /// 정적 아바타 (편집기 썸네일 등)
 class StaticAvatar extends StatelessWidget {
-  const StaticAvatar({super.key, required this.selection, this.size = 72});
+  const StaticAvatar({
+    super.key,
+    required this.selection,
+    this.size = 72,
+    this.adjusts = const {},
+  });
   final Map<String, String> selection;
+  final Map<String, PartAdjust> adjusts;
   final double size;
 
   @override
   Widget build(BuildContext context) => FutureBuilder<AvatarManifest>(
     future: loadAvatarManifest(),
     builder: (context, s) => s.hasData
-        ? AvatarLayers(manifest: s.data!, selection: selection, size: size)
+        ? AvatarLayers(
+            manifest: s.data!,
+            selection: selection,
+            size: size,
+            adjusts: adjusts,
+          )
         : SizedBox.square(dimension: size),
   );
 }
@@ -127,7 +156,9 @@ class LiveAvatar extends StatefulWidget {
     this.size = 220,
     this.playKey,
     this.playToken,
+    this.adjusts = const {},
   });
+  final Map<String, PartAdjust> adjusts;
   final Map<String, String> selection;
   final double size;
   final String? playKey;
@@ -261,6 +292,7 @@ class _LiveAvatarState extends State<LiveAvatar>
           manifest: m,
           selection: widget.selection,
           size: widget.size,
+          adjusts: widget.adjusts,
           overrides: overrides,
           body: bg == null ? null : sampleKfs(bg.keyframes, t),
           fxPart: fx?.part,
