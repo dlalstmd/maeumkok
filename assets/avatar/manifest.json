@@ -1,5 +1,5 @@
 {
- "version": 3,
+ "version": 4,
  "style": "C_rice_cake_blob",
  "canvas": [
   512,
@@ -376,63 +376,76 @@
    "category": "accessory",
    "file": "parts/accessory/acc_none.svg",
    "slot": "head",
-   "subtype": "none"
+   "subtype": "none",
+   "default_scale": 1.0
   },
   {
    "id": "acc_ribbon",
    "category": "accessory",
    "file": "parts/accessory/acc_ribbon.svg",
    "slot": "head",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.0
   },
   {
    "id": "acc_beanie",
    "category": "accessory",
    "file": "parts/accessory/acc_beanie.svg",
    "slot": "head",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_bear_ears",
    "category": "accessory",
    "file": "parts/accessory/acc_bear_ears.svg",
    "slot": "head",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_bunny_ears",
    "category": "accessory",
    "file": "parts/accessory/acc_bunny_ears.svg",
    "slot": "head",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_glasses",
    "category": "accessory",
    "file": "parts/accessory/acc_glasses.svg",
    "slot": "face",
-   "subtype": "glasses"
+   "subtype": "glasses",
+   "default_scale": 1.0
   },
   {
    "id": "acc_flower",
    "category": "accessory",
    "file": "parts/accessory/acc_flower.svg",
    "slot": "head",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.3,
+   "pivot": [
+    180,
+    168
+   ]
   },
   {
    "id": "acc_headphones",
    "category": "accessory",
    "file": "parts/accessory/acc_headphones.svg",
    "slot": "head",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_cap",
    "category": "accessory",
    "file": "parts/accessory/acc_cap.svg",
    "slot": "head",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "fx_zzz",
@@ -1455,206 +1468,338 @@
    "id": "acc_hat_bucket",
    "category": "accessory",
    "file": "parts/accessory/acc_hat_bucket.svg",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_hat_beret",
    "category": "accessory",
    "file": "parts/accessory/acc_hat_beret.svg",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_hat_crown",
    "category": "accessory",
    "file": "parts/accessory/acc_hat_crown.svg",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_hat_party",
    "category": "accessory",
    "file": "parts/accessory/acc_hat_party.svg",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_hat_straw",
    "category": "accessory",
    "file": "parts/accessory/acc_hat_straw.svg",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_hat_knit_band",
    "category": "accessory",
    "file": "parts/accessory/acc_hat_knit_band.svg",
-   "subtype": "hat"
+   "subtype": "hat",
+   "default_scale": 1.0
   },
   {
    "id": "acc_glasses_square",
    "category": "accessory",
    "file": "parts/accessory/acc_glasses_square.svg",
-   "subtype": "glasses"
+   "subtype": "glasses",
+   "default_scale": 1.0
   },
   {
    "id": "acc_glasses_sun",
    "category": "accessory",
    "file": "parts/accessory/acc_glasses_sun.svg",
-   "subtype": "glasses"
+   "subtype": "glasses",
+   "default_scale": 1.0
   },
   {
    "id": "acc_glasses_heart",
    "category": "accessory",
    "file": "parts/accessory/acc_glasses_heart.svg",
-   "subtype": "glasses"
+   "subtype": "glasses",
+   "default_scale": 1.0
   },
   {
    "id": "acc_glasses_round_thin",
    "category": "accessory",
    "file": "parts/accessory/acc_glasses_round_thin.svg",
-   "subtype": "glasses"
+   "subtype": "glasses",
+   "default_scale": 1.0
   },
   {
    "id": "acc_earring_stud",
    "category": "accessory",
    "file": "parts/accessory/acc_earring_stud.svg",
-   "subtype": "earring"
+   "subtype": "earring",
+   "default_scale": 1.8,
+   "pivots": {
+    "left": [
+     84,
+     320
+    ],
+    "right": [
+     428,
+     320
+    ]
+   },
+   "pair": true
   },
   {
    "id": "acc_earring_hoop",
    "category": "accessory",
    "file": "parts/accessory/acc_earring_hoop.svg",
-   "subtype": "earring"
+   "subtype": "earring",
+   "default_scale": 1.6,
+   "pivots": {
+    "left": [
+     84,
+     320
+    ],
+    "right": [
+     428,
+     320
+    ]
+   },
+   "pair": true
   },
   {
    "id": "acc_earring_pearl",
    "category": "accessory",
    "file": "parts/accessory/acc_earring_pearl.svg",
-   "subtype": "earring"
+   "subtype": "earring",
+   "default_scale": 1.7,
+   "pivots": {
+    "left": [
+     84,
+     320
+    ],
+    "right": [
+     428,
+     320
+    ]
+   },
+   "pair": true
   },
   {
    "id": "acc_earring_drop",
    "category": "accessory",
    "file": "parts/accessory/acc_earring_drop.svg",
-   "subtype": "earring"
+   "subtype": "earring",
+   "default_scale": 1.5,
+   "pivots": {
+    "left": [
+     84,
+     320
+    ],
+    "right": [
+     428,
+     320
+    ]
+   },
+   "pair": true
   },
   {
    "id": "acc_earring_star",
    "category": "accessory",
    "file": "parts/accessory/acc_earring_star.svg",
-   "subtype": "earring"
+   "subtype": "earring",
+   "default_scale": 1.6,
+   "pivots": {
+    "left": [
+     84,
+     320
+    ],
+    "right": [
+     428,
+     320
+    ]
+   },
+   "pair": true
   },
   {
    "id": "acc_hairpin_star_clip",
    "category": "accessory",
    "file": "parts/accessory/acc_hairpin_star_clip.svg",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.3,
+   "pivot": [
+    338,
+    204
+   ]
   },
   {
    "id": "acc_hairpin_bow_clip",
    "category": "accessory",
    "file": "parts/accessory/acc_hairpin_bow_clip.svg",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.0
   },
   {
    "id": "acc_hairpin_heart_pin",
    "category": "accessory",
    "file": "parts/accessory/acc_hairpin_heart_pin.svg",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.4,
+   "pivot": [
+    336,
+    176
+   ]
   },
   {
    "id": "acc_hairpin_bar",
    "category": "accessory",
    "file": "parts/accessory/acc_hairpin_bar.svg",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.3,
+   "pivot": [
+    335,
+    171
+   ]
   },
   {
    "id": "acc_hairpin_cherry",
    "category": "accessory",
    "file": "parts/accessory/acc_hairpin_cherry.svg",
-   "subtype": "hairpin"
+   "subtype": "hairpin",
+   "default_scale": 1.4,
+   "pivot": [
+    341,
+    180
+   ]
   },
   {
    "id": "acc_scarf_knit",
    "category": "accessory",
    "file": "parts/accessory/acc_scarf_knit.svg",
-   "subtype": "scarf"
+   "subtype": "scarf",
+   "default_scale": 1.0
   },
   {
    "id": "acc_scarf_bandana",
    "category": "accessory",
    "file": "parts/accessory/acc_scarf_bandana.svg",
-   "subtype": "scarf"
+   "subtype": "scarf",
+   "default_scale": 1.0
   },
   {
    "id": "acc_scarf_gray_wrap",
    "category": "accessory",
    "file": "parts/accessory/acc_scarf_gray_wrap.svg",
-   "subtype": "scarf"
+   "subtype": "scarf",
+   "default_scale": 1.0
   },
   {
    "id": "acc_bag_crossbody",
    "category": "accessory",
    "file": "parts/accessory/acc_bag_crossbody.svg",
-   "subtype": "bag"
+   "subtype": "bag",
+   "default_scale": 1.0
   },
   {
    "id": "acc_bag_tote",
    "category": "accessory",
    "file": "parts/accessory/acc_bag_tote.svg",
-   "subtype": "bag"
+   "subtype": "bag",
+   "default_scale": 1.0
   },
   {
    "id": "acc_bag_backpack_strap",
    "category": "accessory",
    "file": "parts/accessory/acc_bag_backpack_strap.svg",
-   "subtype": "bag"
+   "subtype": "bag",
+   "default_scale": 1.0
   },
   {
    "id": "acc_prop_balloon",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_balloon.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.2,
+   "pivot": [
+    430,
+    330
+   ]
   },
   {
    "id": "acc_prop_coffee",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_coffee.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.5,
+   "pivot": [
+    426,
+    356
+   ]
   },
   {
    "id": "acc_prop_bouquet",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_bouquet.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.5,
+   "pivot": [
+    422,
+    350
+   ]
   },
   {
    "id": "acc_prop_phone",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_phone.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.6,
+   "pivot": [
+    428,
+    336
+   ]
   },
   {
    "id": "acc_prop_umbrella",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_umbrella.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.2,
+   "pivot": [
+    430,
+    330
+   ]
   },
   {
    "id": "acc_prop_book",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_book.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.4,
+   "pivot": [
+    424,
+    355
+   ]
   },
   {
    "id": "acc_prop_heart_sign",
    "category": "accessory",
    "file": "parts/accessory/acc_prop_heart_sign.svg",
    "subtype": "prop",
-   "hand": true
+   "hand": true,
+   "default_scale": 1.3,
+   "pivot": [
+    435,
+    330
+   ]
   }
  ],
  "contrast_rules": {
@@ -1751,7 +1896,8 @@
     0
    ],
    "z": 2,
-   "movable": false
+   "movable": false,
+   "default_scale": 1.0
   },
   "clothes": {
    "anchor": [
@@ -1772,7 +1918,8 @@
    ],
    "z": 3,
    "movable": false,
-   "note": "몸 실루엣으로 clip"
+   "note": "몸 실루엣으로 clip",
+   "default_scale": 1.0
   },
   "blush": {
    "anchor": [
@@ -1793,7 +1940,8 @@
    ],
    "z": 4,
    "movable": true,
-   "note": "좌우 대칭, y만 ±20 이동"
+   "note": "좌우 대칭, y만 ±20 이동",
+   "default_scale": 1.0
   },
   "eyes": {
    "anchor": [
@@ -1814,7 +1962,8 @@
    ],
    "z": 5,
    "movable": true,
-   "note": "좌우 대칭 쌍, 간격 ±16"
+   "note": "좌우 대칭 쌍, 간격 ±16",
+   "default_scale": 1.0
   },
   "brows": {
    "anchor": [
@@ -1835,7 +1984,8 @@
    ],
    "z": 6,
    "movable": true,
-   "note": "eyes 기준 y -60~-20"
+   "note": "eyes 기준 y -60~-20",
+   "default_scale": 1.0
   },
   "mouth": {
    "anchor": [
@@ -1855,7 +2005,8 @@
     15
    ],
    "z": 7,
-   "movable": true
+   "movable": true,
+   "default_scale": 1.0
   },
   "hair": {
    "anchor": [
@@ -1876,7 +2027,8 @@
    ],
    "z": 8,
    "movable": true,
-   "note": "head_top 고정, 색상 recolor"
+   "note": "head_top 고정, 색상 recolor",
+   "default_scale": 1.0
   },
   "acc_hat": {
    "anchor": [
@@ -1897,7 +2049,8 @@
    ],
    "z": 13,
    "movable": true,
-   "note": "pivot=모자 하단 중앙"
+   "note": "pivot=모자 하단 중앙",
+   "default_scale": 1.0
   },
   "acc_hairpin": {
    "anchor": [
@@ -1909,8 +2062,8 @@
     176
    ],
    "scale_range": [
-    0.5,
-    1.6
+    0.6,
+    2.0
    ],
    "rotation_range_deg": [
     -45,
@@ -1918,7 +2071,8 @@
    ],
    "z": 14,
    "movable": true,
-   "note": "머리 윤곽 위 자유 배치"
+   "note": "머리 윤곽 위 자유 배치",
+   "default_scale": 1.3
   },
   "acc_glasses": {
    "anchor": [
@@ -1939,7 +2093,8 @@
    ],
    "z": 12,
    "movable": true,
-   "note": "eyes 앵커 추종"
+   "note": "eyes 앵커 추종",
+   "default_scale": 1.0
   },
   "acc_earring": {
    "anchor": [
@@ -1951,8 +2106,8 @@
     320
    ],
    "scale_range": [
-    0.6,
-    1.5
+    0.8,
+    2.4
    ],
    "rotation_range_deg": [
     -20,
@@ -1960,7 +2115,8 @@
    ],
    "z": 11,
    "movable": true,
-   "note": "좌우 쌍(84,428)"
+   "note": "좌우 쌍(84,320)/(428,320), 각 쪽 pivot 기준으로 scale",
+   "default_scale": 1.6
   },
   "acc_scarf": {
    "anchor": [
@@ -1980,7 +2136,8 @@
     8
    ],
    "z": 9,
-   "movable": true
+   "movable": true,
+   "default_scale": 1.0
   },
   "acc_bag": {
    "anchor": [
@@ -2000,7 +2157,8 @@
     20
    ],
    "z": 10,
-   "movable": true
+   "movable": true,
+   "default_scale": 1.0
   },
   "acc_prop": {
    "anchor": [
@@ -2012,8 +2170,8 @@
     330
    ],
    "scale_range": [
-    0.5,
-    1.6
+    0.6,
+    2.2
    ],
    "rotation_range_deg": [
     -180,
@@ -2021,7 +2179,8 @@
    ],
    "z": 15,
    "movable": true,
-   "note": "손 위치, 좌우 반전(flipX) 허용"
+   "note": "손 위치, 좌우 반전(flipX) 허용",
+   "default_scale": 1.4
   },
   "fx": {
    "anchor": [
@@ -2042,7 +2201,8 @@
    ],
    "z": 16,
    "movable": false,
-   "note": "모션 스펙이 제어"
+   "note": "모션 스펙이 제어",
+   "default_scale": 1.0
   }
  },
  "accessory_slots": {
@@ -2066,7 +2226,7 @@
  "editor_transform_schema": {
   "x": "canvas px",
   "y": "canvas px",
-  "scale": "float",
+  "scale": "float, 미지정 시 part.default_scale(없으면 anchor_rules.default_scale), pivot은 part.pivot(없으면 anchor)",
   "rotation": "deg",
   "flipX": "bool",
   "clamp": "anchor_rules 범위로 clamp"

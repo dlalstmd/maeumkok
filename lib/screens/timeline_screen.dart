@@ -139,7 +139,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
   }
 
   Widget _tile(EmotionEvent ev, DateTime t) {
-    final e = emotionById(ev.emotionId);
+    final e = emotionFor(ev.emotionId, ev.snapshot);
     final mine = ev.senderUid == widget.uid;
     final who = mine ? '나' : (widget.partnerName ?? '상대');
     final rs = _reactions[ev.id] ?? const [];

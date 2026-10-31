@@ -51,9 +51,9 @@ void main() {
     }
   });
 
-  test('emotions.json parses: 40 unique ids, reactions, vibration', () {
+  test('emotions.json parses: 80 unique ids, reactions, vibration', () {
     final list = parseEmotions(File('assets/emotions.json').readAsStringSync());
-    expect(list.length, 40);
+    expect(list.length, 80);
     expect(list.map((e) => e.id).toSet().length, list.length);
     for (final e in list) {
       expect(e.reactions, isNotEmpty, reason: e.id);

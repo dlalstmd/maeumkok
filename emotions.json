@@ -1,5 +1,5 @@
 {
-  "version": 4.1,
+  "version": 4.2,
   "vibration_note": "패턴은 [대기,진동,대기,진동...] ms. vibration 패키지 Vibration.vibrate(pattern: ...) 사용, 미지원 기기는 HapticFeedback.mediumImpact() 폴백",
   "categories": {
     "mood": "기분",
@@ -37,7 +37,7 @@
     {
       "emoji": "🥰",
       "id": "excited",
-      "label": "신나!",
+      "label": "신난다!",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -114,7 +114,7 @@
     {
       "emoji": "😮‍💨",
       "id": "relieved",
-      "label": "안심돼",
+      "label": "휴 다행",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -137,7 +137,7 @@
     {
       "emoji": "🥲",
       "id": "touched",
-      "label": "감동이야",
+      "label": "감동ㅠ",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -162,7 +162,7 @@
     {
       "emoji": "😎",
       "id": "confident",
-      "label": "자신있어",
+      "label": "자신감",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -212,7 +212,7 @@
     {
       "emoji": "😢",
       "id": "sad",
-      "label": "슬퍼",
+      "label": "슬퍼ㅠ",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -287,7 +287,7 @@
     {
       "emoji": "😞",
       "id": "gloomy",
-      "label": "우울해",
+      "label": "꿀꿀해",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -363,7 +363,7 @@
     {
       "emoji": "😠",
       "id": "angry",
-      "label": "화나",
+      "label": "화났어",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -523,7 +523,7 @@
     {
       "emoji": "😲",
       "id": "surprised",
-      "label": "깜짝 놀랐어",
+      "label": "깜짝!",
       "category": "mood",
       "category_label": "기분",
       "reactions": [
@@ -598,7 +598,7 @@
     {
       "emoji": "💪",
       "id": "energetic",
-      "label": "힘이 넘쳐",
+      "label": "힘 넘쳐",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -625,7 +625,7 @@
     {
       "emoji": "🏃",
       "id": "busy",
-      "label": "바빠",
+      "label": "바빠ㅠ",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -694,7 +694,7 @@
     {
       "emoji": "🚴",
       "id": "workout",
-      "label": "운동했어",
+      "label": "운동 끝",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -746,7 +746,7 @@
     {
       "emoji": "🤒",
       "id": "sick",
-      "label": "아파",
+      "label": "아파ㅠ",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -897,7 +897,7 @@
     {
       "emoji": "🤕",
       "id": "sore",
-      "label": "몸살 났어",
+      "label": "몸살 ㅠ",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -994,7 +994,7 @@
     {
       "emoji": "🥗",
       "id": "diet",
-      "label": "다이어트 중",
+      "label": "다이어트",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -1017,7 +1017,7 @@
     {
       "emoji": "🍕",
       "id": "midnight_snack",
-      "label": "야식 땡겨",
+      "label": "야식 ㄱ?",
       "category": "body",
       "category_label": "몸 상태",
       "reactions": [
@@ -1117,7 +1117,7 @@
     {
       "emoji": "🎮",
       "id": "want_play",
-      "label": "같이 놀자",
+      "label": "놀자!",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1144,7 +1144,7 @@
     {
       "emoji": "💑",
       "id": "want_date",
-      "label": "데이트해요",
+      "label": "데이트 ㄱ?",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1169,7 +1169,7 @@
     {
       "emoji": "📹",
       "id": "want_videocall",
-      "label": "영상통화",
+      "label": "영통 ㄱ?",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1194,7 +1194,7 @@
     {
       "emoji": "💬",
       "id": "want_talk",
-      "label": "얘기 들어줘",
+      "label": "내 얘기 좀",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1217,7 +1217,7 @@
     {
       "emoji": "🫳",
       "id": "want_pat",
-      "label": "쓰다듬어줘",
+      "label": "쓰담해줘",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1242,7 +1242,7 @@
     {
       "emoji": "🎬",
       "id": "want_movie",
-      "label": "영화 보자",
+      "label": "영화 ㄱ?",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1265,7 +1265,7 @@
     {
       "emoji": "🚶",
       "id": "want_walk",
-      "label": "산책 가자",
+      "label": "산책 ㄱ?",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1436,7 +1436,7 @@
     {
       "emoji": "🍻",
       "id": "want_drink",
-      "label": "한잔할까",
+      "label": "한잔 ㄱ?",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -1632,7 +1632,7 @@
     {
       "emoji": "🌸",
       "id": "thinking_of_you",
-      "label": "네 생각 중",
+      "label": "네 생각",
       "category": "love",
       "category_label": "애정",
       "reactions": [
@@ -1707,7 +1707,7 @@
     {
       "emoji": "🤗",
       "id": "hug_tight",
-      "label": "꽉 안아줄게",
+      "label": "꼭 안아",
       "category": "love",
       "category_label": "애정",
       "reactions": [
@@ -1781,7 +1781,7 @@
     {
       "emoji": "🌅",
       "id": "good_morning",
-      "label": "좋은 아침",
+      "label": "굿모닝",
       "category": "love",
       "category_label": "애정",
       "reactions": [
@@ -1874,7 +1874,7 @@
     {
       "emoji": "🫶",
       "id": "cheer_up",
-      "label": "힘내",
+      "label": "힘내!",
       "category": "love",
       "category_label": "애정",
       "reactions": [
@@ -1953,7 +1953,7 @@
     {
       "emoji": "🛡️",
       "id": "with_you",
-      "label": "내가 있잖아",
+      "label": "내가 있어",
       "category": "love",
       "category_label": "애정",
       "reactions": [
@@ -1978,7 +1978,7 @@
     {
       "emoji": "🎁",
       "id": "congrats",
-      "label": "축하해",
+      "label": "축하해!",
       "category": "love",
       "category_label": "애정",
       "reactions": [
@@ -2187,6 +2187,7 @@
     }
   ],
   "label_max_chars": 6,
+  "custom_label_max_chars": 6,
   "vibration_presets": {
     "short": [
       0,
@@ -2235,5 +2236,15 @@
       80
     ]
   },
-  "custom_emotion_note": "커플 커스텀 감정: couples/{coupleId}/customEmotions, id custom_<uuid>, 커플당 최대 30개, label 1–6자 권장(최대 8자), reactions 0–3개(기본 ['고마워','나도!']). 즐겨찾기는 사용자당 최대 24개."
+  "custom_emotion_note": "커플 커스텀 감정: couples/{coupleId}/customEmotions, id custom_<uuid>, 커플당 최대 30개, label 1–6자(입력 카운터 n/6), reactions 0–3개(기본 ['고마워','나도!']). 즐겨찾기는 사용자당 최대 24개.",
+  "display_rules": {
+    "default_color": "#2B2B2B (charcoal)",
+    "selected_color": "#FF6A3D (tangerine)",
+    "muted_color": "#9A9A9A (비활성 탭/미지원)",
+    "custom_icon": "내장과 동일(Lucide, charcoal → 선택 시 tangerine)",
+    "custom_badge": "타일 우상단 6px 점: 기본 #BDBDBD, 선택 시 tangerine",
+    "notifications": "푸시 알림 본문의 emoji 필드는 OS 렌더라 컬러 유지(앱 UI에만 규칙 적용)",
+    "icon": "Lucide 라인, stroke 1.75, 24px. 기본 charcoal, 선택·강조 시 stroke tangerine + 타일 테두리 2px tangerine + 배경 #FFF4EF",
+    "custom_emoji": "커스텀 이모지는 grayscale(100%) 필터로 24px 원형 #F2F2F2 칩 안에 표시해 라인 아이콘과 무게를 맞춤. 선택 시 칩 배경 #FFE3D8 + 타일 테두리 tangerine"
+  }
 }

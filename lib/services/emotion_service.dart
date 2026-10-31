@@ -10,7 +10,11 @@ class EmotionEvent {
     this.createdAt,
     this.readAt, [
     this.count = 1,
+    this.snapshot,
   ]);
+
+  /// 보낼 때 복사해 둔 감정 표시 정보
+  final Map<String, dynamic>? snapshot;
 
   /// 연타 묶음 개수(1~99)
   final int count;
@@ -29,6 +33,7 @@ class EmotionEvent {
       (m['createdAt'] as Timestamp?)?.toDate(),
       (m['readAt'] as Timestamp?)?.toDate(),
       ((m['count'] as num?)?.toInt() ?? 1).clamp(1, kMaxBurst),
+      (m['snapshot'] as Map?)?.cast<String, dynamic>(),
     );
   }
 }
@@ -125,6 +130,7 @@ class EmotionService {
       'senderUid': myUid,
       'emotionId': emotionId,
       'count': count,
+      'snapshot': ?emotionById(emotionId)?.toSnapshot(),
       'createdAt': FieldValue.serverTimestamp(),
     });
     _lastId = ref.id;

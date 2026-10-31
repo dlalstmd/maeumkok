@@ -7,10 +7,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../avatar/avatar_view.dart';
 import '../avatar/part_adjust.dart';
 import '../core/emotions.dart';
-import '../core/lucide_map.dart';
 import '../core/theme.dart';
+import '../services/emotion_prefs_service.dart';
 import '../services/emotion_service.dart';
 import '../services/notify_service.dart';
+import 'custom_emotion_screen.dart';
+import 'favorites_reorder_screen.dart';
 
 /// 메인 (v2_04a/b): 상대 아바타 + 마지막 마음 + 하단 시트 감정 그리드
 class CoupleHomeScreen extends StatefulWidget {
@@ -23,7 +25,13 @@ class CoupleHomeScreen extends StatefulWidget {
     this.partnerName,
     this.partnerAvatar = const {},
     this.partnerAdjusts = const {},
+    this.prefs,
+    this.myAvatar = const {},
   });
+
+  /// 즐겨찾기·최근·우리 감정(없으면 해당 기능 비활성: 테스트용)
+  final EmotionPrefsService? prefs;
+  final Map<String, String> myAvatar;
   final Map<String, PartAdjust> partnerAdjusts;
   final String uid;
   final String coupleId;
@@ -49,17 +57,52 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   String? _selected;
   String? _playKey;
   Object? _playToken;
+  final _prefSubs = <StreamSubscription<Object?>>[];
+  List<Emotion> _customs = const [];
+  List<String> _favs = const [];
+  List<RecentItem> _recent = const [];
+  bool _favsLoaded = false;
+
+  /// 0 즐겨찾기, 1 최근, 2.. 카테고리(kCategoryTree 순서)
+  int _tab = 2;
+
+  /// 카테고리 탭의 소분류 칩 id, '__ours' = 우리 감정
+  String? _subcat;
 
   @override
   void initState() {
     super.initState();
     widget.notify.init();
+    final pr = widget.prefs;
+    if (pr != null) {
+      _prefSubs.add(
+        pr.watchCustoms(widget.coupleId).listen((list) {
+          kCustomEmotions = {for (final e in list) e.id: e};
+          if (mounted) setState(() => _customs = list);
+        }, onError: (Object e) => _showError(e)),
+      );
+      _prefSubs.add(
+        pr.watchFavorites(widget.uid).listen((l) {
+          if (!mounted) return;
+          setState(() {
+            _favs = l;
+            if (!_favsLoaded && l.isNotEmpty) _tab = 0;
+            _favsLoaded = true;
+          });
+        }, onError: (Object e) => _showError(e)),
+      );
+      _prefSubs.add(
+        pr.watchRecent(widget.uid).listen((l) {
+          if (mounted) setState(() => _recent = l);
+        }, onError: (Object e) => _showError(e)),
+      );
+    }
     _sub = widget.emotions.watchEmotions(widget.coupleId, limit: 20).listen((
       list,
     ) {
       for (final ev in list) {
         if (_seen.add(ev.id) && !_first && ev.senderUid != widget.uid) {
-          final e = emotionById(ev.emotionId);
+          final e = emotionFor(ev.emotionId, ev.snapshot);
           if (e != null) {
             _playKey = e.animationKey;
             _playToken = ev.id;
@@ -83,7 +126,9 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
                 !_firstReacts &&
                 r.senderUid != widget.uid) {
               final ev = _list.where((x) => x.id == r.emotionDocId).firstOrNull;
-              final e = ev == null ? null : emotionById(ev.emotionId);
+              final e = ev == null
+                  ? null
+                  : emotionFor(ev.emotionId, ev.snapshot);
               _playKey = 'jump';
               _playToken = r.id;
               widget.notify.showReaction(
@@ -120,6 +165,9 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   void dispose() {
     _sub?.cancel();
     _reactSub?.cancel();
+    for (final s in _prefSubs) {
+      s.cancel();
+    }
     _burst.flushNow();
     super.dispose();
   }
@@ -159,6 +207,11 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('보내지 못했어요: $err')));
       return;
+    }
+    final pr = widget.prefs;
+    if (pr != null) {
+      _recent = pushRecent(_recent, emotionId, DateTime.now());
+      pr.saveRecent(widget.uid, _recent).catchError((_) {});
     }
     if (!mounted) return;
     ScaffoldMessenger.of(context)
@@ -269,22 +322,414 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
                     ],
                   ),
                 ),
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                  sliver: SliverGrid.count(
-                    crossAxisCount: 4,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 76 / 80,
-                    children: [for (final e in kEmotions) _emotionCard(e)],
-                  ),
-                ),
+                if (widget.prefs != null) ..._sheetHeader(),
+                ..._sheetBody(),
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  // ── v4 바텀시트 ──────────────────────────────────────────────
+  List<Emotion> get _activeCustoms =>
+      _customs.where((e) => !e.deleted).toList();
+
+  List<Widget> _sheetHeader() {
+    final tabs = <String>[
+      '★ 즐겨찾기',
+      '최근',
+      for (final c in kCategoryTree) c.label,
+    ];
+    return [
+      SliverToBoxAdapter(
+        child: SizedBox(
+          height: 40,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              for (var i = 0; i < tabs.length; i++)
+                GestureDetector(
+                  key: Key('tab:$i'),
+                  onTap: () => setState(() {
+                    _tab = i;
+                    _subcat = null;
+                  }),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          width: 2,
+                          color: _tab == i ? MkColors.text : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      tabs[i],
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: _tab == i
+                            ? FontWeight.w700
+                            : FontWeight.normal,
+                        color: _tab == i ? MkColors.text : MkColors.textSub,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+      if (_tab >= 2 && _tab - 2 < kCategoryTree.length)
+        SliverToBoxAdapter(child: _subcatChips(kCategoryTree[_tab - 2])),
+      if (_tab == 0)
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 12, 0),
+            child: Row(
+              children: [
+                Text(
+                  '${_favs.length}/$kMaxFavorites',
+                  style: const TextStyle(fontSize: 12, color: MkColors.textSub),
+                ),
+                const Spacer(),
+                if (_favs.isNotEmpty)
+                  TextButton(
+                    key: const Key('reorderFavs'),
+                    onPressed: _openReorder,
+                    child: const Text(
+                      '순서 편집',
+                      style: TextStyle(color: MkColors.textSub),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      const SliverToBoxAdapter(child: SizedBox(height: 10)),
+    ];
+  }
+
+  Widget _subcatChips(CategoryNode c) {
+    Widget chip(String? id, String label, {bool dot = false}) {
+      final sel = _subcat == id;
+      return Padding(
+        padding: const EdgeInsets.only(right: 6),
+        child: GestureDetector(
+          key: Key('sub:${id ?? 'all'}'),
+          onTap: () => setState(() => _subcat = id),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: sel ? MkColors.text : const Color(0xFFF2F2F2),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (dot) ...[
+                  const CircleAvatar(
+                    radius: 3,
+                    backgroundColor: MkColors.accent,
+                  ),
+                  const SizedBox(width: 5),
+                ],
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: sel ? Colors.white : MkColors.textSub,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 44,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+        children: [
+          chip(null, '전체'),
+          chip('__ours', '우리 감정', dot: true),
+          for (final sc in c.subcategories) chip(sc.id, sc.label),
+        ],
+      ),
+    );
+  }
+
+  /// 현재 탭의 감정 목록(카테고리 탭은 우리 감정이 앞에)
+  List<Emotion> _tabEmotions() {
+    if (widget.prefs == null) return kEmotions;
+    if (_tab == 0) {
+      return [for (final id in cleanFavorites(_favs)) emotionById(id)!];
+    }
+    if (_tab == 1) return const [];
+    final c = kCategoryTree[_tab - 2];
+    final ours = _activeCustoms.where((e) => e.category == c.id).toList();
+    if (_subcat == '__ours') return ours;
+    final ids = _subcat == null
+        ? [for (final sc in c.subcategories) ...sc.emotionIds]
+        : c.subcategories
+              .where((sc) => sc.id == _subcat)
+              .expand((sc) => sc.emotionIds)
+              .toList();
+    return [
+      if (_subcat == null) ...ours,
+      for (final id in ids) ?emotionById(id),
+    ];
+  }
+
+  Widget _grid(List<Widget> children) => SliverPadding(
+    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+    sliver: SliverGrid.count(
+      crossAxisCount: 4,
+      mainAxisSpacing: 12,
+      crossAxisSpacing: 12,
+      childAspectRatio: 76 / 80,
+      children: children,
+    ),
+  );
+
+  List<Widget> _sheetBody() {
+    if (_tab == 1 && widget.prefs != null) return _recentBody();
+    final list = _tabEmotions();
+    return [
+      _grid([
+        for (final e in list) _emotionCard(e),
+        if (widget.prefs != null && (_tab != 0 || _favs.length < kMaxFavorites))
+          _makeTile(),
+      ]),
+    ];
+  }
+
+  List<Widget> _recentBody() {
+    final items = _recent
+        .where((r) => emotionById(r.emotionId)?.deleted == false)
+        .take(kMaxRecent)
+        .toList();
+    if (items.isEmpty) {
+      return [
+        const SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.all(24),
+            child: Center(
+              child: Text(
+                '아직 보낸 마음이 없어요',
+                style: TextStyle(color: MkColors.textSub),
+              ),
+            ),
+          ),
+        ),
+      ];
+    }
+    final now = DateTime.now();
+    String day(DateTime t) {
+      final d = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).difference(DateTime(t.year, t.month, t.day)).inDays;
+      return d == 0 ? '오늘' : (d == 1 ? '어제' : '${t.month}월 ${t.day}일');
+    }
+
+    final groups = <String, List<Emotion>>{};
+    for (final r in items) {
+      groups
+          .putIfAbsent(day(r.sentAt), () => [])
+          .add(emotionById(r.emotionId)!);
+    }
+    return [
+      for (final g in groups.entries) ...[
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+            child: Text(
+              g.key,
+              style: const TextStyle(fontSize: 12, color: MkColors.textSub),
+            ),
+          ),
+        ),
+        _grid([for (final e in g.value) _emotionCard(e)]),
+      ],
+    ];
+  }
+
+  Widget _makeTile() => InkWell(
+    key: const Key('makeCustom'),
+    borderRadius: BorderRadius.circular(16),
+    onTap: () => _openEditor(),
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: MkColors.border),
+      ),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(LucideIcons.plus, size: 22, color: MkColors.textSub),
+          SizedBox(height: 8),
+          Text('만들기', style: TextStyle(fontSize: 12, color: MkColors.textSub)),
+        ],
+      ),
+    ),
+  );
+
+  Future<void> _toggleFav(Emotion e) async {
+    final pr = widget.prefs!;
+    final cur = cleanFavorites(_favs);
+    if (cur.contains(e.id)) {
+      cur.remove(e.id);
+    } else {
+      if (cur.length >= kMaxFavorites) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('즐겨찾기는 최대 $kMaxFavorites개까지예요')),
+        );
+        return;
+      }
+      cur.add(e.id);
+    }
+    setState(() => _favs = cur);
+    try {
+      await pr.saveFavorites(widget.uid, cur);
+    } catch (err) {
+      _showError(err);
+    }
+  }
+
+  Future<void> _openReorder() => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => FavoritesReorderScreen(
+        order: cleanFavorites(_favs),
+        onSave: (o) async {
+          setState(() => _favs = o);
+          await widget.prefs!.saveFavorites(widget.uid, o);
+        },
+      ),
+    ),
+  );
+
+  Future<void> _openEditor([Emotion? e]) async {
+    final pr = widget.prefs!;
+    if (e == null && _activeCustoms.length >= kMaxCustomEmotions) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('우리 감정은 최대 $kMaxCustomEmotions개까지예요')),
+      );
+      return;
+    }
+    await Navigator.of(context).push(
+      MaterialPageRoute<bool>(
+        builder: (_) => CustomEmotionScreen(
+          initial: e,
+          initialCategory: _tab >= 2 ? kCategoryTree[_tab - 2].id : 'mood',
+          avatar: widget.myAvatar,
+          partnerName: widget.partnerName ?? '상대',
+          onPreview: widget.notify.vibrateFor,
+          onSave: (d) => pr.saveCustom(
+            widget.coupleId,
+            widget.uid,
+            id: e?.id,
+            label: d.label,
+            glyphType: d.glyphType,
+            icon: d.icon,
+            emoji: d.emoji,
+            category: d.category,
+            vibrationName: d.vibrationName,
+            animationKey: d.animationKey,
+            reactions: d.reactions,
+          ),
+          onDelete: e == null ? null : () => _deleteCustom(e),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _deleteCustom(Emotion e) async {
+    await widget.prefs!.deleteCustom(widget.coupleId, e.id);
+    if (_favs.contains(e.id)) {
+      final f = [..._favs]..remove(e.id);
+      setState(() => _favs = f);
+      await widget.prefs!.saveFavorites(widget.uid, f);
+    }
+  }
+
+  Future<void> _longPress(Emotion e) async {
+    if (widget.prefs == null) return;
+    final fav = _favs.contains(e.id);
+    final a = await showModalBottomSheet<String>(
+      context: context,
+      builder: (c) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: EmotionGlyph(e, size: 22),
+              title: Text(
+                e.label,
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+            ListTile(
+              key: const Key('menu:fav'),
+              leading: Icon(
+                fav ? Icons.star_rounded : Icons.star_border_rounded,
+              ),
+              title: Text(fav ? '즐겨찾기에서 빼기' : '즐겨찾기 추가'),
+              onTap: () => Navigator.pop(c, 'fav'),
+            ),
+            ListTile(
+              key: const Key('menu:send'),
+              leading: const Icon(LucideIcons.send),
+              title: const Text('바로 보내기'),
+              onTap: () => Navigator.pop(c, 'send'),
+            ),
+            if (e.custom) ...[
+              ListTile(
+                key: const Key('menu:edit'),
+                leading: const Icon(LucideIcons.pencil),
+                title: const Text('편집'),
+                onTap: () => Navigator.pop(c, 'edit'),
+              ),
+              ListTile(
+                key: const Key('menu:delete'),
+                leading: const Icon(LucideIcons.trash2, color: MkColors.danger),
+                title: const Text(
+                  '삭제',
+                  style: TextStyle(color: MkColors.danger),
+                ),
+                onTap: () => Navigator.pop(c, 'delete'),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+    if (!mounted || a == null) return;
+    switch (a) {
+      case 'fav':
+        await _toggleFav(e);
+      case 'send':
+        _send(e);
+        _burst.flushNow();
+      case 'edit':
+        await _openEditor(e);
+      case 'delete':
+        if (await confirmDeleteCustom(
+          context,
+          e.label,
+          widget.partnerName ?? '상대',
+        )) {
+          await _deleteCustom(e);
+        }
+    }
   }
 
   Widget _emotionCard(Emotion e) {
@@ -294,6 +739,21 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
       clipBehavior: Clip.none,
       children: [
         Positioned.fill(child: _emotionCardBody(e, sel)),
+        if (e.custom)
+          Positioned(
+            right: 8,
+            top: 8,
+            child: SizedBox(
+              width: 6,
+              height: 6,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: sel ? MkColors.accent : MkColors.customDot,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
         if (n > 1)
           Positioned(
             right: -4,
@@ -322,22 +782,23 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   Widget _emotionCardBody(Emotion e, bool sel) {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
+      key: Key('emo:${e.id}'),
       onTap: () => _send(e),
+      onLongPress: () => _longPress(e),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         decoration: BoxDecoration(
-          color: sel ? MkColors.accent : MkColors.surface,
+          color: sel ? MkColors.accentSoft : MkColors.surface,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: sel ? MkColors.accent : MkColors.border),
+          border: Border.all(
+            width: sel ? 2 : 1,
+            color: sel ? MkColors.accent : MkColors.border,
+          ),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              lucideIcon(e.icon),
-              size: 26,
-              color: sel ? Colors.white : MkColors.text,
-            ),
+            EmotionGlyph(e, selected: sel),
             const SizedBox(height: 8),
             Text(
               e.label,
@@ -345,7 +806,8 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 12,
-                color: sel ? Colors.white : MkColors.text,
+                color: sel ? MkColors.accent : MkColors.text,
+                fontWeight: sel ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ],
@@ -355,7 +817,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   }
 
   Widget _lastChip(EmotionEvent ev) {
-    final e = emotionById(ev.emotionId);
+    final e = emotionFor(ev.emotionId, ev.snapshot);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -365,7 +827,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(lucideIcon(e?.icon), size: 14),
+          EmotionGlyph(e, size: 14),
           const SizedBox(width: 6),
           Text(
             '마지막 마음 · ${e?.label ?? ev.emotionId}${ev.count > 1 ? ' x${ev.count}' : ''} · ${_ago(ev.createdAt)}',
@@ -377,7 +839,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   }
 
   Widget _myLastLine(EmotionEvent mine) {
-    final e = emotionById(mine.emotionId);
+    final e = emotionFor(mine.emotionId, mine.snapshot);
     final r = reactionFor(
       _reacts.where((x) => x.senderUid != widget.uid),
       mine.id,
@@ -400,7 +862,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   }
 
   Widget _reactions(EmotionEvent ev) {
-    final e = emotionById(ev.emotionId);
+    final e = emotionFor(ev.emotionId, ev.snapshot);
     if (e == null) return const SizedBox.shrink();
     final mine = reactionFor(_reacts, ev.id, senderUid: widget.uid);
     if (mine != null) {

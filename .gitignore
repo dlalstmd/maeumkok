@@ -53,3 +53,4 @@ app.*.map.json
 key.properties
 functions/node_modules/
 .firebase/
+test/rules/node_modules/

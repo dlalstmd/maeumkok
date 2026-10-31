@@ -9,6 +9,7 @@ import '../core/header_prefs.dart';
 import '../core/theme.dart';
 import '../services/auth_service.dart';
 import '../services/couple_service.dart';
+import '../services/emotion_prefs_service.dart';
 import '../services/emotion_service.dart';
 import '../services/notify_service.dart';
 import '../services/push_service.dart';
@@ -31,6 +32,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _couples = CoupleService();
   final _emotions = EmotionService();
+  final _prefs = EmotionPrefsService();
   final _notify = NotifyService();
   final _push = PushService();
 
@@ -224,6 +226,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             partnerName: partnerName,
                             partnerAvatar: partnerAvatar,
                             partnerAdjusts: partnerAdjusts,
+                            prefs: _prefs,
+                            myAvatar: myAvatar,
                           ),
                         ),
                       ],

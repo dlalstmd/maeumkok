@@ -9,6 +9,9 @@ class MkColors {
   static const background = Color(0xFFFAFAFA);
   static const surface = Color(0xFFFFFFFF);
   static const danger = Color(0xFFE5484D);
+  static const charcoal = Color(0xFF2B2B2B); // 감정 아이콘 기본
+  static const accentSoft = Color(0xFFFFF4EF); // 선택 타일 배경
+  static const customDot = Color(0xFFBDBDBD);
 }
 
 ThemeData buildTheme() {

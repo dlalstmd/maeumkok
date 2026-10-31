@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import 'dart:io';
 
 import 'package:maeumkok_app/avatar/avatar_manifest.dart';
@@ -8,8 +9,12 @@ import 'package:maeumkok_app/screens/avatar_edit_screen.dart';
 
 void main() {
   test('범위 제한과 JSON 왕복', () {
-    final a = const PartAdjust(dx: 999, scale: 9, rotate: 270, stretchX: 0.1)
-        .clamped();
+    final a = const PartAdjust(
+      dx: 999,
+      scale: 9,
+      rotate: 270,
+      stretchX: 0.1,
+    ).clamped();
     expect(a.dx, PartAdjust.maxOffset);
     expect(a.scale, PartAdjust.maxScale);
     expect(a.rotate, -90);
@@ -51,7 +56,10 @@ void main() {
     final sel = m.normalize({'accessory': 'acc_ribbon', 'body': 'body_mocha'});
     expect(m.accessoriesOf(sel), ['acc_ribbon']);
     expect(m.resolve('eyes', 'eyes_dot', 'body_mocha'), 'eyes_dot_light');
-    expect(m.resolve('brows', 'brows_arch', 'body_charcoal'), 'brows_arch_light');
+    expect(
+      m.resolve('brows', 'brows_arch', 'body_charcoal'),
+      'brows_arch_light',
+    );
     expect(m.resolve('eyes', 'eyes_dot', 'body_white'), 'eyes_dot');
   });
 

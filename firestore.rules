@@ -43,6 +43,24 @@ service cloud.firestore {
         && request.resource.data.coupleId is string
         && getAfter(/databases/$(database)/documents/couples/$(request.resource.data.coupleId)).data.members.hasAll([uid(), userId]);
       allow delete: if false;
+
+      // 개인 설정: 즐겨찾기(최대 24), 최근 보낸 감정(최대 12). 본인만.
+      match /prefs/emotionFavorites {
+        allow read: if signedIn() && uid() == userId;
+        allow create, update: if signedIn() && uid() == userId
+          && request.resource.data.keys().hasOnly(['order', 'updatedAt'])
+          && request.resource.data.order is list
+          && request.resource.data.order.size() <= 24;
+        allow delete: if signedIn() && uid() == userId;
+      }
+      match /prefs/recentEmotions {
+        allow read: if signedIn() && uid() == userId;
+        allow create, update: if signedIn() && uid() == userId
+          && request.resource.data.keys().hasOnly(['items'])
+          && request.resource.data.items is list
+          && request.resource.data.items.size() <= 12;
+        allow delete: if signedIn() && uid() == userId;
+      }
     }
 
     match /inviteCodes/{code} {
@@ -138,6 +156,71 @@ service cloud.firestore {
           && request.resource.data.count > resource.data.get('count', 1)
           && request.resource.data.count <= 99
           && request.time < resource.data.createdAt + duration.value(10, 's');
+        allow delete: if false;
+      }
+
+      // 우리 감정(커플 커스텀). 삭제는 soft delete(deleted=true)만.
+      // 활성 개수는 counters/customEmotions.n 으로 같은 배치에서 ±1 (최대 30).
+      function counterPath() {
+        return /databases/$(database)/documents/couples/$(coupleId)/counters/customEmotions;
+      }
+      function counterNow() {
+        return exists(counterPath()) ? get(counterPath()).data.n : 0;
+      }
+      function rxOk(r, i) {
+        return r.size() <= i || (r[i] is string && r[i].size() >= 1 && r[i].size() <= 12);
+      }
+      function validCustom(d) {
+        return d.label is string && d.label.size() >= 1 && d.label.size() <= 6
+          && d.glyphType in ['icon', 'emoji']
+          && (d.get('icon', null) == null || (d.icon is string && d.icon.size() <= 40))
+          && (d.get('emoji', null) == null || (d.emoji is string && d.emoji.size() <= 16))
+          && d.category in ['mood', 'body', 'want', 'love']
+          && d.vibrationName in ['short', 'double', 'heart', 'buzz', 'slow', 'long', 'soft', 'triple']
+          && d.animationKey in ['joy_bounce', 'sway', 'rush', 'drool', 'heart_pop', 'shiver', 'doze', 'cheer']
+          && d.reactions is list && d.reactions.size() <= 3
+          && rxOk(d.reactions, 0) && rxOk(d.reactions, 1) && rxOk(d.reactions, 2);
+      }
+      match /counters/customEmotions {
+        allow read: if isMember(coupleId);
+        allow create: if isMember(coupleId)
+          && request.resource.data.keys().hasOnly(['n'])
+          && request.resource.data.n == 1;
+        allow update: if isMember(coupleId)
+          && request.resource.data.keys().hasOnly(['n'])
+          && request.resource.data.n is int
+          && request.resource.data.n >= 0 && request.resource.data.n <= 30
+          && (request.resource.data.n == resource.data.n + 1
+              || request.resource.data.n == resource.data.n - 1);
+        allow delete: if false;
+      }
+      match /customEmotions/{customId} {
+        allow read: if isMember(coupleId);
+        allow create: if isMember(coupleId)
+          && customId.matches('^custom_[a-z0-9]{8,40}$')
+          && request.resource.data.keys().hasOnly(['id', 'label', 'glyphType', 'icon', 'emoji',
+               'category', 'vibrationName', 'animationKey', 'reactions', 'createdBy',
+               'createdAt', 'updatedAt', 'deleted'])
+          && request.resource.data.id == customId
+          && request.resource.data.createdBy == uid()
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.deleted == false
+          && validCustom(request.resource.data)
+          && counterNow() < 30
+          && getAfter(counterPath()).data.n == counterNow() + 1;
+        // 편집(둘 다 가능, 삭제된 감정은 불가)
+        allow update: if isMember(coupleId)
+          && resource.data.deleted == false
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['label', 'glyphType',
+               'icon', 'emoji', 'category', 'vibrationName', 'animationKey', 'reactions', 'updatedAt'])
+          && request.resource.data.deleted == false
+          && validCustom(request.resource.data);
+        // soft delete
+        allow update: if isMember(coupleId)
+          && resource.data.deleted == false
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['deleted', 'updatedAt'])
+          && request.resource.data.deleted == true
+          && getAfter(counterPath()).data.n == counterNow() - 1;
         allow delete: if false;
       }
 

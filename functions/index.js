@@ -13,6 +13,11 @@ const RATE_PER_MIN = 30;
 const SAME_PUSH_SEC = 10;
 
 /** 순수 함수(테스트용): 현재 상태 → {allowed, push, next} */
+const emotionsJson = require("./emotions.json");
+function isBuiltin(id) {
+  return (emotionsJson.emotions || []).some((x) => x.id === id);
+}
+
 function rateDecision(state, emotionId, nowMs) {
   const s = state || {};
   const inWindow = s.windowStart && nowMs - s.windowStart < 60000;
@@ -54,7 +59,9 @@ exports.onEmotionCreated = onDocumentCreated(
       tokens,
       data: {type: "emotion", emotionId: e.emotionId, emotionDocId: event.params.emotionId},
       notification: {title: "마음콕", body: "새 마음이 도착했어요"},
-      android: {priority: "high", notification: {channelId: `emotion_${e.emotionId}`}},
+      android: isBuiltin(e.emotionId) ?
+        {priority: "high", notification: {channelId: `emotion_${e.emotionId}`}} :
+        {priority: "high"},
       apns: {payload: {aps: {sound: "default", "content-available": 1}}},
     });
     // 만료/무효 토큰 정리
@@ -72,11 +79,13 @@ exports.onEmotionCreated = onDocumentCreated(
   });
 
 // 반응 생성 시 감정을 보낸 사람(상대)에게 푸시.
-const emotionsJson = require("./emotions.json");
-function reactionText(emotionId, reactionId) {
+// 이전 버전에서 빠진 감정(보낸 기록 호환)
+const LEGACY_REACTIONS = {miss_you: ["나도 너무 보고싶어", "곧 만나자"]};
+function reactionText(emotionId, reactionId, customReactions) {
   const e = (emotionsJson.emotions || []).find((x) => x.id === emotionId);
-  const label = e && e.reactions && e.reactions[Number(reactionId)];
-  return label || "반응이 도착했어요";
+  const list = (e && e.reactions) || LEGACY_REACTIONS[emotionId] ||
+    (customReactions && customReactions.length ? customReactions : ["고마워", "나도!"]);
+  return list[Number(reactionId)] || "반응이 도착했어요";
 }
 exports.onReactionCreated = onDocumentCreated(
   {document: "couples/{coupleId}/reactions/{reactionId}", region: "asia-northeast3"},
@@ -87,13 +96,18 @@ exports.onReactionCreated = onDocumentCreated(
     if (!couple) return;
     const partnerUid = couple.members.find((m) => m !== r.senderUid);
     const emo = (await db.doc(`couples/${event.params.coupleId}/emotions/${r.emotionDocId}`).get()).data() || {};
+    let customReactions = null;
+    if (emo.emotionId && String(emo.emotionId).startsWith("custom_")) {
+      const c = (await db.doc(`couples/${event.params.coupleId}/customEmotions/${emo.emotionId}`).get()).data();
+      customReactions = c && c.reactions;
+    }
     const partner = (await db.doc(`users/${partnerUid}`).get()).data() || {};
     const tokens = partner.fcmTokens || [];
     if (!tokens.length) return;
     await getMessaging().sendEachForMulticast({
       tokens,
       data: {type: "reaction", emotionDocId: r.emotionDocId, reactionId: r.reactionId},
-      notification: {title: "마음콕", body: reactionText(emo.emotionId, r.reactionId)},
+      notification: {title: "마음콕", body: reactionText(emo.emotionId, r.reactionId, customReactions)},
       android: {priority: "high"},
       apns: {payload: {aps: {sound: "default"}}},
     });
