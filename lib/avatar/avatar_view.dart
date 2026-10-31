@@ -44,19 +44,38 @@ class AvatarLayers extends StatelessWidget {
     final pivot = Alignment(pv.$1 / 256 - 1, pv.$2 / 256 - 1);
     final group = <Widget>[];
     Widget? shadow, fxW;
+    final accs = m.accessoriesOf(sel);
     for (final cat in m.layerOrder) {
+      if (cat.startsWith('acc_')) {
+        for (final id in accs) {
+          if (m.accLayerOf(id) != cat) continue;
+          final p = m.parts[id];
+          if (p == null) continue;
+          final rule = m.ruleForPart(id);
+          final adj = (adjusts[id] ?? PartAdjust.none).clampTo(rule);
+          final a = rule.anchor;
+          group.add(
+            adjustPart(
+              _Part(part: p, key: ValueKey('$cat:$id')),
+              adj,
+              unit,
+              Alignment(a.$1 / 256 - 1, a.$2 / 256 - 1),
+              ValueKey('adj:$id'),
+            ),
+          );
+        }
+        continue;
+      }
       String? id = cat == 'fx' ? fxPart : (overrides[cat] ?? sel[cat]);
       if (id == null) continue;
       id = m.resolve(cat, id, sel['body']);
       final p = m.parts[id];
       if (p == null) continue;
-      Widget w = _Part(
+      final Widget w = _Part(
         part: p,
         recolor: recolors[cat],
         key: ValueKey('$cat:$id'),
       );
-      final adj = cat == 'accessory' ? adjusts[id] : null;
-      if (adj != null && !adj.isIdentity) w = adjustPart(w, adj, unit);
       if (cat == 'shadow') {
         shadow = w;
       } else if (cat == 'fx') {
@@ -94,18 +113,33 @@ class AvatarLayers extends StatelessWidget {
   }
 }
 
-/// 액세서리 조절값 적용(파츠 중심 기준 회전·크기·가로 늘이기 후 이동)
-Widget adjustPart(Widget w, PartAdjust a, double unit) => Transform.translate(
-  offset: Offset(a.dx * unit, a.dy * unit),
-  child: Transform.rotate(
-    angle: a.radians,
-    child: Transform(
-      alignment: Alignment.center,
-      transform: Matrix4.diagonal3Values(a.scale * a.stretchX, a.scale, 1),
-      child: w,
+/// 액세서리 조절값 적용: 기준점(anchor) 중심으로 회전·크기·가로 늘이기·좌우 반전 후 이동
+Widget adjustPart(
+  Widget w,
+  PartAdjust a,
+  double unit, [
+  Alignment pivot = Alignment.center,
+  Key? key,
+]) {
+  if (a.isIdentity) return KeyedSubtree(key: key, child: w);
+  return Transform.translate(
+    key: key,
+    offset: Offset(a.dx * unit, a.dy * unit),
+    child: Transform.rotate(
+      angle: a.radians,
+      alignment: pivot,
+      child: Transform(
+        alignment: pivot,
+        transform: Matrix4.diagonal3Values(
+          a.scale * a.stretchX * (a.flipX ? -1 : 1),
+          a.scale,
+          1,
+        ),
+        child: w,
+      ),
     ),
-  ),
-);
+  );
+}
 
 class _Part extends StatelessWidget {
   const _Part({super.key, required this.part, this.recolor});

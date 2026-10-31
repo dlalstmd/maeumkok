@@ -118,7 +118,7 @@ class AvatarMotionSpec {
       pivot: (m['pivot'] as String?) ?? 'pivot_bottom',
       layers: layers,
       swap: {
-        for (final c in const ['eyes', 'mouth'])
+        for (final c in const ['eyes', 'mouth', 'brows'])
           if (ps[c] is String) c: ps[c] as String,
       },
       blink: m['blink'] == true,

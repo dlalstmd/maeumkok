@@ -36,15 +36,53 @@ class _AvatarEditScreenState extends State<AvatarEditScreen> {
   PartAdjust? _gestureStart;
   static const _previewSize = 220.0;
 
-  String? get _acc {
-    final a = _sel['accessory'];
-    return (a == null || a == 'acc_none') ? null : a;
-  }
+  /// 지금 조절 중인 액세서리
+  String? _active;
+  List<String> get _accs => _m?.accessoriesOf(_sel) ?? const [];
+  String? get _acc =>
+      _accs.contains(_active) ? _active : (_accs.isEmpty ? null : _accs.last);
 
-  PartAdjust get _cur => _adj[_acc] ?? PartAdjust.none;
+  AnchorRule get _rule =>
+      _acc == null ? const AnchorRule() : _m!.ruleForPart(_acc!);
+  PartAdjust get _cur => (_adj[_acc] ?? PartAdjust.none).clampTo(_rule);
   void _set(PartAdjust a) {
     final id = _acc;
-    if (id != null) setState(() => _adj = {..._adj, id: a.clamped()});
+    if (id != null) setState(() => _adj = {..._adj, id: a.clampTo(_rule)});
+  }
+
+  void _toggleAccessory(String id) {
+    final m = _m!;
+    final cur = m.accessoriesOf(_sel);
+    List<String> next;
+    if (cur.contains(id)) {
+      next = [...cur]..remove(id);
+    } else {
+      next = m.addAccessory(cur, id);
+      if (identical(next, cur)) {
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(content: Text('액세서리는 최대 ${m.maxAccessories}개까지 달 수 있어요')),
+          );
+        return;
+      }
+      _active = id;
+    }
+    setState(() => _sel = {..._sel, kAccessoriesKey: next.join(',')});
+  }
+
+  void _pick(String cat, String id) {
+    if (cat == 'accessory') return _toggleAccessory(id);
+    setState(() => _sel = {..._sel, cat: id});
+  }
+
+  bool _isSelected(String cat, String id) =>
+      cat == 'accessory' ? _accs.contains(id) : _sel[cat] == id;
+
+  Map<String, String> _previewSel(String cat, String id) {
+    if (cat != 'accessory') return {..._sel, cat: id};
+    // 썸네일: 해당 액세서리만 얹어 보여줌
+    return {..._sel, kAccessoriesKey: id};
   }
 
   @override
@@ -187,23 +225,22 @@ class _AvatarEditScreenState extends State<AvatarEditScreen> {
                       for (final p in m.byCategory(_cat))
                         InkWell(
                           borderRadius: BorderRadius.circular(16),
-                          onTap: () =>
-                              setState(() => _sel = {..._sel, _cat: p.id}),
+                          onTap: () => _pick(_cat, p.id),
                           child: Container(
                             decoration: BoxDecoration(
                               color: MkColors.surface,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: _sel[_cat] == p.id
+                                color: _isSelected(_cat, p.id)
                                     ? MkColors.accent
                                     : MkColors.border,
-                                width: _sel[_cat] == p.id ? 2 : 1,
+                                width: _isSelected(_cat, p.id) ? 2 : 1,
                               ),
                             ),
                             padding: const EdgeInsets.all(4),
                             child: StaticAvatar(
                               adjusts: _adj,
-                              selection: {..._sel, _cat: p.id},
+                              selection: _previewSel(_cat, p.id),
                               size: 72,
                             ),
                           ),
@@ -258,8 +295,41 @@ class _AvatarEditScreenState extends State<AvatarEditScreen> {
       padding: const EdgeInsets.fromLTRB(20, 4, 12, 0),
       child: Column(
         children: [
+          if (_accs.length > 1)
+            SizedBox(
+              height: 40,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  for (final id in _accs)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: ChoiceChip(
+                        key: Key('activeAcc:$id'),
+                        label: SizedBox.square(
+                          dimension: 28,
+                          child: StaticAvatar(
+                            selection: {kAccessoriesKey: id, 'body': ''},
+                            size: 28,
+                          ),
+                        ),
+                        selected: _acc == id,
+                        showCheckmark: false,
+                        onSelected: (_) => setState(() => _active = id),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           Row(
             children: [
+              IconButton(
+                key: const Key('adjFlip'),
+                tooltip: '좌우 반전',
+                isSelected: c.flipX,
+                icon: const Icon(LucideIcons.flipHorizontal2),
+                onPressed: () => _set(c.copyWith(flipX: !c.flipX)),
+              ),
               const Expanded(
                 child: Text(
                   '미리보기를 드래그해 옮기고, 두 손가락으로 크기·회전',

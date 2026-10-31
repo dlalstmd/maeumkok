@@ -1,476 +1,2074 @@
 {
-  "version": 1,
-  "style": "C_rice_cake_blob",
-  "canvas": [
-    512,
-    512
+ "version": 3,
+ "style": "C_rice_cake_blob",
+ "canvas": [
+  512,
+  512
+ ],
+ "layer_order_bottom_to_top": [
+  "shadow",
+  "acc_prop_back",
+  "body",
+  "clothes",
+  "blush",
+  "eyes",
+  "brows",
+  "mouth",
+  "hair",
+  "acc_scarf",
+  "acc_bag",
+  "acc_earring",
+  "acc_glasses",
+  "acc_hat",
+  "acc_hairpin",
+  "acc_prop",
+  "fx"
+ ],
+ "default": {
+  "shadow": "shadow_default",
+  "body": "body_white",
+  "clothes": "clothes_none",
+  "blush": "blush_round",
+  "eyes": "eyes_dot",
+  "brows": "brows_none",
+  "mouth": "mouth_smile",
+  "hair": "hair_none",
+  "accessories": []
+ },
+ "anchors": {
+  "body_center": [
+   256,
+   268
   ],
-  "layer_order_bottom_to_top": [
-    "shadow",
-    "body",
-    "blush",
-    "eyes",
-    "mouth",
-    "accessory",
-    "fx"
+  "eye_left": [
+   206,
+   276
   ],
-  "default": {
-    "shadow": "shadow_default",
-    "body": "body_white",
-    "blush": "blush_round",
-    "eyes": "eyes_dot",
-    "mouth": "mouth_smile",
-    "accessory": "acc_none"
+  "eye_right": [
+   306,
+   276
+  ],
+  "mouth": [
+   256,
+   316
+  ],
+  "head_top": [
+   256,
+   132
+  ],
+  "pivot_bottom": [
+   256,
+   404
+  ]
+ },
+ "notes": "v3: 헤어/옷 레이어 분리, accessory는 subtype별 레이어. 어두운 몸(tone=dark)이면 eyes/mouth/brows → _light.",
+ "parts": [
+  {
+   "id": "shadow_default",
+   "category": "shadow",
+   "file": "parts/shadow/shadow_default.svg"
   },
-  "anchors": {
-    "body_center": [
-      256,
-      268
+  {
+   "id": "body_white",
+   "category": "body",
+   "file": "parts/body/body_white.svg",
+   "fill": "#FFFFFF",
+   "stroke": "#E2E2E2",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_cream",
+   "category": "body",
+   "file": "parts/body/body_cream.svg",
+   "fill": "#FFF6E8",
+   "stroke": "#EADBC4",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_peach",
+   "category": "body",
+   "file": "parts/body/body_peach.svg",
+   "fill": "#FFE3D3",
+   "stroke": "#EFC7B1",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_gray",
+   "category": "body",
+   "file": "parts/body/body_gray.svg",
+   "fill": "#EDEDED",
+   "stroke": "#D2D2D2",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_mocha",
+   "category": "body",
+   "file": "parts/body/body_mocha.svg",
+   "fill": "#E6D3C3",
+   "stroke": "#C9B19C",
+   "recolorable": true,
+   "tone": "dark"
+  },
+  {
+   "id": "body_charcoal",
+   "category": "body",
+   "file": "parts/body/body_charcoal.svg",
+   "fill": "#3A3A3A",
+   "stroke": "#222222",
+   "recolorable": true,
+   "tone": "dark"
+  },
+  {
+   "id": "eyes_dot",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_dot.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
     ],
-    "eye_left": [
-      206,
-      276
-    ],
-    "eye_right": [
-      306,
-      276
-    ],
-    "mouth": [
-      256,
-      316
-    ],
-    "head_top": [
-      256,
-      132
-    ],
-    "pivot_bottom": [
-      256,
-      404
+    "right": [
+     306,
+     276
     ]
+   }
   },
-  "notes": "헤어/옷 레이어는 블롭 스타일에선 accessory(head/face 슬롯)로 통합. eyes·mouth는 감정 애니메이션 중 오버라이드됨. body는 fill/stroke 재색칠 가능.",
-  "parts": [
-    {
-      "id": "shadow_default",
-      "category": "shadow",
-      "file": "parts/shadow/shadow_default.svg"
-    },
-    {
-      "id": "body_white",
-      "category": "body",
-      "file": "parts/body/body_white.svg",
-      "fill": "#FFFFFF",
-      "stroke": "#E2E2E2",
-      "recolorable": true
-    },
-    {
-      "id": "body_cream",
-      "category": "body",
-      "file": "parts/body/body_cream.svg",
-      "fill": "#FFF6E8",
-      "stroke": "#EADBC4",
-      "recolorable": true
-    },
-    {
-      "id": "body_peach",
-      "category": "body",
-      "file": "parts/body/body_peach.svg",
-      "fill": "#FFE3D3",
-      "stroke": "#EFC7B1",
-      "recolorable": true
-    },
-    {
-      "id": "body_gray",
-      "category": "body",
-      "file": "parts/body/body_gray.svg",
-      "fill": "#EDEDED",
-      "stroke": "#D2D2D2",
-      "recolorable": true
-    },
-    {
-      "id": "body_mocha",
-      "category": "body",
-      "file": "parts/body/body_mocha.svg",
-      "fill": "#E6D3C3",
-      "stroke": "#C9B19C",
-      "recolorable": true
-    },
-    {
-      "id": "body_charcoal",
-      "category": "body",
-      "file": "parts/body/body_charcoal.svg",
-      "fill": "#3A3A3A",
-      "stroke": "#222222",
-      "recolorable": true
-    },
-    {
-      "id": "eyes_dot",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_dot.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_round",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_round.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_smile",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_smile.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_sleepy",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_sleepy.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_sparkle",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_sparkle.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_line",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_line.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_x",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_x.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "eyes_teary",
-      "category": "eyes",
-      "file": "parts/eyes/eyes_teary.svg",
-      "anchor": {
-        "left": [
-          206,
-          276
-        ],
-        "right": [
-          306,
-          276
-        ]
-      }
-    },
-    {
-      "id": "mouth_smile",
-      "category": "mouth",
-      "file": "parts/mouth/mouth_smile.svg",
-      "anchor": [
-        256,
-        316
-      ]
-    },
-    {
-      "id": "mouth_cat",
-      "category": "mouth",
-      "file": "parts/mouth/mouth_cat.svg",
-      "anchor": [
-        256,
-        316
-      ]
-    },
-    {
-      "id": "mouth_o",
-      "category": "mouth",
-      "file": "parts/mouth/mouth_o.svg",
-      "anchor": [
-        256,
-        316
-      ]
-    },
-    {
-      "id": "mouth_flat",
-      "category": "mouth",
-      "file": "parts/mouth/mouth_flat.svg",
-      "anchor": [
-        256,
-        316
-      ]
-    },
-    {
-      "id": "mouth_grin",
-      "category": "mouth",
-      "file": "parts/mouth/mouth_grin.svg",
-      "anchor": [
-        256,
-        316
-      ]
-    },
-    {
-      "id": "mouth_pout",
-      "category": "mouth",
-      "file": "parts/mouth/mouth_pout.svg",
-      "anchor": [
-        256,
-        316
-      ]
-    },
-    {
-      "id": "blush_none",
-      "category": "blush",
-      "file": "parts/blush/blush_none.svg",
-      "anchor": {
-        "left": [
-          166,
-          306
-        ],
-        "right": [
-          346,
-          306
-        ]
-      }
-    },
-    {
-      "id": "blush_round",
-      "category": "blush",
-      "file": "parts/blush/blush_round.svg",
-      "anchor": {
-        "left": [
-          166,
-          306
-        ],
-        "right": [
-          346,
-          306
-        ]
-      }
-    },
-    {
-      "id": "blush_oval",
-      "category": "blush",
-      "file": "parts/blush/blush_oval.svg",
-      "anchor": {
-        "left": [
-          166,
-          306
-        ],
-        "right": [
-          346,
-          306
-        ]
-      }
-    },
-    {
-      "id": "blush_lines",
-      "category": "blush",
-      "file": "parts/blush/blush_lines.svg",
-      "anchor": {
-        "left": [
-          166,
-          306
-        ],
-        "right": [
-          346,
-          306
-        ]
-      }
-    },
-    {
-      "id": "blush_heart",
-      "category": "blush",
-      "file": "parts/blush/blush_heart.svg",
-      "anchor": {
-        "left": [
-          166,
-          306
-        ],
-        "right": [
-          346,
-          306
-        ]
-      }
-    },
-    {
-      "id": "acc_none",
-      "category": "accessory",
-      "file": "parts/accessory/acc_none.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_ribbon",
-      "category": "accessory",
-      "file": "parts/accessory/acc_ribbon.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_beanie",
-      "category": "accessory",
-      "file": "parts/accessory/acc_beanie.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_bear_ears",
-      "category": "accessory",
-      "file": "parts/accessory/acc_bear_ears.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_bunny_ears",
-      "category": "accessory",
-      "file": "parts/accessory/acc_bunny_ears.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_glasses",
-      "category": "accessory",
-      "file": "parts/accessory/acc_glasses.svg",
-      "slot": "face"
-    },
-    {
-      "id": "acc_flower",
-      "category": "accessory",
-      "file": "parts/accessory/acc_flower.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_headphones",
-      "category": "accessory",
-      "file": "parts/accessory/acc_headphones.svg",
-      "slot": "head"
-    },
-    {
-      "id": "acc_cap",
-      "category": "accessory",
-      "file": "parts/accessory/acc_cap.svg",
-      "slot": "head"
-    },
-    {
-      "id": "fx_zzz",
-      "category": "fx",
-      "file": "parts/fx/fx_zzz.svg"
-    },
-    {
-      "id": "fx_heart",
-      "category": "fx",
-      "file": "parts/fx/fx_heart.svg"
-    },
-    {
-      "id": "fx_tear",
-      "category": "fx",
-      "file": "parts/fx/fx_tear.svg"
-    },
-    {
-      "id": "fx_sweat",
-      "category": "fx",
-      "file": "parts/fx/fx_sweat.svg"
-    },
-    {
-      "id": "fx_steam",
-      "category": "fx",
-      "file": "parts/fx/fx_steam.svg"
-    },
-    {
-      "id": "fx_sparkle",
-      "category": "fx",
-      "file": "parts/fx/fx_sparkle.svg"
-    }
-  ],
-  "contrast_rules": {
-    "description": "body 파츠의 tone이 dark면 eyes/mouth를 <id>_light 변형으로 자동 치환",
-    "body_tone": {
-      "body_white": "light",
-      "body_cream": "light",
-      "body_peach": "light",
-      "body_gray": "light",
-      "body_mocha": "dark",
-      "body_charcoal": "dark"
-    },
-    "dark": {
-      "eyes": "{id}_light",
-      "mouth": "{id}_light"
-    },
-    "light": {}
-  },
-  "light_variants": {
-    "eyes": [
-      "eyes_dot_light",
-      "eyes_line_light",
-      "eyes_round_light",
-      "eyes_sleepy_light",
-      "eyes_smile_light",
-      "eyes_sparkle_light",
-      "eyes_teary_light",
-      "eyes_x_light"
+  {
+   "id": "eyes_round",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_round.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
     ],
-    "mouth": [
-      "mouth_cat_light",
-      "mouth_flat_light",
-      "mouth_grin_light",
-      "mouth_o_light",
-      "mouth_pout_light",
-      "mouth_smile_light"
+    "right": [
+     306,
+     276
     ]
+   }
+  },
+  {
+   "id": "eyes_smile",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_smile.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_sleepy",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_sleepy.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_sparkle",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_sparkle.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_line",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_line.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_x",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_x.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_teary",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_teary.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "mouth_smile",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_smile.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_cat",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_cat.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_o",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_o.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_flat",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_flat.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_grin",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_grin.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_pout",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_pout.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "blush_none",
+   "category": "blush",
+   "file": "parts/blush/blush_none.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_round",
+   "category": "blush",
+   "file": "parts/blush/blush_round.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_oval",
+   "category": "blush",
+   "file": "parts/blush/blush_oval.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_lines",
+   "category": "blush",
+   "file": "parts/blush/blush_lines.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_heart",
+   "category": "blush",
+   "file": "parts/blush/blush_heart.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "acc_none",
+   "category": "accessory",
+   "file": "parts/accessory/acc_none.svg",
+   "slot": "head",
+   "subtype": "none"
+  },
+  {
+   "id": "acc_ribbon",
+   "category": "accessory",
+   "file": "parts/accessory/acc_ribbon.svg",
+   "slot": "head",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_beanie",
+   "category": "accessory",
+   "file": "parts/accessory/acc_beanie.svg",
+   "slot": "head",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_bear_ears",
+   "category": "accessory",
+   "file": "parts/accessory/acc_bear_ears.svg",
+   "slot": "head",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_bunny_ears",
+   "category": "accessory",
+   "file": "parts/accessory/acc_bunny_ears.svg",
+   "slot": "head",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_glasses",
+   "category": "accessory",
+   "file": "parts/accessory/acc_glasses.svg",
+   "slot": "face",
+   "subtype": "glasses"
+  },
+  {
+   "id": "acc_flower",
+   "category": "accessory",
+   "file": "parts/accessory/acc_flower.svg",
+   "slot": "head",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_headphones",
+   "category": "accessory",
+   "file": "parts/accessory/acc_headphones.svg",
+   "slot": "head",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_cap",
+   "category": "accessory",
+   "file": "parts/accessory/acc_cap.svg",
+   "slot": "head",
+   "subtype": "hat"
+  },
+  {
+   "id": "fx_zzz",
+   "category": "fx",
+   "file": "parts/fx/fx_zzz.svg"
+  },
+  {
+   "id": "fx_heart",
+   "category": "fx",
+   "file": "parts/fx/fx_heart.svg"
+  },
+  {
+   "id": "fx_tear",
+   "category": "fx",
+   "file": "parts/fx/fx_tear.svg"
+  },
+  {
+   "id": "fx_sweat",
+   "category": "fx",
+   "file": "parts/fx/fx_sweat.svg"
+  },
+  {
+   "id": "fx_steam",
+   "category": "fx",
+   "file": "parts/fx/fx_steam.svg"
+  },
+  {
+   "id": "fx_sparkle",
+   "category": "fx",
+   "file": "parts/fx/fx_sparkle.svg"
+  },
+  {
+   "id": "body_skin_fair",
+   "category": "body",
+   "file": "parts/body/body_skin_fair.svg",
+   "fill": "#FFEFE6",
+   "stroke": "#EFD3C3",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_skin_beige",
+   "category": "body",
+   "file": "parts/body/body_skin_beige.svg",
+   "fill": "#F9DCC6",
+   "stroke": "#E5BFA3",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_skin_tan",
+   "category": "body",
+   "file": "parts/body/body_skin_tan.svg",
+   "fill": "#E8B98F",
+   "stroke": "#CC9A70",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_skin_brown",
+   "category": "body",
+   "file": "parts/body/body_skin_brown.svg",
+   "fill": "#B57A52",
+   "stroke": "#93603D",
+   "recolorable": true,
+   "tone": "dark"
+  },
+  {
+   "id": "body_skin_deep",
+   "category": "body",
+   "file": "parts/body/body_skin_deep.svg",
+   "fill": "#7A4E33",
+   "stroke": "#5E3A25",
+   "recolorable": true,
+   "tone": "dark"
+  },
+  {
+   "id": "body_mint",
+   "category": "body",
+   "file": "parts/body/body_mint.svg",
+   "fill": "#E2F2EA",
+   "stroke": "#C3DDD0",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_sky",
+   "category": "body",
+   "file": "parts/body/body_sky.svg",
+   "fill": "#E3EDF8",
+   "stroke": "#C3D3E6",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_lilac",
+   "category": "body",
+   "file": "parts/body/body_lilac.svg",
+   "fill": "#ECE6F6",
+   "stroke": "#D3C8E6",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_butter",
+   "category": "body",
+   "file": "parts/body/body_butter.svg",
+   "fill": "#FFF4C9",
+   "stroke": "#EADB9F",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "body_tangerine",
+   "category": "body",
+   "file": "parts/body/body_tangerine.svg",
+   "fill": "#FFD9CB",
+   "stroke": "#F2B9A4",
+   "recolorable": true,
+   "tone": "light"
+  },
+  {
+   "id": "eyes_wink",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_wink.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_heart",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_heart.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_happy_u",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_happy_u.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_wide",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_wide.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_half",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_half.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_dizzy",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_dizzy.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_lash",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_lash.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_star",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_star.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_cry_line",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_cry_line.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "eyes_glint",
+   "category": "eyes",
+   "file": "parts/eyes/eyes_glint.svg",
+   "anchor": {
+    "left": [
+     206,
+     276
+    ],
+    "right": [
+     306,
+     276
+    ]
+   }
+  },
+  {
+   "id": "brows_none",
+   "category": "brows",
+   "file": "parts/brows/brows_none.svg"
+  },
+  {
+   "id": "brows_straight",
+   "category": "brows",
+   "file": "parts/brows/brows_straight.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_arch",
+   "category": "brows",
+   "file": "parts/brows/brows_arch.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_worried",
+   "category": "brows",
+   "file": "parts/brows/brows_worried.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_angry",
+   "category": "brows",
+   "file": "parts/brows/brows_angry.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_thick",
+   "category": "brows",
+   "file": "parts/brows/brows_thick.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_thin",
+   "category": "brows",
+   "file": "parts/brows/brows_thin.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_dot",
+   "category": "brows",
+   "file": "parts/brows/brows_dot.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "brows_raised",
+   "category": "brows",
+   "file": "parts/brows/brows_raised.svg",
+   "anchor": {
+    "left": [
+     206,
+     238
+    ],
+    "right": [
+     306,
+     238
+    ]
+   }
+  },
+  {
+   "id": "mouth_open",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_open.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_tongue",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_tongue.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_wavy",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_wavy.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_small_o",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_small_o.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_smirk",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_smirk.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_frown",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_frown.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_teeth",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_teeth.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_kiss",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_kiss.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "mouth_w_mouth",
+   "category": "mouth",
+   "file": "parts/mouth/mouth_w_mouth.svg",
+   "anchor": [
+    256,
+    316
+   ]
+  },
+  {
+   "id": "blush_small",
+   "category": "blush",
+   "file": "parts/blush/blush_small.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_freckles",
+   "category": "blush",
+   "file": "parts/blush/blush_freckles.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_swirl",
+   "category": "blush",
+   "file": "parts/blush/blush_swirl.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_star",
+   "category": "blush",
+   "file": "parts/blush/blush_star.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "blush_deep",
+   "category": "blush",
+   "file": "parts/blush/blush_deep.svg",
+   "anchor": {
+    "left": [
+     166,
+     306
+    ],
+    "right": [
+     346,
+     306
+    ]
+   }
+  },
+  {
+   "id": "hair_bangs_black",
+   "category": "hair",
+   "file": "parts/hair/hair_bangs_black.svg",
+   "shape": "bangs",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bangs_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_bangs_brown.svg",
+   "shape": "bangs",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bangs_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_bangs_blonde.svg",
+   "shape": "bangs",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bangs_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_bangs_tangerine.svg",
+   "shape": "bangs",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_side_part_black",
+   "category": "hair",
+   "file": "parts/hair/hair_side_part_black.svg",
+   "shape": "side_part",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_side_part_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_side_part_brown.svg",
+   "shape": "side_part",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_side_part_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_side_part_blonde.svg",
+   "shape": "side_part",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_side_part_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_side_part_tangerine.svg",
+   "shape": "side_part",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_curl_black",
+   "category": "hair",
+   "file": "parts/hair/hair_curl_black.svg",
+   "shape": "curl",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_curl_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_curl_brown.svg",
+   "shape": "curl",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_curl_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_curl_blonde.svg",
+   "shape": "curl",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_curl_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_curl_tangerine.svg",
+   "shape": "curl",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_sprout_green",
+   "category": "hair",
+   "file": "parts/hair/hair_sprout_green.svg",
+   "shape": "sprout",
+   "color": "green",
+   "recolorable": false
+  },
+  {
+   "id": "hair_twin_buns_black",
+   "category": "hair",
+   "file": "parts/hair/hair_twin_buns_black.svg",
+   "shape": "twin_buns",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_twin_buns_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_twin_buns_brown.svg",
+   "shape": "twin_buns",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_twin_buns_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_twin_buns_blonde.svg",
+   "shape": "twin_buns",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_twin_buns_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_twin_buns_tangerine.svg",
+   "shape": "twin_buns",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_ponytail_black",
+   "category": "hair",
+   "file": "parts/hair/hair_ponytail_black.svg",
+   "shape": "ponytail",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_ponytail_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_ponytail_brown.svg",
+   "shape": "ponytail",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_ponytail_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_ponytail_blonde.svg",
+   "shape": "ponytail",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_ponytail_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_ponytail_tangerine.svg",
+   "shape": "ponytail",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bob_black",
+   "category": "hair",
+   "file": "parts/hair/hair_bob_black.svg",
+   "shape": "bob",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bob_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_bob_brown.svg",
+   "shape": "bob",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bob_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_bob_blonde.svg",
+   "shape": "bob",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_bob_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_bob_tangerine.svg",
+   "shape": "bob",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_spiky_black",
+   "category": "hair",
+   "file": "parts/hair/hair_spiky_black.svg",
+   "shape": "spiky",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_spiky_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_spiky_brown.svg",
+   "shape": "spiky",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_spiky_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_spiky_blonde.svg",
+   "shape": "spiky",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_spiky_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_spiky_tangerine.svg",
+   "shape": "spiky",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_long_black",
+   "category": "hair",
+   "file": "parts/hair/hair_long_black.svg",
+   "shape": "long",
+   "color": "black",
+   "recolorable": true
+  },
+  {
+   "id": "hair_long_brown",
+   "category": "hair",
+   "file": "parts/hair/hair_long_brown.svg",
+   "shape": "long",
+   "color": "brown",
+   "recolorable": true
+  },
+  {
+   "id": "hair_long_blonde",
+   "category": "hair",
+   "file": "parts/hair/hair_long_blonde.svg",
+   "shape": "long",
+   "color": "blonde",
+   "recolorable": true
+  },
+  {
+   "id": "hair_long_tangerine",
+   "category": "hair",
+   "file": "parts/hair/hair_long_tangerine.svg",
+   "shape": "long",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "hair_none",
+   "category": "hair",
+   "file": "parts/hair/hair_none.svg"
+  },
+  {
+   "id": "clothes_tee_gray",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_tee_gray.svg",
+   "shape": "tee",
+   "color": "gray",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_tee_navy",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_tee_navy.svg",
+   "shape": "tee",
+   "color": "navy",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_tee_tangerine",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_tee_tangerine.svg",
+   "shape": "tee",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_tee_cream",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_tee_cream.svg",
+   "shape": "tee",
+   "color": "cream",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_hoodie_gray",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_hoodie_gray.svg",
+   "shape": "hoodie",
+   "color": "gray",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_hoodie_navy",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_hoodie_navy.svg",
+   "shape": "hoodie",
+   "color": "navy",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_hoodie_tangerine",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_hoodie_tangerine.svg",
+   "shape": "hoodie",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_hoodie_cream",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_hoodie_cream.svg",
+   "shape": "hoodie",
+   "color": "cream",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_stripe_gray",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_stripe_gray.svg",
+   "shape": "stripe",
+   "color": "gray",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_stripe_navy",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_stripe_navy.svg",
+   "shape": "stripe",
+   "color": "navy",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_stripe_tangerine",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_stripe_tangerine.svg",
+   "shape": "stripe",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_stripe_cream",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_stripe_cream.svg",
+   "shape": "stripe",
+   "color": "cream",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_overalls_gray",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_overalls_gray.svg",
+   "shape": "overalls",
+   "color": "gray",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_overalls_navy",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_overalls_navy.svg",
+   "shape": "overalls",
+   "color": "navy",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_overalls_tangerine",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_overalls_tangerine.svg",
+   "shape": "overalls",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_overalls_cream",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_overalls_cream.svg",
+   "shape": "overalls",
+   "color": "cream",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_collar_gray",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_collar_gray.svg",
+   "shape": "collar",
+   "color": "gray",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_collar_navy",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_collar_navy.svg",
+   "shape": "collar",
+   "color": "navy",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_collar_tangerine",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_collar_tangerine.svg",
+   "shape": "collar",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_collar_cream",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_collar_cream.svg",
+   "shape": "collar",
+   "color": "cream",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_apron_gray",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_apron_gray.svg",
+   "shape": "apron",
+   "color": "gray",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_apron_navy",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_apron_navy.svg",
+   "shape": "apron",
+   "color": "navy",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_apron_tangerine",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_apron_tangerine.svg",
+   "shape": "apron",
+   "color": "tangerine",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_apron_cream",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_apron_cream.svg",
+   "shape": "apron",
+   "color": "cream",
+   "recolorable": true
+  },
+  {
+   "id": "clothes_none",
+   "category": "clothes",
+   "file": "parts/clothes/clothes_none.svg"
+  },
+  {
+   "id": "acc_hat_bucket",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hat_bucket.svg",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_hat_beret",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hat_beret.svg",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_hat_crown",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hat_crown.svg",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_hat_party",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hat_party.svg",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_hat_straw",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hat_straw.svg",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_hat_knit_band",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hat_knit_band.svg",
+   "subtype": "hat"
+  },
+  {
+   "id": "acc_glasses_square",
+   "category": "accessory",
+   "file": "parts/accessory/acc_glasses_square.svg",
+   "subtype": "glasses"
+  },
+  {
+   "id": "acc_glasses_sun",
+   "category": "accessory",
+   "file": "parts/accessory/acc_glasses_sun.svg",
+   "subtype": "glasses"
+  },
+  {
+   "id": "acc_glasses_heart",
+   "category": "accessory",
+   "file": "parts/accessory/acc_glasses_heart.svg",
+   "subtype": "glasses"
+  },
+  {
+   "id": "acc_glasses_round_thin",
+   "category": "accessory",
+   "file": "parts/accessory/acc_glasses_round_thin.svg",
+   "subtype": "glasses"
+  },
+  {
+   "id": "acc_earring_stud",
+   "category": "accessory",
+   "file": "parts/accessory/acc_earring_stud.svg",
+   "subtype": "earring"
+  },
+  {
+   "id": "acc_earring_hoop",
+   "category": "accessory",
+   "file": "parts/accessory/acc_earring_hoop.svg",
+   "subtype": "earring"
+  },
+  {
+   "id": "acc_earring_pearl",
+   "category": "accessory",
+   "file": "parts/accessory/acc_earring_pearl.svg",
+   "subtype": "earring"
+  },
+  {
+   "id": "acc_earring_drop",
+   "category": "accessory",
+   "file": "parts/accessory/acc_earring_drop.svg",
+   "subtype": "earring"
+  },
+  {
+   "id": "acc_earring_star",
+   "category": "accessory",
+   "file": "parts/accessory/acc_earring_star.svg",
+   "subtype": "earring"
+  },
+  {
+   "id": "acc_hairpin_star_clip",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hairpin_star_clip.svg",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_hairpin_bow_clip",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hairpin_bow_clip.svg",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_hairpin_heart_pin",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hairpin_heart_pin.svg",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_hairpin_bar",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hairpin_bar.svg",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_hairpin_cherry",
+   "category": "accessory",
+   "file": "parts/accessory/acc_hairpin_cherry.svg",
+   "subtype": "hairpin"
+  },
+  {
+   "id": "acc_scarf_knit",
+   "category": "accessory",
+   "file": "parts/accessory/acc_scarf_knit.svg",
+   "subtype": "scarf"
+  },
+  {
+   "id": "acc_scarf_bandana",
+   "category": "accessory",
+   "file": "parts/accessory/acc_scarf_bandana.svg",
+   "subtype": "scarf"
+  },
+  {
+   "id": "acc_scarf_gray_wrap",
+   "category": "accessory",
+   "file": "parts/accessory/acc_scarf_gray_wrap.svg",
+   "subtype": "scarf"
+  },
+  {
+   "id": "acc_bag_crossbody",
+   "category": "accessory",
+   "file": "parts/accessory/acc_bag_crossbody.svg",
+   "subtype": "bag"
+  },
+  {
+   "id": "acc_bag_tote",
+   "category": "accessory",
+   "file": "parts/accessory/acc_bag_tote.svg",
+   "subtype": "bag"
+  },
+  {
+   "id": "acc_bag_backpack_strap",
+   "category": "accessory",
+   "file": "parts/accessory/acc_bag_backpack_strap.svg",
+   "subtype": "bag"
+  },
+  {
+   "id": "acc_prop_balloon",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_balloon.svg",
+   "subtype": "prop",
+   "hand": true
+  },
+  {
+   "id": "acc_prop_coffee",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_coffee.svg",
+   "subtype": "prop",
+   "hand": true
+  },
+  {
+   "id": "acc_prop_bouquet",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_bouquet.svg",
+   "subtype": "prop",
+   "hand": true
+  },
+  {
+   "id": "acc_prop_phone",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_phone.svg",
+   "subtype": "prop",
+   "hand": true
+  },
+  {
+   "id": "acc_prop_umbrella",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_umbrella.svg",
+   "subtype": "prop",
+   "hand": true
+  },
+  {
+   "id": "acc_prop_book",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_book.svg",
+   "subtype": "prop",
+   "hand": true
+  },
+  {
+   "id": "acc_prop_heart_sign",
+   "category": "accessory",
+   "file": "parts/accessory/acc_prop_heart_sign.svg",
+   "subtype": "prop",
+   "hand": true
   }
+ ],
+ "contrast_rules": {
+  "description": "body.tone==dark면 eyes/mouth/brows를 <id>_light로 치환",
+  "body_tone": {
+   "body_white": "light",
+   "body_cream": "light",
+   "body_peach": "light",
+   "body_gray": "light",
+   "body_mocha": "dark",
+   "body_charcoal": "dark",
+   "body_skin_fair": "light",
+   "body_skin_beige": "light",
+   "body_skin_tan": "light",
+   "body_skin_brown": "dark",
+   "body_skin_deep": "dark",
+   "body_mint": "light",
+   "body_sky": "light",
+   "body_lilac": "light",
+   "body_butter": "light",
+   "body_tangerine": "light"
+  },
+  "dark": {
+   "eyes": "{id}_light",
+   "mouth": "{id}_light",
+   "brows": "{id}_light"
+  },
+  "light": {}
+ },
+ "light_variants": {
+  "eyes": [
+   "eyes_dot_light",
+   "eyes_round_light",
+   "eyes_smile_light",
+   "eyes_sleepy_light",
+   "eyes_sparkle_light",
+   "eyes_line_light",
+   "eyes_x_light",
+   "eyes_teary_light",
+   "eyes_wink_light",
+   "eyes_happy_u_light",
+   "eyes_wide_light",
+   "eyes_half_light",
+   "eyes_dizzy_light",
+   "eyes_lash_light",
+   "eyes_star_light",
+   "eyes_cry_line_light",
+   "eyes_glint_light"
+  ],
+  "mouth": [
+   "mouth_smile_light",
+   "mouth_cat_light",
+   "mouth_o_light",
+   "mouth_flat_light",
+   "mouth_grin_light",
+   "mouth_pout_light",
+   "mouth_open_light",
+   "mouth_tongue_light",
+   "mouth_wavy_light",
+   "mouth_small_o_light",
+   "mouth_smirk_light",
+   "mouth_frown_light",
+   "mouth_teeth_light",
+   "mouth_kiss_light",
+   "mouth_w_mouth_light"
+  ],
+  "brows": [
+   "brows_straight_light",
+   "brows_arch_light",
+   "brows_worried_light",
+   "brows_angry_light",
+   "brows_thick_light",
+   "brows_thin_light",
+   "brows_dot_light",
+   "brows_raised_light"
+  ]
+ },
+ "anchor_rules": {
+  "body": {
+   "anchor": [
+    256,
+    268
+   ],
+   "default_position": [
+    256,
+    268
+   ],
+   "scale_range": [
+    1,
+    1
+   ],
+   "rotation_range_deg": [
+    0,
+    0
+   ],
+   "z": 2,
+   "movable": false
+  },
+  "clothes": {
+   "anchor": [
+    256,
+    380
+   ],
+   "default_position": [
+    256,
+    380
+   ],
+   "scale_range": [
+    1,
+    1
+   ],
+   "rotation_range_deg": [
+    0,
+    0
+   ],
+   "z": 3,
+   "movable": false,
+   "note": "몸 실루엣으로 clip"
+  },
+  "blush": {
+   "anchor": [
+    256,
+    306
+   ],
+   "default_position": [
+    256,
+    306
+   ],
+   "scale_range": [
+    0.8,
+    1.3
+   ],
+   "rotation_range_deg": [
+    0,
+    0
+   ],
+   "z": 4,
+   "movable": true,
+   "note": "좌우 대칭, y만 ±20 이동"
+  },
+  "eyes": {
+   "anchor": [
+    256,
+    276
+   ],
+   "default_position": [
+    256,
+    276
+   ],
+   "scale_range": [
+    0.8,
+    1.25
+   ],
+   "rotation_range_deg": [
+    -10,
+    10
+   ],
+   "z": 5,
+   "movable": true,
+   "note": "좌우 대칭 쌍, 간격 ±16"
+  },
+  "brows": {
+   "anchor": [
+    256,
+    238
+   ],
+   "default_position": [
+    256,
+    238
+   ],
+   "scale_range": [
+    0.8,
+    1.3
+   ],
+   "rotation_range_deg": [
+    -15,
+    15
+   ],
+   "z": 6,
+   "movable": true,
+   "note": "eyes 기준 y -60~-20"
+  },
+  "mouth": {
+   "anchor": [
+    256,
+    316
+   ],
+   "default_position": [
+    256,
+    316
+   ],
+   "scale_range": [
+    0.7,
+    1.4
+   ],
+   "rotation_range_deg": [
+    -15,
+    15
+   ],
+   "z": 7,
+   "movable": true
+  },
+  "hair": {
+   "anchor": [
+    256,
+    170
+   ],
+   "default_position": [
+    256,
+    170
+   ],
+   "scale_range": [
+    0.9,
+    1.1
+   ],
+   "rotation_range_deg": [
+    -5,
+    5
+   ],
+   "z": 8,
+   "movable": true,
+   "note": "head_top 고정, 색상 recolor"
+  },
+  "acc_hat": {
+   "anchor": [
+    256,
+    150
+   ],
+   "default_position": [
+    256,
+    150
+   ],
+   "scale_range": [
+    0.7,
+    1.4
+   ],
+   "rotation_range_deg": [
+    -25,
+    25
+   ],
+   "z": 13,
+   "movable": true,
+   "note": "pivot=모자 하단 중앙"
+  },
+  "acc_hairpin": {
+   "anchor": [
+    330,
+    176
+   ],
+   "default_position": [
+    330,
+    176
+   ],
+   "scale_range": [
+    0.5,
+    1.6
+   ],
+   "rotation_range_deg": [
+    -45,
+    45
+   ],
+   "z": 14,
+   "movable": true,
+   "note": "머리 윤곽 위 자유 배치"
+  },
+  "acc_glasses": {
+   "anchor": [
+    256,
+    276
+   ],
+   "default_position": [
+    256,
+    276
+   ],
+   "scale_range": [
+    0.8,
+    1.2
+   ],
+   "rotation_range_deg": [
+    -10,
+    10
+   ],
+   "z": 12,
+   "movable": true,
+   "note": "eyes 앵커 추종"
+  },
+  "acc_earring": {
+   "anchor": [
+    256,
+    320
+   ],
+   "default_position": [
+    256,
+    320
+   ],
+   "scale_range": [
+    0.6,
+    1.5
+   ],
+   "rotation_range_deg": [
+    -20,
+    20
+   ],
+   "z": 11,
+   "movable": true,
+   "note": "좌우 쌍(84,428)"
+  },
+  "acc_scarf": {
+   "anchor": [
+    256,
+    360
+   ],
+   "default_position": [
+    256,
+    360
+   ],
+   "scale_range": [
+    0.9,
+    1.1
+   ],
+   "rotation_range_deg": [
+    -8,
+    8
+   ],
+   "z": 9,
+   "movable": true
+  },
+  "acc_bag": {
+   "anchor": [
+    256,
+    330
+   ],
+   "default_position": [
+    256,
+    330
+   ],
+   "scale_range": [
+    0.7,
+    1.3
+   ],
+   "rotation_range_deg": [
+    -20,
+    20
+   ],
+   "z": 10,
+   "movable": true
+  },
+  "acc_prop": {
+   "anchor": [
+    430,
+    330
+   ],
+   "default_position": [
+    430,
+    330
+   ],
+   "scale_range": [
+    0.5,
+    1.6
+   ],
+   "rotation_range_deg": [
+    -180,
+    180
+   ],
+   "z": 15,
+   "movable": true,
+   "note": "손 위치, 좌우 반전(flipX) 허용"
+  },
+  "fx": {
+   "anchor": [
+    256,
+    132
+   ],
+   "default_position": [
+    256,
+    132
+   ],
+   "scale_range": [
+    0.6,
+    1.5
+   ],
+   "rotation_range_deg": [
+    -30,
+    30
+   ],
+   "z": 16,
+   "movable": false,
+   "note": "모션 스펙이 제어"
+  }
+ },
+ "accessory_slots": {
+  "multi": true,
+  "max_total": 4,
+  "one_per_subtype": [
+   "hat",
+   "glasses",
+   "scarf"
+  ],
+  "subtype_layer": {
+   "hat": "acc_hat",
+   "hairpin": "acc_hairpin",
+   "glasses": "acc_glasses",
+   "earring": "acc_earring",
+   "scarf": "acc_scarf",
+   "bag": "acc_bag",
+   "prop": "acc_prop"
+  }
+ },
+ "editor_transform_schema": {
+  "x": "canvas px",
+  "y": "canvas px",
+  "scale": "float",
+  "rotation": "deg",
+  "flipX": "bool",
+  "clamp": "anchor_rules 범위로 clamp"
+ }
 }

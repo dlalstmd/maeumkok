@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'dart:io';
+
+import 'package:maeumkok_app/avatar/avatar_manifest.dart';
 import 'package:maeumkok_app/avatar/part_adjust.dart';
 import 'package:maeumkok_app/screens/avatar_edit_screen.dart';
 
@@ -27,6 +30,38 @@ void main() {
     expect(parseAdjusts(j)['acc_11']!.dx, 12);
   });
 
+  final m = AvatarManifest.parse(
+    File('assets/avatar/manifest.json').readAsStringSync(),
+  );
+  final hats = m.byCategory('accessory').where((p) => p.subtype == 'hat');
+  final pins = m.byCategory('accessory').where((p) => p.subtype == 'hairpin');
+
+  test('v3 액세서리: 최대 4개, 모자는 1개만(교체)', () {
+    var l = <String>[];
+    l = m.addAccessory(l, hats.first.id);
+    l = m.addAccessory(l, hats.elementAt(1).id);
+    expect(l, [hats.elementAt(1).id]);
+    for (final p in pins.take(4)) {
+      l = m.addAccessory(l, p.id);
+    }
+    expect(l.length, 4);
+  });
+
+  test('v2 저장값(accessory) 이전 + 어두운 몸은 눈·입·눈썹 밝은 버전', () {
+    final sel = m.normalize({'accessory': 'acc_ribbon', 'body': 'body_mocha'});
+    expect(m.accessoriesOf(sel), ['acc_ribbon']);
+    expect(m.resolve('eyes', 'eyes_dot', 'body_mocha'), 'eyes_dot_light');
+    expect(m.resolve('brows', 'brows_arch', 'body_charcoal'), 'brows_arch_light');
+    expect(m.resolve('eyes', 'eyes_dot', 'body_white'), 'eyes_dot');
+  });
+
+  test('anchor_rules 범위로 clamp', () {
+    final r = m.ruleForPart(hats.first.id);
+    final a = const PartAdjust(scale: 3, rotate: 90).clampTo(r);
+    expect(a.scale, r.scaleMax);
+    expect(a.rotate, r.rotMax);
+  });
+
   testWidgets('편집기: 슬라이더·드래그로 조절하고 avatarAdjust로 저장', (t) async {
     t.view.physicalSize = const Size(1080, 2400);
     t.view.devicePixelRatio = 3;
@@ -42,7 +77,7 @@ void main() {
                 MaterialPageRoute(
                   builder: (_) => AvatarEditScreen(
                     uid: 'u',
-                    initial: const {'accessory': 'acc_ribbon'},
+                    initial: const {'accessories': 'acc_ribbon'},
                     onSave: (d) async => saved = d,
                   ),
                 ),
@@ -57,7 +92,12 @@ void main() {
     await t.pump(const Duration(seconds: 1));
     await t.runAsync(() => Future.delayed(const Duration(milliseconds: 500)));
     await t.pump(const Duration(seconds: 1));
-    await t.ensureVisible(find.text('꾸미기'));
+    await t.dragUntilVisible(
+      find.text('꾸미기'),
+      find.text('몸 색'),
+      const Offset(-150, 0),
+    );
+    await t.pump();
     await t.tap(find.text('꾸미기'));
     await t.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const Key('adjScale')), findsOneWidget);

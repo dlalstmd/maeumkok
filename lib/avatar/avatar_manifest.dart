@@ -12,8 +12,10 @@ class AvatarPart {
     this.fill,
     this.stroke,
     this.slot,
+    this.subtype,
     this.variant = false,
   });
+  final String? subtype;
   final String id;
   final String category;
   final String file;
@@ -29,6 +31,7 @@ class AvatarPart {
     fill: j['fill'] as String?,
     stroke: j['stroke'] as String?,
     slot: j['slot'] as String?,
+    subtype: j['subtype'] as String?,
   );
 }
 
@@ -59,14 +62,62 @@ class AvatarConstraint {
 const kDefaultConstraints = <AvatarConstraint>[];
 
 /// 사용자 선택 가능 카테고리(그림자·fx 제외)
-const kCustomizableCategories = ['body', 'eyes', 'mouth', 'blush', 'accessory'];
+const kCustomizableCategories = [
+  'body',
+  'hair',
+  'clothes',
+  'eyes',
+  'brows',
+  'mouth',
+  'blush',
+  'accessory',
+];
 const kCategoryLabels = {
   'body': '몸 색',
+  'hair': '헤어',
+  'clothes': '옷',
+  'brows': '눈썹',
   'eyes': '눈',
   'mouth': '입',
   'blush': '볼터치',
   'accessory': '꾸미기',
 };
+
+/// 선택 맵에서 액세서리 목록 키 (쉼표 구분 문자열로 저장)
+const kAccessoriesKey = 'accessories';
+
+/// manifest v3 anchor_rules 한 항목 (512 캔버스 좌표)
+class AnchorRule {
+  const AnchorRule({
+    this.anchor = (256, 256),
+    this.scaleMin = 0.5,
+    this.scaleMax = 2,
+    this.rotMin = -180,
+    this.rotMax = 180,
+    this.movable = true,
+    this.z = 0,
+  });
+  final (double, double) anchor;
+  final double scaleMin, scaleMax, rotMin, rotMax;
+  final bool movable;
+  final int z;
+
+  static double _d(Object? v, double d) => v is num ? v.toDouble() : d;
+  factory AnchorRule.fromJson(Map j) {
+    final a = (j['anchor'] as List?) ?? const [256, 256];
+    final sr = (j['scale_range'] as List?) ?? const [0.5, 2];
+    final rr = (j['rotation_range_deg'] as List?) ?? const [-180, 180];
+    return AnchorRule(
+      anchor: (_d(a[0], 256), _d(a[1], 256)),
+      scaleMin: _d(sr[0], 0.5),
+      scaleMax: _d(sr[1], 2),
+      rotMin: _d(rr[0], -180),
+      rotMax: _d(rr[1], 180),
+      movable: j['movable'] != false,
+      z: (j['z'] as num?)?.toInt() ?? 0,
+    );
+  }
+}
 
 class AvatarManifest {
   AvatarManifest({
@@ -77,7 +128,56 @@ class AvatarManifest {
     this.bodyTone = const {},
     this.anchors = const {},
     this.toneVariants = const {},
+    this.anchorRules = const {},
+    this.subtypeLayer = const {},
+    this.maxAccessories = 4,
+    this.onePerSubtype = const {},
   });
+  final Map<String, AnchorRule> anchorRules;
+
+  /// accessory_slots.subtype_layer: subtype -> 레이어 이름(acc_hat 등)
+  final Map<String, String> subtypeLayer;
+  final int maxAccessories;
+  final Set<String> onePerSubtype;
+
+  /// 액세서리 파츠의 레이어 이름
+  String? accLayerOf(String partId) {
+    final st = parts[partId]?.subtype;
+    return st == null ? null : subtypeLayer[st];
+  }
+
+  AnchorRule ruleForPart(String partId) =>
+      anchorRules[accLayerOf(partId)] ?? const AnchorRule();
+
+  /// 선택 맵의 액세서리 목록 (없는 파츠 제외, 규칙 위반분 정리)
+  List<String> accessoriesOf(Map<String, String> sel) {
+    final raw = (sel[kAccessoriesKey] ?? '')
+        .split(',')
+        .where((s) => s.isNotEmpty);
+    var out = <String>[];
+    for (final id in raw) {
+      out = addAccessory(out, id);
+    }
+    return out;
+  }
+
+  /// 액세서리 추가: 최대 [maxAccessories]개, 모자·안경·목도리는 같은 종류 교체
+  List<String> addAccessory(List<String> cur, String id) {
+    final p = parts[id];
+    if (p == null ||
+        p.category != 'accessory' ||
+        subtypeLayer[p.subtype] == null) {
+      return cur;
+    }
+    if (cur.contains(id)) return cur;
+    var next = [...cur];
+    if (onePerSubtype.contains(p.subtype)) {
+      next.removeWhere((x) => parts[x]?.subtype == p.subtype);
+    }
+    if (next.length >= maxAccessories) return cur;
+    return next..add(id);
+  }
+
   final List<String> layerOrder;
   final Map<String, String> defaults;
   final Map<String, AvatarPart> parts;
@@ -102,8 +202,13 @@ class AvatarManifest {
   }
 
   /// 편집기 노출용(_light 변형 제외)
-  List<AvatarPart> byCategory(String c) =>
-      parts.values.where((p) => p.category == c && !p.variant).toList();
+  List<AvatarPart> byCategory(String c) => parts.values
+      .where((p) => p.category == c && !p.variant && p.subtype != 'none')
+      .toList();
+
+  /// 한 개만 고르는 카테고리(몸·헤어·옷·눈·눈썹·입·볼터치·그림자)
+  Iterable<String> get singleCategories =>
+      layerOrder.where((c) => c != 'fx' && !c.startsWith('acc_'));
 
   factory AvatarManifest.parse(String json) {
     final m = jsonDecode(json) as Map<String, dynamic>;
@@ -126,6 +231,7 @@ class AvatarManifest {
         );
       }
     });
+    final slots = (m['accessory_slots'] as Map?) ?? const {};
     final cons = m['constraints'] is List
         ? (m['constraints'] as List)
               .map((c) => AvatarConstraint.fromJson(c as Map<String, dynamic>))
@@ -133,7 +239,21 @@ class AvatarManifest {
         : kDefaultConstraints;
     return AvatarManifest(
       layerOrder: (m['layer_order_bottom_to_top'] as List).cast<String>(),
-      defaults: (m['default'] as Map).cast<String, String>(),
+      defaults: {
+        for (final e in (m['default'] as Map).entries)
+          if (e.value is String) e.key as String: e.value as String,
+      },
+      anchorRules: {
+        for (final e in ((m['anchor_rules'] as Map?) ?? const {}).entries)
+          if (e.value is Map)
+            e.key as String: AnchorRule.fromJson(e.value as Map),
+      },
+      subtypeLayer: ((slots['subtype_layer'] as Map?) ?? const {})
+          .cast<String, String>(),
+      maxAccessories: (slots['max_total'] as num?)?.toInt() ?? 4,
+      onePerSubtype: ((slots['one_per_subtype'] as List?) ?? const [])
+          .cast<String>()
+          .toSet(),
       parts: parts,
       constraints: cons,
       anchors: {
@@ -155,13 +275,20 @@ class AvatarManifest {
   /// 저장값 정리: 없는/잘못된 파츠는 기본값으로
   Map<String, String> normalize(Object? raw) {
     final m = raw is Map ? raw : const {};
-    return {
-      for (final c in layerOrder)
-        if (c != 'fx')
-          c: (m[c] is String && parts[m[c]]?.category == c)
-              ? m[c] as String
-              : (defaults[c] ?? ''),
+    final out = {
+      for (final c in singleCategories)
+        c: (m[c] is String && parts[m[c]]?.category == c)
+            ? m[c] as String
+            : (defaults[c] ?? ''),
     }..removeWhere((_, v) => v.isEmpty);
+    // v2 저장값(accessory 단일) 이전
+    final legacy = m['accessory'];
+    final accRaw = m[kAccessoriesKey] is String
+        ? m[kAccessoriesKey] as String
+        : (legacy is String ? legacy : '');
+    final acc = accessoriesOf({kAccessoriesKey: accRaw});
+    if (acc.isNotEmpty) out[kAccessoriesKey] = acc.join(',');
+    return out;
   }
 
   /// 선택 조합에 맞는 색 치환표
