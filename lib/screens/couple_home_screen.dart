@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../avatar/avatar_view.dart';
+import '../avatar/touch_reactions.dart';
 import '../avatar/part_adjust.dart';
 import '../core/emotions.dart';
 import '../core/theme.dart';
@@ -27,7 +27,11 @@ class CoupleHomeScreen extends StatefulWidget {
     this.partnerAdjusts = const {},
     this.prefs,
     this.myAvatar = const {},
+    this.touchHaptics = true,
   });
+
+  /// users/{uid}.prefs.touchHaptics (기본 true)
+  final bool touchHaptics;
 
   /// 즐겨찾기·최근·우리 감정(없으면 해당 기능 비활성: 테스트용)
   final EmotionPrefsService? prefs;
@@ -240,18 +244,14 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
-                onTap: () => setState(() {
-                  _playKey = 'jump';
-                  _playToken = Object();
-                }),
-                child: LiveAvatar(
-                  selection: widget.partnerAvatar,
-                  adjusts: widget.partnerAdjusts,
-                  size: 240,
-                  playKey: _playKey,
-                  playToken: _playToken,
-                ),
+              TouchAvatar(
+                selection: widget.partnerAvatar,
+                adjusts: widget.partnerAdjusts,
+                size: 240,
+                playKey: _playKey,
+                playToken: _playToken,
+                haptics: widget.touchHaptics,
+                semanticsLabel: '${widget.partnerName ?? '상대'} 아바타, 탭하면 반응해요',
               ),
               const SizedBox(height: 24),
               if (lastFromPartner != null) _lastChip(lastFromPartner),

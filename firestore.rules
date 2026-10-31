@@ -23,6 +23,9 @@ service cloud.firestore {
         && (d.get('countStartAsDayOne', null) == null || d.countStartAsDayOne is bool)
         && (d.get('avatar', null) == null || (d.avatar is map && d.avatar.size() <= 10))
         && (d.get('avatarAdjust', null) == null || (d.avatarAdjust is map && d.avatarAdjust.size() <= 10))
+        && (d.get('prefs', null) == null || (d.prefs is map && d.prefs.size() <= 10
+            && (d.prefs.get('touchHaptics', true) is bool)))
+        && (d.get('background', null) == null || (d.background is map && d.background.size() <= 8))
         && (d.get('fcmTokens', null) == null || (d.fcmTokens is list && d.fcmTokens.size() <= 10));
     }
 

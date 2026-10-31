@@ -1,0 +1,747 @@
+{
+ "version": 1,
+ "status": "spec v5 (10/31)",
+ "screen": "main",
+ "zones": {
+  "coordinate": "아바타 바운딩박스 기준 0–1 정규화(y 위→아래)",
+  "head": {
+   "y": [
+    0,
+    0.32
+   ],
+   "note": "정수리·이마"
+  },
+  "face": {
+   "y": [
+    0.32,
+    0.62
+   ],
+   "x": [
+    0.18,
+    0.82
+   ],
+   "note": "눈·볼·입 주변, 볼 포함"
+  },
+  "body": {
+   "note": "그 외 블롭 몸통·바닥"
+  },
+  "priority": [
+   "face",
+   "head",
+   "body"
+  ],
+  "hit_slop_px": 12,
+  "outside": "무반응"
+ },
+ "gestures": {
+  "tap": "손 떼기까지 <200ms, 이동 <10px",
+  "double_tap": "두 번째 탭이 300ms 안, 첫 탭 반응은 보류하지 않고 즉시 재생 후 double_tap이 덮어씀",
+  "long_press": "500ms 유지. 손 떼면 0.3s 안에 idle 복귀",
+  "stroke": "같은 존 안에서 좌우 방향 전환 2회 이상(각 ≥24px), 속도 <1200px/s. 손 대고 있는 동안 루프",
+  "swipe": "거리 ≥60px, 속도 ≥800px/s, 주 방향 각도 ±30°. 시작 지점의 존을 사용"
+ },
+ "variant_selection": {
+  "method": "weight 가중 랜덤",
+  "no_repeat": "같은 존·제스처에서 직전 변형 제외",
+  "interrupt": "새 제스처가 오면 재생 중 모션을 150ms crossfade로 교체(emotion 수신 모션은 덮어쓰지 않음, 수신 모션 우선)"
+ },
+ "haptics": {
+  "api": "Flutter HapticFeedback(시스템 '터치 진동' 설정을 따르는 경량 햅틱). 감정 수신용 vibration_pattern_ms(Vibration 패턴)는 터치에 쓰지 않음",
+  "levels": {
+   "selection": "stroke 틱, 가벼운 탭",
+   "light": "tap·long_press 시작·swipe",
+   "medium": "double_tap·hug 등 강조"
+  },
+  "heavy": "사용 안 함",
+  "cooldown_ms": {
+   "global_min_gap": 120,
+   "same_gesture_zone": 350,
+   "stroke_tick": 250
+  },
+  "rate_limit": {
+   "window_ms": 10000,
+   "max_haptics": 8,
+   "on_exceed": "햅틱만 끄고 애니메이션은 계속, 3초 무입력 시 리셋"
+  },
+  "stroke": "방향 전환마다 selection 1회, 연속 문지르기 최대 4회/초, 1.5초 넘게 문지르면 0.5초 간격으로 감쇠 후 중단",
+  "long_press": "시작 시 1회만(유지 중 반복 없음)",
+  "spam_tap": {
+   "rule": "3초 안에 탭 6회 이상",
+   "result": "wobble_dizzy 1회(medium) 후 8초 동안 해당 이스터에그 비활성, 햅틱은 selection으로 강등"
+  },
+  "system_off": {
+   "android": "HapticFeedback은 시스템 '터치 시 진동'·무음/방해금지에서 자동 무시됨. 추가 체크 불필요",
+   "ios": "UIFeedbackGenerator는 설정 > 사운드 및 햅틱 > 시스템 햅틱이 꺼지면 자동 무시, 저전력 모드에서도 생략될 수 있음",
+   "app": "설정 화면 '아바타 터치 진동' 토글(users/{uid}.prefs.touchHaptics, 기본 true). 꺼지면 햅틱 호출 자체를 생략",
+   "no_fallback": "진동이 꺼져 있을 때 소리·패턴 진동으로 대체하지 않음"
+  }
+ },
+ "accessibility": {
+  "reduce_motion": "MediaQuery.disableAnimations이면 모든 변형을 squish(scale만, 200ms)로 대체, fx 생략",
+  "semantics": "아바타에 Semantics(label:'내 아바타, 탭하면 반응해요')"
+ },
+ "idle": "반응 종료 후 idle 루프로 복귀, blink 타이머 재시작",
+ "new_motion_keys": [
+  "squish",
+  "nuzzle",
+  "wobble_dizzy",
+  "slide",
+  "squash_down",
+  "peek_up"
+ ],
+ "table": [
+  {
+   "gesture": "tap",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "tap_head_bob",
+     "motion_key": "joy_bounce",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "tap_head_look",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "tap_head_sparkle",
+     "motion_key": "sparkle",
+     "haptic": "light",
+     "weight": 1,
+     "fx": "fx_sparkle"
+    }
+   ]
+  },
+  {
+   "gesture": "tap",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "tap_face_squish",
+     "motion_key": "squish",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_line"
+     }
+    },
+    {
+     "id": "tap_face_wink",
+     "motion_key": "squish",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_wink",
+      "mouth": "mouth_grin"
+     }
+    },
+    {
+     "id": "tap_face_blush",
+     "motion_key": "squish",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "blush": "blush_deep"
+     }
+    }
+   ]
+  },
+  {
+   "gesture": "tap",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "tap_body_jump",
+     "motion_key": "jump",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "tap_body_tummy",
+     "motion_key": "tummy_pat",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "tap_body_giggle",
+     "motion_key": "sway",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_happy_u",
+      "mouth": "mouth_open"
+     }
+    }
+   ]
+  },
+  {
+   "gesture": "double_tap",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "dtap_head_heart",
+     "motion_key": "heart_pop",
+     "haptic": "medium",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_heart"
+     },
+     "fx": "fx_heart"
+    },
+    {
+     "id": "dtap_head_cheer",
+     "motion_key": "cheer",
+     "haptic": "medium",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "double_tap",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "dtap_face_kiss",
+     "motion_key": "kiss",
+     "haptic": "medium",
+     "weight": 1,
+     "face_override": {
+      "mouth": "mouth_kiss"
+     },
+     "fx": "fx_heart"
+    },
+    {
+     "id": "dtap_face_star",
+     "motion_key": "sparkle",
+     "haptic": "medium",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_star"
+     },
+     "fx": "fx_sparkle"
+    }
+   ]
+  },
+  {
+   "gesture": "double_tap",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "dtap_body_jump",
+     "motion_key": "jump",
+     "haptic": "medium",
+     "weight": 1
+    },
+    {
+     "id": "dtap_body_flex",
+     "motion_key": "flex",
+     "haptic": "medium",
+     "weight": 1
+    },
+    {
+     "id": "dtap_body_arms",
+     "motion_key": "arms_open",
+     "haptic": "medium",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "long_press",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "lp_head_doze",
+     "motion_key": "doze",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_sleepy"
+     },
+     "fx": "fx_zzz"
+    },
+    {
+     "id": "lp_head_nuzzle",
+     "motion_key": "nuzzle",
+     "haptic": "light",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "long_press",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "lp_face_squish_hold",
+     "motion_key": "squish",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_line",
+      "blush": "blush_deep"
+     }
+    },
+    {
+     "id": "lp_face_daydream",
+     "motion_key": "daydream",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_happy_u"
+     }
+    }
+   ]
+  },
+  {
+   "gesture": "long_press",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "lp_body_breathe",
+     "motion_key": "breathe",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "lp_body_hug",
+     "motion_key": "arms_open",
+     "haptic": "medium",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_smile"
+     },
+     "fx": "fx_heart"
+    }
+   ]
+  },
+  {
+   "gesture": "stroke",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "st_head_nuzzle",
+     "motion_key": "nuzzle",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "st_head_sway",
+     "motion_key": "sway",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_happy_u"
+     }
+    },
+    {
+     "id": "st_head_doze",
+     "motion_key": "doze",
+     "haptic": "selection",
+     "weight": 0.5,
+     "face_override": {
+      "eyes": "eyes_half"
+     },
+     "fx": "fx_zzz"
+    }
+   ]
+  },
+  {
+   "gesture": "stroke",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "st_face_nuzzle",
+     "motion_key": "nuzzle",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "blush": "blush_deep"
+     }
+    },
+    {
+     "id": "st_face_cat",
+     "motion_key": "sway",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "mouth": "mouth_cat",
+      "eyes": "eyes_happy_u"
+     }
+    }
+   ]
+  },
+  {
+   "gesture": "stroke",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "st_body_sway",
+     "motion_key": "sway",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "st_body_giggle",
+     "motion_key": "joy_bounce",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "mouth": "mouth_open"
+     }
+    },
+    {
+     "id": "st_body_melt",
+     "motion_key": "lie_down",
+     "haptic": "selection",
+     "weight": 0.5,
+     "face_override": {
+      "eyes": "eyes_line"
+     }
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_up",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "swipe_up_head_peek_up",
+     "motion_key": "peek_up",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "swipe_up_head_jump",
+     "motion_key": "jump",
+     "haptic": "light",
+     "weight": 1,
+     "fx": "fx_sparkle"
+    },
+    {
+     "id": "swipe_up_head_cheer",
+     "motion_key": "cheer",
+     "haptic": "light",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_up",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "swipe_up_face_peek_up",
+     "motion_key": "peek_up",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "swipe_up_face_jump",
+     "motion_key": "jump",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_wide",
+      "mouth": "mouth_o"
+     },
+     "fx": "fx_sparkle"
+    },
+    {
+     "id": "swipe_up_face_cheer",
+     "motion_key": "cheer",
+     "haptic": "light",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_up",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "swipe_up_body_peek_up",
+     "motion_key": "peek_up",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "swipe_up_body_jump",
+     "motion_key": "jump",
+     "haptic": "light",
+     "weight": 1,
+     "fx": "fx_sparkle"
+    },
+    {
+     "id": "swipe_up_body_flex",
+     "motion_key": "flex",
+     "haptic": "light",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_down",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "swipe_down_head_squash_down",
+     "motion_key": "squash_down",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "swipe_down_head_droop",
+     "motion_key": "droop",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_half"
+     }
+    },
+    {
+     "id": "swipe_down_head_bow",
+     "motion_key": "bow",
+     "haptic": "light",
+     "weight": 1
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_down",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "swipe_down_face_squash_down",
+     "motion_key": "squash_down",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "swipe_down_face_droop",
+     "motion_key": "droop",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_wide",
+      "mouth": "mouth_o"
+     }
+    },
+    {
+     "id": "swipe_down_face_lie_down",
+     "motion_key": "lie_down",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_sleepy"
+     },
+     "fx": "fx_zzz"
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_down",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "swipe_down_body_squash_down",
+     "motion_key": "squash_down",
+     "haptic": "light",
+     "weight": 1
+    },
+    {
+     "id": "swipe_down_body_droop",
+     "motion_key": "droop",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_half"
+     }
+    },
+    {
+     "id": "swipe_down_body_lie_down",
+     "motion_key": "lie_down",
+     "haptic": "light",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_sleepy"
+     },
+     "fx": "fx_zzz"
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_left",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "swipe_left_head_slide",
+     "motion_key": "slide",
+     "haptic": "light",
+     "weight": 1,
+     "params": {
+      "dir": -1
+     }
+    },
+    {
+     "id": "swipe_left_head_look_around",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "swipe_left_head_wobble_dizzy",
+     "motion_key": "wobble_dizzy",
+     "haptic": "medium",
+     "weight": 0.4
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_left",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "swipe_left_face_slide",
+     "motion_key": "slide",
+     "haptic": "light",
+     "weight": 1,
+     "params": {
+      "dir": -1
+     }
+    },
+    {
+     "id": "swipe_left_face_look_around",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_wide",
+      "mouth": "mouth_o"
+     }
+    },
+    {
+     "id": "swipe_left_face_wobble_dizzy",
+     "motion_key": "wobble_dizzy",
+     "haptic": "medium",
+     "weight": 0.4
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_left",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "swipe_left_body_slide",
+     "motion_key": "slide",
+     "haptic": "light",
+     "weight": 1,
+     "params": {
+      "dir": -1
+     }
+    },
+    {
+     "id": "swipe_left_body_look_around",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "swipe_left_body_wobble_dizzy",
+     "motion_key": "wobble_dizzy",
+     "haptic": "medium",
+     "weight": 0.4
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_right",
+   "zone": "head",
+   "variants": [
+    {
+     "id": "swipe_right_head_slide",
+     "motion_key": "slide",
+     "haptic": "light",
+     "weight": 1,
+     "params": {
+      "dir": 1
+     }
+    },
+    {
+     "id": "swipe_right_head_look_around",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "swipe_right_head_wobble_dizzy",
+     "motion_key": "wobble_dizzy",
+     "haptic": "medium",
+     "weight": 0.4
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_right",
+   "zone": "face",
+   "variants": [
+    {
+     "id": "swipe_right_face_slide",
+     "motion_key": "slide",
+     "haptic": "light",
+     "weight": 1,
+     "params": {
+      "dir": 1
+     }
+    },
+    {
+     "id": "swipe_right_face_look_around",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1,
+     "face_override": {
+      "eyes": "eyes_wide",
+      "mouth": "mouth_o"
+     }
+    },
+    {
+     "id": "swipe_right_face_wobble_dizzy",
+     "motion_key": "wobble_dizzy",
+     "haptic": "medium",
+     "weight": 0.4
+    }
+   ]
+  },
+  {
+   "gesture": "swipe_right",
+   "zone": "body",
+   "variants": [
+    {
+     "id": "swipe_right_body_slide",
+     "motion_key": "slide",
+     "haptic": "light",
+     "weight": 1,
+     "params": {
+      "dir": 1
+     }
+    },
+    {
+     "id": "swipe_right_body_look_around",
+     "motion_key": "look_around",
+     "haptic": "selection",
+     "weight": 1
+    },
+    {
+     "id": "swipe_right_body_wobble_dizzy",
+     "motion_key": "wobble_dizzy",
+     "haptic": "medium",
+     "weight": 0.4
+    }
+   ]
+  }
+ ]
+}

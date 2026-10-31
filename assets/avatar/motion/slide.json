@@ -1,0 +1,59 @@
+{
+ "key": "slide",
+ "duration_ms": 700,
+ "loop": false,
+ "pivot": "pivot_bottom",
+ "layers": {
+  "body_group": {
+   "applies_to": [
+    "shadow?",
+    "body",
+    "blush",
+    "eyes",
+    "mouth",
+    "accessory"
+   ],
+   "keyframes": [
+    {
+     "t": 0,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 0.3,
+     "scale": 1,
+     "rotate": -8,
+     "tx": -48,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 0.65,
+     "scale": 1,
+     "rotate": 4,
+     "tx": -56,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    },
+    {
+     "t": 1,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutBack"
+    }
+   ]
+  }
+ },
+ "source": "touch_reactions v5",
+ "mirror_param": "dir",
+ "note_dir": "dir=-1 왼쪽, +1 오른쪽(tx·rotate 부호 반전)"
+}

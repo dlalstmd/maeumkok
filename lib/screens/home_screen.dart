@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _couples = CoupleService();
   final _emotions = EmotionService();
   final _prefs = EmotionPrefsService();
+  bool _touchHaptics = true;
   final _notify = NotifyService();
   final _push = PushService();
 
@@ -56,6 +57,14 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_) => SettingsScreen(
           email: widget.user.email,
           onSignOut: _signOut,
+          touchHaptics: _touchHaptics,
+          onTouchHaptics: (v) async {
+            _touchHaptics = v;
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(widget.user.uid)
+                .update({'prefs.touchHaptics': v});
+          },
           onDeleteAccount: () async {
             try {
               await _push.unregister(widget.user.uid);
@@ -228,6 +237,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             partnerAdjusts: partnerAdjusts,
                             prefs: _prefs,
                             myAvatar: myAvatar,
+                            touchHaptics: _touchHaptics =
+                                ((me?['prefs'] as Map?)?['touchHaptics']
+                                    as bool?) ??
+                                true,
                           ),
                         ),
                       ],

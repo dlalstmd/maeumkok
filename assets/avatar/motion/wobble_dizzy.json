@@ -1,0 +1,80 @@
+{
+ "key": "wobble_dizzy",
+ "duration_ms": 1400,
+ "loop": false,
+ "pivot": "pivot_bottom",
+ "layers": {
+  "body_group": {
+   "applies_to": [
+    "shadow?",
+    "body",
+    "blush",
+    "eyes",
+    "mouth",
+    "accessory"
+   ],
+   "keyframes": [
+    {
+     "t": 0,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 0.2,
+     "scale": 1,
+     "rotate": -10,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 0.4,
+     "scale": 1,
+     "rotate": 10,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 0.6,
+     "scale": 1,
+     "rotate": -7,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 0.8,
+     "scale": 1,
+     "rotate": 5,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    },
+    {
+     "t": 1,
+     "scale": 1,
+     "rotate": 0,
+     "tx": 0,
+     "ty": 0,
+     "opacity": 1,
+     "curve": "easeOutCubic"
+    }
+   ]
+  }
+ },
+ "source": "touch_reactions v5",
+ "face_override": {
+  "eyes": "eyes_dizzy",
+  "mouth": "mouth_wavy",
+  "until_t": 0.9
+ }
+}

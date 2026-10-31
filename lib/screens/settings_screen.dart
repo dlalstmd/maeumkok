@@ -10,16 +10,27 @@ class SettingsScreen extends StatefulWidget {
     required this.email,
     required this.onSignOut,
     required this.onDeleteAccount,
+    this.touchHaptics = true,
+    this.onTouchHaptics,
+    this.extraTiles = const [],
   });
   final String? email;
   final Future<void> Function() onSignOut;
   final Future<void> Function() onDeleteAccount;
+
+  /// 아바타 터치 진동(users/{uid}.prefs.touchHaptics)
+  final bool touchHaptics;
+  final Future<void> Function(bool on)? onTouchHaptics;
+
+  /// 배경 등 추가 항목
+  final List<Widget> extraTiles;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  late bool _touchHaptics = widget.touchHaptics;
   bool _busy = false;
 
   Future<void> _signOut() async {
@@ -74,6 +85,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ListTile(
                     title: const Text('계정'),
                     subtitle: Text(widget.email!),
+                  ),
+                ...widget.extraTiles,
+                if (widget.onTouchHaptics != null)
+                  SwitchListTile(
+                    key: const Key('touchHaptics'),
+                    title: const Text('아바타 터치 진동'),
+                    subtitle: const Text('아바타를 만지면 가볍게 진동해요'),
+                    value: _touchHaptics,
+                    onChanged: (v) {
+                      setState(() => _touchHaptics = v);
+                      widget.onTouchHaptics!(v);
+                    },
                   ),
                 ListTile(
                   title: const Text('개인정보처리방침'),

@@ -13,10 +13,19 @@ class Kf {
     this.tx,
     this.ty,
     this.opacity,
-    this.curve,
-  );
+    this.curve, [
+    this.sx = 1,
+    this.sy = 1,
+  ]);
   final double t, scale, rotate, tx, ty, opacity;
   final Curve curve;
+
+  /// 비등방 스케일(scale_x/scale_y, scale에 곱함)
+  final double sx, sy;
+
+  /// slide 등 mirror_param(dir): -1이면 tx·rotate 부호 반전
+  Kf mirrored(double dir) =>
+      dir >= 0 ? this : Kf(t, scale, -rotate, -tx, ty, opacity, curve, sx, sy);
 
   factory Kf.fromJson(Map j) {
     double n(String k, double d) => (j[k] as num?)?.toDouble() ?? d;
@@ -28,6 +37,8 @@ class Kf {
       n('ty', 0),
       n('opacity', 1),
       _curve(j['curve'] as String?),
+      n('scale_x', 1),
+      n('scale_y', 1),
     );
   }
 }
@@ -36,6 +47,9 @@ Curve _curve(String? c) => switch (c) {
   'linear' => Curves.linear,
   'easeOut' => Curves.easeOut,
   'easeOutBack' => Curves.easeOutBack,
+  'easeOutCubic' => Curves.easeOutCubic,
+  'elasticOut' => Curves.elasticOut,
+  'easeInOutSine' => Curves.easeInOutSine,
   'easeIn' => Curves.easeIn,
   _ => Curves.easeInOut,
 };
@@ -60,6 +74,8 @@ Kf sampleKfs(List<Kf> k, double t) {
         l(a.ty, b.ty),
         l(a.opacity, b.opacity).clamp(0.0, 1.0),
         Curves.linear,
+        l(a.sx, b.sx),
+        l(a.sy, b.sy),
       );
     }
   }
@@ -91,6 +107,16 @@ class AvatarMotionSpec {
   final Map<String, MotionLayer> layers; // body_group / fx / eyes
   final Map<String, String> swap; // part_swap: eyes/mouth
   final bool blink;
+
+  /// mirror_param 모션의 원본 방향(body_group tx 최대값 부호). slide 원본은 왼쪽(-1).
+  double get baseDir {
+    final k = layers['body_group']?.keyframes ?? const [];
+    var best = 0.0;
+    for (final f in k) {
+      if (f.tx.abs() > best.abs()) best = f.tx;
+    }
+    return best < 0 ? -1 : 1;
+  }
 
   factory AvatarMotionSpec.parse(String json) {
     final m = jsonDecode(json) as Map<String, dynamic>;

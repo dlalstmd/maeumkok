@@ -106,7 +106,15 @@ class AvatarLayers extends StatelessWidget {
         child: Transform.rotate(
           angle: k.rotate * math.pi / 180,
           alignment: pivot,
-          child: Transform.scale(scale: k.scale, alignment: pivot, child: w),
+          child: Transform(
+            alignment: pivot,
+            transform: Matrix4.diagonal3Values(
+              k.scale * k.sx,
+              k.scale * k.sy,
+              1,
+            ),
+            child: w,
+          ),
         ),
       ),
     );
@@ -196,12 +204,28 @@ class LiveAvatar extends StatefulWidget {
     this.playKey,
     this.playToken,
     this.adjusts = const {},
+    this.faceOverride = const {},
+    this.playDir = 1,
+    this.playFx,
+    this.playIsTouch = false,
   });
   final Map<String, PartAdjust> adjusts;
   final Map<String, String> selection;
   final double size;
   final String? playKey;
   final Object? playToken;
+
+  /// 터치 반응 표정 교체(eyes/mouth/blush/brows), 재생 중에만
+  final Map<String, String> faceOverride;
+
+  /// mirror_param(dir) 모션(slide)의 방향 -1/1
+  final double playDir;
+
+  /// 모션에 fx 레이어가 없을 때 띄울 fx 파츠(fx_heart 등)
+  final String? playFx;
+
+  /// 터치 반응이면 감정 수신 모션 재생 중엔 무시(수신 모션 우선)
+  final bool playIsTouch;
 
   @override
   State<LiveAvatar> createState() => _LiveAvatarState();
@@ -216,6 +240,16 @@ class _LiveAvatarState extends State<LiveAvatar>
   Duration _blinkDur = const Duration(milliseconds: 220);
   Timer? _blinkTimer, _endTimer;
   bool _blinking = false;
+  bool _emotionPlaying = false;
+  Map<String, String> _face = const {};
+  double _dir = 1;
+  String? _touchFx;
+  static const _fxKfs = [
+    Kf(0, 0.6, 0, 0, 0, 0, Curves.easeOut),
+    Kf(0.25, 1, 0, 0, -20, 1, Curves.easeOut),
+    Kf(0.8, 1, 0, 0, -50, 1, Curves.linear),
+    Kf(1, 1, 0, 0, -60, 0, Curves.easeIn),
+  ];
 
   @override
   void initState() {
@@ -246,7 +280,13 @@ class _LiveAvatarState extends State<LiveAvatar>
 
   void _toIdle() {
     _endTimer?.cancel();
-    setState(() => _spec = _idle);
+    _emotionPlaying = false;
+    setState(() {
+      _spec = _idle;
+      _face = const {};
+      _touchFx = null;
+      _dir = 1;
+    });
     final d = _idle?.duration ?? const Duration(milliseconds: 2400);
     _c
       ..duration = d
@@ -256,14 +296,23 @@ class _LiveAvatarState extends State<LiveAvatar>
   Future<void> _play() async {
     final key = widget.playKey;
     if (key == null || _m == null) return;
+    if (widget.playIsTouch && _emotionPlaying) return; // 수신 모션 우선
     final spec = await loadMotion(key);
     if (!mounted) return;
     if (spec == null) return _toIdle(); // 모션 없는 키 → idle 유지
     _endTimer?.cancel();
-    setState(() => _spec = spec);
+    _emotionPlaying = !widget.playIsTouch;
+    setState(() {
+      _spec = spec;
+      _face = widget.playIsTouch ? widget.faceOverride : const {};
+      _dir = widget.playIsTouch ? widget.playDir : 1;
+      _touchFx = widget.playIsTouch ? widget.playFx : null;
+    });
     _c.duration = spec.duration;
     final ms = spec.duration.inMilliseconds;
-    final cycles = spec.loop ? math.max(1, (2400 / ms).ceil()) : 1;
+    final cycles = spec.loop
+        ? math.max(1, ((widget.playIsTouch ? 1200 : 2400) / ms).ceil())
+        : 1;
     _c.repeat(count: cycles);
     _endTimer = Timer(
       spec.duration * cycles + const Duration(milliseconds: 600),
@@ -324,18 +373,27 @@ class _LiveAvatarState extends State<LiveAvatar>
             }
           }
         }
-        if (_blinking) overrides['eyes'] = 'eyes_line';
+        overrides.addAll(_face);
+        if (_blinking && !_face.containsKey('eyes')) {
+          overrides['eyes'] = 'eyes_line';
+        }
         final fx = s?.layers['fx'];
         final bg = s?.layers['body_group'];
+        final fxPart = fx?.part ?? _touchFx;
+        final fxKf = fx != null
+            ? sampleKfs(fx.keyframes, t)
+            : (_touchFx != null ? sampleKfs(_fxKfs, t) : null);
         return AvatarLayers(
           manifest: m,
           selection: widget.selection,
           size: widget.size,
           adjusts: widget.adjusts,
           overrides: overrides,
-          body: bg == null ? null : sampleKfs(bg.keyframes, t),
-          fxPart: fx?.part,
-          fx: fx == null ? null : sampleKfs(fx.keyframes, t),
+          body: bg == null
+              ? null
+              : sampleKfs(bg.keyframes, t).mirrored(_dir * s!.baseDir),
+          fxPart: fxPart,
+          fx: fxKf,
         );
       },
     );
