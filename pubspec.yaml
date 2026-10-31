@@ -131,12 +131,21 @@ flutter_launcher_icons:
   adaptive_icon_foreground: "assets/app_icon/ic_foreground_432.png"
   adaptive_icon_monochrome: "assets/app_icon/ic_monochrome_432.png"
 
-# 스플래시(에셋 미확정: 지금은 배경색만, 인위적 지연 없음)
-# 에셋 확정 시 image / android_12.image 경로 주석 해제 후 `dart run flutter_native_splash:create`
+# 스플래시 v6 확정: B안 + 워드마크, 다크 #111111 (지연 없음)
 flutter_native_splash:
   color: "#FAFAFA"
-  # image: assets/splash/splash_logo.png
+  color_dark: "#111111"
+  image: assets/splash/legacy_image_B_192dp_xxxhdpi.png
+  branding: assets/splash/branding_charcoal_200x80dp_xxxhdpi.png
+  branding_dark: assets/splash/branding_light_200x80dp_xxxhdpi.png
   android_12:
+    image: assets/splash/android12_icon_B_240dp_xxxhdpi.png
+    icon_background_color: "#FF6A3D"
+    icon_background_color_dark: "#FF6A3D"
     color: "#FAFAFA"
-    # image: assets/splash/splash_logo_android12.png
+    color_dark: "#111111"
+    branding: assets/splash/branding_charcoal_200x80dp_xxxhdpi.png
+    branding_dark: assets/splash/branding_light_200x80dp_xxxhdpi.png
+  ios: true
+  android: true
   fullscreen: false
