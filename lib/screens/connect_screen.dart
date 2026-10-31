@@ -88,29 +88,34 @@ class _ConnectScreenState extends State<ConnectScreen> {
                       if (status == 'claimed') ...[
                         const Text('상대가 코드를 입력했어요. 수락할까요?'),
                         const SizedBox(height: 8),
+                        // 테마의 버튼 minimumSize가 Size.fromHeight(무한 너비)라
+                        // Row 안에서는 Expanded로 너비를 제한해야 렌더링된다.
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            FilledButton(
-                              onPressed: _busy
-                                  ? null
-                                  : () => _run(
-                                      () => widget.couples.confirmInviteCode(
-                                        widget.uid,
-                                        code,
+                            Expanded(
+                              child: FilledButton(
+                                onPressed: _busy
+                                    ? null
+                                    : () => _run(
+                                        () => widget.couples.confirmInviteCode(
+                                          widget.uid,
+                                          code,
+                                        ),
                                       ),
-                                    ),
-                              child: const Text('수락'),
+                                child: const Text('수락'),
+                              ),
                             ),
                             const SizedBox(width: 8),
-                            OutlinedButton(
-                              onPressed: _busy
-                                  ? null
-                                  : () => _run(() async {
-                                      await widget.couples.cancelInvite(code);
-                                      setState(() => _myCode = null);
-                                    }),
-                              child: const Text('거절'),
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: _busy
+                                    ? null
+                                    : () => _run(() async {
+                                        await widget.couples.cancelInvite(code);
+                                        setState(() => _myCode = null);
+                                      }),
+                                child: const Text('거절'),
+                              ),
                             ),
                           ],
                         ),
