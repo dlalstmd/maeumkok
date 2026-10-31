@@ -312,6 +312,18 @@ Future<AvatarManifest> loadAvatarManifest() async =>
 Future<String> loadPartSvg(AvatarPart p) async => _svgCache[p.file] ??=
     await rootBundle.loadString('assets/avatar/${p.file}');
 
+final _recolorCache = <String, String>{};
+
+/// 로드·재색칠이 끝난 SVG 문자열(동기). 아직 로드 전이면 null.
+String? cachedPartSvg(AvatarPart p, Map<String, String>? recolor) {
+  final raw = _svgCache[p.file];
+  if (raw == null) return null;
+  if (recolor == null || recolor.isEmpty) return raw;
+  final key =
+      '${p.file}|${recolor.entries.map((e) => '${e.key}>${e.value}').join(',')}';
+  return _recolorCache[key] ??= applyRecolor(raw, recolor);
+}
+
 String applyRecolor(String svg, Map<String, String>? map) {
   if (map == null) return svg;
   var s = svg;

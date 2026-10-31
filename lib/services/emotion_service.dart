@@ -8,8 +8,12 @@ class EmotionEvent {
     this.senderUid,
     this.emotionId,
     this.createdAt,
-    this.readAt,
-  );
+    this.readAt, [
+    this.count = 1,
+  ]);
+
+  /// 연타 묶음 개수(1~99)
+  final int count;
   final String id;
   final String senderUid;
   final String emotionId;
@@ -24,6 +28,7 @@ class EmotionEvent {
       m['emotionId'] as String,
       (m['createdAt'] as Timestamp?)?.toDate(),
       (m['readAt'] as Timestamp?)?.toDate(),
+      ((m['count'] as num?)?.toInt() ?? 1).clamp(1, kMaxBurst),
     );
   }
 }
@@ -69,6 +74,11 @@ String reactionLabel(Emotion? e, String reactionId) {
   return reactionId;
 }
 
+const kMaxBurst = 99;
+
+/// 같은 감정을 이 시간 안에 다시 보내면 직전 문서 count를 올린다.
+const kMergeWindow = Duration(seconds: 3);
+
 class EmotionService {
   EmotionService({FirebaseFirestore? db})
     : _db = db ?? FirebaseFirestore.instance;
@@ -79,12 +89,49 @@ class EmotionService {
   CollectionReference<Map<String, dynamic>> _reactions(String c) =>
       _db.collection('couples').doc(c).collection('reactions');
 
-  Future<void> sendEmotion(String coupleId, String myUid, String emotionId) =>
-      _emotions(coupleId).add({
-        'senderUid': myUid,
-        'emotionId': emotionId,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
+  String? _lastId, _lastEmotion;
+  DateTime? _lastAt;
+  int _lastCount = 0;
+
+  /// 감정 [count]개를 문서 1개로 보낸다. 같은 감정을 [kMergeWindow] 안에
+  /// 다시 보내면 직전 문서의 count를 올린다(최대 [kMaxBurst]).
+  Future<void> sendEmotion(
+    String coupleId,
+    String myUid,
+    String emotionId, {
+    int count = 1,
+    DateTime? now,
+  }) async {
+    final t = now ?? DateTime.now();
+    count = count.clamp(1, kMaxBurst);
+    final last = _lastId;
+    if (last != null &&
+        _lastEmotion == emotionId &&
+        _lastAt != null &&
+        t.difference(_lastAt!) < kMergeWindow &&
+        _lastCount < kMaxBurst) {
+      final next = (_lastCount + count).clamp(1, kMaxBurst);
+      try {
+        await _emotions(coupleId).doc(last).update({'count': next});
+        _lastCount = next;
+        _lastAt = t;
+        return;
+      } catch (_) {
+        // 규칙상 병합 창이 지났으면 새 문서로
+      }
+    }
+    final ref = _emotions(coupleId).doc();
+    await ref.set({
+      'senderUid': myUid,
+      'emotionId': emotionId,
+      'count': count,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+    _lastId = ref.id;
+    _lastEmotion = emotionId;
+    _lastAt = t;
+    _lastCount = count;
+  }
 
   Future<void> markRead(String coupleId, String emotionDocId) =>
       _emotions(coupleId)
@@ -112,7 +159,7 @@ class EmotionService {
 
   Stream<List<ReactionEvent>> watchReactions(
     String coupleId, {
-    int limit = 50,
+    int limit = 30,
   }) =>
       _reactions(coupleId)
           .orderBy('createdAt', descending: true)

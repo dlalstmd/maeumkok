@@ -166,7 +166,7 @@ class _TimelineScreenState extends State<TimelineScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$who · ${e?.label ?? ev.emotionId}',
+                    '$who · ${e?.label ?? ev.emotionId}${ev.count > 1 ? ' x${ev.count}' : ''}',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,

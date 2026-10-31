@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../avatar/avatar_view.dart';
@@ -119,6 +120,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   void dispose() {
     _sub?.cancel();
     _reactSub?.cancel();
+    _burst.flushNow();
     super.dispose();
   }
 
@@ -131,21 +133,45 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
     return '${d.inDays}일 전';
   }
 
-  Future<void> _send(Emotion e) async {
-    setState(() => _selected = e.id);
-    await widget.emotions.sendEmotion(widget.coupleId, widget.uid, e.id);
+  late final _burst = TapBurst(onFlush: _flush);
+
+  /// 탭은 막지 않고 모아서(마지막 탭 후 1초) 문서 1개로 보낸다.
+  void _send(Emotion e) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      _selected = e.id;
+      _burst.tap(e.id);
+    });
+  }
+
+  Future<void> _flush(String emotionId, int count) async {
+    if (mounted) setState(() {});
+    final e = emotionById(emotionId);
+    try {
+      await widget.emotions.sendEmotion(
+        widget.coupleId,
+        widget.uid,
+        emotionId,
+        count: count,
+      );
+    } catch (err) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('보내지 못했어요: $err')));
+      return;
+    }
     if (!mounted) return;
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('${e.label} 마음을 보냈어요'),
+          content: Text(
+            '${e?.label ?? emotionId} 마음을 보냈어요${count > 1 ? ' x$count' : ''}',
+          ),
           duration: const Duration(seconds: 1),
         ),
       );
-    Future.delayed(const Duration(milliseconds: 600), () {
-      if (mounted) setState(() => _selected = null);
-    });
+    if (_burst.pendingId == null) setState(() => _selected = null);
   }
 
   @override
@@ -263,6 +289,37 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
 
   Widget _emotionCard(Emotion e) {
     final sel = _selected == e.id;
+    final n = _burst.pendingId == e.id ? _burst.count : 0;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Positioned.fill(child: _emotionCardBody(e, sel)),
+        if (n > 1)
+          Positioned(
+            right: -4,
+            top: -4,
+            child: Container(
+              key: Key('burst:${e.id}'),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: MkColors.text,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                'x$n',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _emotionCardBody(Emotion e, bool sel) {
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: () => _send(e),
@@ -311,7 +368,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
           Icon(lucideIcon(e?.icon), size: 14),
           const SizedBox(width: 6),
           Text(
-            '마지막 마음 · ${e?.label ?? ev.emotionId} · ${_ago(ev.createdAt)}',
+            '마지막 마음 · ${e?.label ?? ev.emotionId}${ev.count > 1 ? ' x${ev.count}' : ''} · ${_ago(ev.createdAt)}',
             style: const TextStyle(fontSize: 13),
           ),
         ],
@@ -332,7 +389,7 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
       key: const Key('myLastLine'),
       padding: const EdgeInsets.only(top: 8),
       child: Text(
-        '내가 보낸 ${e?.label ?? ''} · $status',
+        '내가 보낸 ${e?.label ?? ''}${mine.count > 1 ? ' x${mine.count}' : ''} · $status',
         style: TextStyle(
           fontSize: r != null ? 14 : 12,
           color: r != null ? MkColors.text : MkColors.textSub,
@@ -375,5 +432,34 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
         ],
       ),
     );
+  }
+}
+
+/// 같은 감정 연타를 모은다: 마지막 탭 후 [debounce] 뒤 [onFlush](id, count).
+/// 다른 감정을 누르면 이전 묶음을 즉시 보낸다. 최대 [kMaxBurst].
+class TapBurst {
+  TapBurst({required this.onFlush, this.debounce = const Duration(seconds: 1)});
+  final void Function(String emotionId, int count) onFlush;
+  final Duration debounce;
+  String? pendingId;
+  int count = 0;
+  Timer? _timer;
+
+  void tap(String id) {
+    if (pendingId != null && pendingId != id) flushNow();
+    pendingId = id;
+    count = (count + 1).clamp(1, kMaxBurst);
+    _timer?.cancel();
+    _timer = Timer(debounce, flushNow);
+  }
+
+  void flushNow() {
+    _timer?.cancel();
+    _timer = null;
+    final id = pendingId;
+    final n = count;
+    pendingId = null;
+    count = 0;
+    if (id != null && n > 0) onFlush(id, n);
   }
 }

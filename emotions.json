@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4.1,
   "vibration_note": "패턴은 [대기,진동,대기,진동...] ms. vibration 패키지 Vibration.vibrate(pattern: ...) 사용, 미지원 기기는 HapticFeedback.mediumImpact() 폴백",
   "categories": {
     "mood": "기분",
@@ -31,7 +31,8 @@
       "subcategory": "good",
       "subcategory_label": "좋아",
       "subcategory_order": 0,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "🥰",
@@ -57,7 +58,8 @@
       "subcategory": "good",
       "subcategory_label": "좋아",
       "subcategory_order": 0,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "😌",
@@ -79,7 +81,8 @@
       "subcategory": "good",
       "subcategory_label": "좋아",
       "subcategory_order": 0,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
     },
     {
       "emoji": "🤩",
@@ -105,7 +108,106 @@
       "subcategory": "good",
       "subcategory_label": "좋아",
       "subcategory_order": 0,
-      "order_in_subcategory": 3
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "😮‍💨",
+      "id": "relieved",
+      "label": "안심돼",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "다행이다",
+        "걱정했어"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        120
+      ],
+      "vibration_name": "soft",
+      "animation_key": "breathe",
+      "icon": "lucide:shield-check",
+      "subcategory": "good",
+      "subcategory_label": "좋아",
+      "subcategory_order": 0,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🥲",
+      "id": "touched",
+      "label": "감동이야",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "나도 감동",
+        "울지 마ㅠㅠ"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        60,
+        100,
+        120
+      ],
+      "vibration_name": "heart",
+      "animation_key": "longing",
+      "icon": "lucide:heart-handshake",
+      "subcategory": "good",
+      "subcategory_label": "좋아",
+      "subcategory_order": 0,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "😎",
+      "id": "confident",
+      "label": "자신있어",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "멋있다!",
+        "너라면 돼"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        30,
+        60,
+        30,
+        60,
+        30
+      ],
+      "vibration_name": "triple",
+      "animation_key": "flex",
+      "icon": "lucide:badge-check",
+      "subcategory": "good",
+      "subcategory_label": "좋아",
+      "subcategory_order": 0,
+      "order_in_subcategory": 6,
+      "builtin": true
+    },
+    {
+      "emoji": "🤔",
+      "id": "curious",
+      "label": "궁금해",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "뭐가 궁금해?",
+        "물어봐!"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40
+      ],
+      "vibration_name": "short",
+      "animation_key": "look_around",
+      "icon": "lucide:circle-question-mark",
+      "subcategory": "good",
+      "subcategory_label": "좋아",
+      "subcategory_order": 0,
+      "order_in_subcategory": 7,
+      "builtin": true
     },
     {
       "emoji": "😢",
@@ -130,7 +232,8 @@
       "subcategory": "down",
       "subcategory_label": "가라앉아",
       "subcategory_order": 1,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "🥺",
@@ -155,7 +258,8 @@
       "subcategory": "down",
       "subcategory_label": "가라앉아",
       "subcategory_order": 1,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "😑",
@@ -177,7 +281,84 @@
       "subcategory": "down",
       "subcategory_label": "가라앉아",
       "subcategory_order": 1,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
+    },
+    {
+      "emoji": "😞",
+      "id": "gloomy",
+      "label": "우울해",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "무슨 일 있었어?",
+        "내가 웃겨줄게",
+        "꼭 안아줄게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "droop",
+      "icon": "lucide:cloud",
+      "subcategory": "down",
+      "subcategory_label": "가라앉아",
+      "subcategory_order": 1,
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "😔",
+      "id": "disappointed",
+      "label": "실망이야",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "많이 속상했지",
+        "얘기해줘"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "slump",
+      "icon": "lucide:thumbs-down",
+      "subcategory": "down",
+      "subcategory_label": "가라앉아",
+      "subcategory_order": 1,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🫥",
+      "id": "empty",
+      "label": "허전해",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "내가 채워줄게",
+        "지금 갈까?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "sway",
+      "icon": "lucide:circle-dashed",
+      "subcategory": "down",
+      "subcategory_label": "가라앉아",
+      "subcategory_order": 1,
+      "order_in_subcategory": 5,
+      "builtin": true
     },
     {
       "emoji": "😠",
@@ -204,7 +385,8 @@
       "subcategory": "tense",
       "subcategory_label": "예민해",
       "subcategory_order": 2,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "😰",
@@ -228,7 +410,8 @@
       "subcategory": "tense",
       "subcategory_label": "예민해",
       "subcategory_order": 2,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "😤",
@@ -255,7 +438,114 @@
       "subcategory": "tense",
       "subcategory_label": "예민해",
       "subcategory_order": 2,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
+    },
+    {
+      "emoji": "😒",
+      "id": "annoyed",
+      "label": "짜증나",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "누가 그랬어?",
+        "맛있는 거 먹자"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        80,
+        50,
+        80,
+        50,
+        80
+      ],
+      "vibration_name": "buzz",
+      "animation_key": "fume",
+      "icon": "lucide:zap-off",
+      "subcategory": "tense",
+      "subcategory_label": "예민해",
+      "subcategory_order": 2,
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "😬",
+      "id": "nervous",
+      "label": "떨려",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "잘할 수 있어",
+        "심호흡 한 번!"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        80,
+        50,
+        80,
+        50,
+        80
+      ],
+      "vibration_name": "buzz",
+      "animation_key": "shiver",
+      "icon": "lucide:activity",
+      "subcategory": "tense",
+      "subcategory_label": "예민해",
+      "subcategory_order": 2,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🥺",
+      "id": "upset",
+      "label": "서운해",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "미안해ㅠ",
+        "얘기해줘, 들을게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "pout",
+      "icon": "lucide:cloud-drizzle",
+      "subcategory": "tense",
+      "subcategory_label": "예민해",
+      "subcategory_order": 2,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "😲",
+      "id": "surprised",
+      "label": "깜짝 놀랐어",
+      "category": "mood",
+      "category_label": "기분",
+      "reactions": [
+        "무슨 일이야?!",
+        "괜찮아?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        30,
+        60,
+        30,
+        60,
+        30
+      ],
+      "vibration_name": "triple",
+      "animation_key": "jump",
+      "icon": "lucide:badge-alert",
+      "subcategory": "tense",
+      "subcategory_label": "예민해",
+      "subcategory_order": 2,
+      "order_in_subcategory": 6,
+      "builtin": true
     },
     {
       "emoji": "😴",
@@ -278,7 +568,8 @@
       "subcategory": "energy",
       "subcategory_label": "에너지",
       "subcategory_order": 0,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "😩",
@@ -301,7 +592,8 @@
       "subcategory": "energy",
       "subcategory_label": "에너지",
       "subcategory_order": 0,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "💪",
@@ -327,7 +619,8 @@
       "subcategory": "energy",
       "subcategory_label": "에너지",
       "subcategory_order": 0,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
     },
     {
       "emoji": "🏃",
@@ -349,7 +642,106 @@
       "subcategory": "energy",
       "subcategory_label": "에너지",
       "subcategory_order": 0,
-      "order_in_subcategory": 3
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "😆",
+      "id": "refreshed",
+      "label": "개운해",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "좋겠다!",
+        "나도 개운해지고 싶다"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        120
+      ],
+      "vibration_name": "soft",
+      "animation_key": "sparkle",
+      "icon": "lucide:droplets",
+      "subcategory": "energy",
+      "subcategory_label": "에너지",
+      "subcategory_order": 0,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🫠",
+      "id": "lazy",
+      "label": "귀찮아",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "오늘은 쉬어",
+        "내가 해줄게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        400
+      ],
+      "vibration_name": "long",
+      "animation_key": "lie_down",
+      "icon": "lucide:sofa",
+      "subcategory": "energy",
+      "subcategory_label": "에너지",
+      "subcategory_order": 0,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "🚴",
+      "id": "workout",
+      "label": "운동했어",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "멋져!",
+        "고생했어"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        30,
+        60,
+        30,
+        60,
+        30
+      ],
+      "vibration_name": "triple",
+      "animation_key": "flex",
+      "icon": "lucide:bike",
+      "subcategory": "energy",
+      "subcategory_label": "에너지",
+      "subcategory_order": 0,
+      "order_in_subcategory": 6,
+      "builtin": true
+    },
+    {
+      "emoji": "😵",
+      "id": "sleepless",
+      "label": "잠이 안 와",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "통화할까?",
+        "양 세어줄게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "look_around",
+      "icon": "lucide:eye-off",
+      "subcategory": "energy",
+      "subcategory_label": "에너지",
+      "subcategory_order": 0,
+      "order_in_subcategory": 7,
+      "builtin": true
     },
     {
       "emoji": "🤒",
@@ -374,7 +766,8 @@
       "subcategory": "condition",
       "subcategory_label": "컨디션",
       "subcategory_order": 1,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "🤕",
@@ -398,7 +791,8 @@
       "subcategory": "condition",
       "subcategory_label": "컨디션",
       "subcategory_order": 1,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "🥵",
@@ -420,7 +814,8 @@
       "subcategory": "condition",
       "subcategory_label": "컨디션",
       "subcategory_order": 1,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
     },
     {
       "emoji": "🥶",
@@ -446,7 +841,83 @@
       "subcategory": "condition",
       "subcategory_label": "컨디션",
       "subcategory_order": 1,
-      "order_in_subcategory": 3
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "🤧",
+      "id": "cold_flu",
+      "label": "감기 기운",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "따뜻하게 해",
+        "약 사갈게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "sick_wobble",
+      "icon": "lucide:thermometer-snowflake",
+      "subcategory": "condition",
+      "subcategory_label": "컨디션",
+      "subcategory_order": 1,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "😖",
+      "id": "stomachache",
+      "label": "배 아파",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "약 먹었어?",
+        "따뜻한 물 마셔"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "tummy",
+      "icon": "lucide:pill",
+      "subcategory": "condition",
+      "subcategory_label": "컨디션",
+      "subcategory_order": 1,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "🤕",
+      "id": "sore",
+      "label": "몸살 났어",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "푹 쉬어",
+        "죽 사갈게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        200,
+        300,
+        200
+      ],
+      "vibration_name": "slow",
+      "animation_key": "sick_wobble",
+      "icon": "lucide:bandage",
+      "subcategory": "condition",
+      "subcategory_label": "컨디션",
+      "subcategory_order": 1,
+      "order_in_subcategory": 6,
+      "builtin": true
     },
     {
       "emoji": "🍚",
@@ -469,9 +940,10 @@
       "animation_key": "tummy",
       "icon": "lucide:utensils",
       "subcategory": "tummy",
-      "subcategory_label": "배",
+      "subcategory_label": "먹는 것",
       "subcategory_order": 2,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "🤢",
@@ -491,9 +963,81 @@
       "animation_key": "tummy_pat",
       "icon": "lucide:cookie",
       "subcategory": "tummy",
-      "subcategory_label": "배",
+      "subcategory_label": "먹는 것",
       "subcategory_order": 2,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
+    },
+    {
+      "emoji": "🥤",
+      "id": "thirsty",
+      "label": "목말라",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "물 마셔!",
+        "음료 사줄게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40
+      ],
+      "vibration_name": "short",
+      "animation_key": "drool",
+      "icon": "lucide:cup-soda",
+      "subcategory": "tummy",
+      "subcategory_label": "먹는 것",
+      "subcategory_order": 2,
+      "order_in_subcategory": 2,
+      "builtin": true
+    },
+    {
+      "emoji": "🥗",
+      "id": "diet",
+      "label": "다이어트 중",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "화이팅!",
+        "지금도 예뻐"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40
+      ],
+      "vibration_name": "short",
+      "animation_key": "breathe",
+      "icon": "lucide:salad",
+      "subcategory": "tummy",
+      "subcategory_label": "먹는 것",
+      "subcategory_order": 2,
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "🍕",
+      "id": "midnight_snack",
+      "label": "야식 땡겨",
+      "category": "body",
+      "category_label": "몸 상태",
+      "reactions": [
+        "시켜줄까?",
+        "나도 배고파"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40,
+        80,
+        40
+      ],
+      "vibration_name": "double",
+      "animation_key": "drool",
+      "icon": "lucide:pizza",
+      "subcategory": "tummy",
+      "subcategory_label": "먹는 것",
+      "subcategory_order": 2,
+      "order_in_subcategory": 4,
+      "builtin": true
     },
     {
       "emoji": "🫂",
@@ -517,12 +1061,13 @@
       "subcategory": "together",
       "subcategory_label": "함께",
       "subcategory_order": 0,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "📞",
       "id": "want_call",
-      "label": "전화하고 싶어",
+      "label": "전화해줘",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -541,7 +1086,8 @@
       "subcategory": "together",
       "subcategory_label": "함께",
       "subcategory_order": 0,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "👀",
@@ -565,12 +1111,13 @@
       "subcategory": "together",
       "subcategory_label": "함께",
       "subcategory_order": 0,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
     },
     {
       "emoji": "🎮",
       "id": "want_play",
-      "label": "같이 놀고 싶어",
+      "label": "같이 놀자",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -591,12 +1138,111 @@
       "subcategory": "together",
       "subcategory_label": "함께",
       "subcategory_order": 0,
-      "order_in_subcategory": 3
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "💑",
+      "id": "want_date",
+      "label": "데이트해요",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "이번 주말 어때?",
+        "어디 갈까?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        60,
+        100,
+        120
+      ],
+      "vibration_name": "heart",
+      "animation_key": "joy_bounce",
+      "icon": "lucide:calendar-heart",
+      "subcategory": "together",
+      "subcategory_label": "함께",
+      "subcategory_order": 0,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "📹",
+      "id": "want_videocall",
+      "label": "영상통화",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "지금 걸게!",
+        "잠깐만 기다려"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40,
+        80,
+        40
+      ],
+      "vibration_name": "double",
+      "animation_key": "phone",
+      "icon": "lucide:video",
+      "subcategory": "together",
+      "subcategory_label": "함께",
+      "subcategory_order": 0,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "💬",
+      "id": "want_talk",
+      "label": "얘기 들어줘",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "다 들어줄게",
+        "전화할까?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        120
+      ],
+      "vibration_name": "soft",
+      "animation_key": "phone",
+      "icon": "lucide:message-circle",
+      "subcategory": "together",
+      "subcategory_label": "함께",
+      "subcategory_order": 0,
+      "order_in_subcategory": 6,
+      "builtin": true
+    },
+    {
+      "emoji": "🫳",
+      "id": "want_pat",
+      "label": "쓰다듬어줘",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "쓰담쓰담",
+        "착하다~"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        60,
+        100,
+        120
+      ],
+      "vibration_name": "heart",
+      "animation_key": "tummy_pat",
+      "icon": "lucide:hand",
+      "subcategory": "together",
+      "subcategory_label": "함께",
+      "subcategory_order": 0,
+      "order_in_subcategory": 7,
+      "builtin": true
     },
     {
       "emoji": "🎬",
       "id": "want_movie",
-      "label": "영화 보고 싶어",
+      "label": "영화 보자",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -613,12 +1259,13 @@
       "subcategory": "outing",
       "subcategory_label": "나들이",
       "subcategory_order": 1,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "🚶",
       "id": "want_walk",
-      "label": "산책하고 싶어",
+      "label": "산책 가자",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -635,12 +1282,13 @@
       "subcategory": "outing",
       "subcategory_label": "나들이",
       "subcategory_order": 1,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "✈️",
       "id": "want_trip",
-      "label": "여행 가고 싶어",
+      "label": "여행 가자",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -661,12 +1309,109 @@
       "subcategory": "outing",
       "subcategory_label": "나들이",
       "subcategory_order": 1,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
+    },
+    {
+      "emoji": "☕",
+      "id": "want_cafe",
+      "label": "카페 가자",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "카페 가자!",
+        "어디 갈까?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40
+      ],
+      "vibration_name": "short",
+      "animation_key": "walk",
+      "icon": "lucide:coffee",
+      "subcategory": "outing",
+      "subcategory_label": "나들이",
+      "subcategory_order": 1,
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "🛍️",
+      "id": "want_shopping",
+      "label": "쇼핑 가자",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "같이 가자",
+        "뭐 살 거야?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40
+      ],
+      "vibration_name": "short",
+      "animation_key": "walk",
+      "icon": "lucide:shopping-bag",
+      "subcategory": "outing",
+      "subcategory_label": "나들이",
+      "subcategory_order": 1,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🎵",
+      "id": "want_concert",
+      "label": "공연 보자",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "예매해볼까?",
+        "누구 공연?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        30,
+        60,
+        30,
+        60,
+        30
+      ],
+      "vibration_name": "triple",
+      "animation_key": "sway",
+      "icon": "lucide:music",
+      "subcategory": "outing",
+      "subcategory_label": "나들이",
+      "subcategory_order": 1,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "📸",
+      "id": "want_photo",
+      "label": "사진 찍자",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "같이 찍자!",
+        "네컷 가자"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40
+      ],
+      "vibration_name": "short",
+      "animation_key": "sparkle",
+      "icon": "lucide:camera",
+      "subcategory": "outing",
+      "subcategory_label": "나들이",
+      "subcategory_order": 1,
+      "order_in_subcategory": 6,
+      "builtin": true
     },
     {
       "emoji": "🍰",
       "id": "want_dessert",
-      "label": "달달한 거 먹고 싶어",
+      "label": "달달한 거",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -683,14 +1428,15 @@
       "animation_key": "drool",
       "icon": "lucide:cake-slice",
       "subcategory": "treat",
-      "subcategory_label": "휴식·간식",
+      "subcategory_label": "휴식·먹거리",
       "subcategory_order": 2,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "🍻",
       "id": "want_drink",
-      "label": "한잔하고 싶어",
+      "label": "한잔할까",
       "category": "want",
       "category_label": "하고 싶은 것",
       "reactions": [
@@ -707,9 +1453,10 @@
       "animation_key": "cheers",
       "icon": "lucide:wine",
       "subcategory": "treat",
-      "subcategory_label": "휴식·간식",
+      "subcategory_label": "휴식·먹거리",
       "subcategory_order": 2,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
       "emoji": "🛌",
@@ -729,9 +1476,83 @@
       "animation_key": "lie_down",
       "icon": "lucide:bed",
       "subcategory": "treat",
-      "subcategory_label": "휴식·간식",
+      "subcategory_label": "휴식·먹거리",
       "subcategory_order": 2,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
+    },
+    {
+      "emoji": "🥩",
+      "id": "want_meat",
+      "label": "고기 먹자",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "고기 콜!",
+        "내가 쏜다"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40,
+        80,
+        40
+      ],
+      "vibration_name": "double",
+      "animation_key": "drool",
+      "icon": "lucide:beef",
+      "subcategory": "treat",
+      "subcategory_label": "휴식·먹거리",
+      "subcategory_order": 2,
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "🍜",
+      "id": "want_noodles",
+      "label": "라면 먹자",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "끓여줄게",
+        "계란 넣어?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        40,
+        80,
+        40
+      ],
+      "vibration_name": "double",
+      "animation_key": "drool",
+      "icon": "lucide:soup",
+      "subcategory": "treat",
+      "subcategory_label": "휴식·먹거리",
+      "subcategory_order": 2,
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🛁",
+      "id": "want_bath",
+      "label": "씻고 쉴래",
+      "category": "want",
+      "category_label": "하고 싶은 것",
+      "reactions": [
+        "푹 쉬어",
+        "따뜻하게 씻어"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        400
+      ],
+      "vibration_name": "long",
+      "animation_key": "breathe",
+      "icon": "lucide:bath",
+      "subcategory": "treat",
+      "subcategory_label": "휴식·먹거리",
+      "subcategory_order": 2,
+      "order_in_subcategory": 5,
+      "builtin": true
     },
     {
       "emoji": "❤️",
@@ -755,7 +1576,8 @@
       "subcategory": "affection",
       "subcategory_label": "애정 표현",
       "subcategory_order": 0,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "😘",
@@ -779,31 +1601,33 @@
       "subcategory": "affection",
       "subcategory_label": "애정 표현",
       "subcategory_order": 0,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
     },
     {
-      "emoji": "🥹",
-      "id": "miss_you",
-      "label": "보고싶어",
+      "emoji": "💓",
+      "id": "flutter",
+      "label": "설레",
       "category": "love",
       "category_label": "애정",
       "reactions": [
-        "나도 너무 보고싶어",
-        "곧 만나자"
+        "나도 설레",
+        "두근두근"
       ],
       "vibration_pattern_ms": [
         0,
-        200,
-        300,
-        200
+        60,
+        100,
+        120
       ],
-      "vibration_name": "slow",
-      "animation_key": "longing",
-      "icon": "lucide:hourglass",
+      "vibration_name": "heart",
+      "animation_key": "heart_pop",
+      "icon": "lucide:heart-pulse",
       "subcategory": "affection",
       "subcategory_label": "애정 표현",
       "subcategory_order": 0,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 2,
+      "builtin": true
     },
     {
       "emoji": "🌸",
@@ -825,7 +1649,8 @@
       "subcategory": "affection",
       "subcategory_label": "애정 표현",
       "subcategory_order": 0,
-      "order_in_subcategory": 3
+      "order_in_subcategory": 3,
+      "builtin": true
     },
     {
       "emoji": "😳",
@@ -851,7 +1676,58 @@
       "subcategory": "affection",
       "subcategory_label": "애정 표현",
       "subcategory_order": 0,
-      "order_in_subcategory": 4
+      "order_in_subcategory": 4,
+      "builtin": true
+    },
+    {
+      "emoji": "🐱",
+      "id": "cute",
+      "label": "귀여워",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "네가 더 귀여워",
+        "헤헤"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        60,
+        100,
+        120
+      ],
+      "vibration_name": "heart",
+      "animation_key": "sparkle",
+      "icon": "lucide:cat",
+      "subcategory": "affection",
+      "subcategory_label": "애정 표현",
+      "subcategory_order": 0,
+      "order_in_subcategory": 5,
+      "builtin": true
+    },
+    {
+      "emoji": "🤗",
+      "id": "hug_tight",
+      "label": "꽉 안아줄게",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "얼른 와",
+        "나도 안아줄게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        60,
+        100,
+        120
+      ],
+      "vibration_name": "heart",
+      "animation_key": "arms_open",
+      "icon": "lucide:handshake",
+      "subcategory": "affection",
+      "subcategory_label": "애정 표현",
+      "subcategory_order": 0,
+      "order_in_subcategory": 6,
+      "builtin": true
     },
     {
       "emoji": "🙏",
@@ -870,10 +1746,11 @@
       "vibration_name": "soft",
       "animation_key": "bow",
       "icon": "lucide:thumbs-up",
-      "subcategory": "words",
-      "subcategory_label": "마음 전하기",
-      "subcategory_order": 1,
-      "order_in_subcategory": 0
+      "subcategory": "affection",
+      "subcategory_label": "애정 표현",
+      "subcategory_order": 0,
+      "order_in_subcategory": 7,
+      "builtin": true
     },
     {
       "emoji": "🙇",
@@ -895,10 +1772,80 @@
       "vibration_name": "slow",
       "animation_key": "bow_deep",
       "icon": "lucide:heart-crack",
-      "subcategory": "words",
-      "subcategory_label": "마음 전하기",
+      "subcategory": "affection",
+      "subcategory_label": "애정 표현",
+      "subcategory_order": 0,
+      "order_in_subcategory": 8,
+      "builtin": true
+    },
+    {
+      "emoji": "🌅",
+      "id": "good_morning",
+      "label": "좋은 아침",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "좋은 아침!",
+        "잘 잤어?"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        120
+      ],
+      "vibration_name": "soft",
+      "animation_key": "breathe",
+      "icon": "lucide:sunrise",
+      "subcategory": "greeting",
+      "subcategory_label": "인사",
       "subcategory_order": 1,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 0,
+      "builtin": true
+    },
+    {
+      "emoji": "🚗",
+      "id": "take_care",
+      "label": "조심히 와",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "응 금방 갈게",
+        "도착하면 연락할게"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        120
+      ],
+      "vibration_name": "soft",
+      "animation_key": "walk",
+      "icon": "lucide:car",
+      "subcategory": "greeting",
+      "subcategory_label": "인사",
+      "subcategory_order": 1,
+      "order_in_subcategory": 1,
+      "builtin": true
+    },
+    {
+      "emoji": "🏠",
+      "id": "welcome_home",
+      "label": "수고했어",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "고마워",
+        "너도 수고했어"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        120
+      ],
+      "vibration_name": "soft",
+      "animation_key": "bow",
+      "icon": "lucide:house",
+      "subcategory": "greeting",
+      "subcategory_label": "인사",
+      "subcategory_order": 1,
+      "order_in_subcategory": 2,
+      "builtin": true
     },
     {
       "emoji": "🌙",
@@ -918,10 +1865,11 @@
       "vibration_name": "long",
       "animation_key": "sleep_wave",
       "icon": "lucide:moon-star",
-      "subcategory": "words",
-      "subcategory_label": "마음 전하기",
+      "subcategory": "greeting",
+      "subcategory_label": "인사",
       "subcategory_order": 1,
-      "order_in_subcategory": 2
+      "order_in_subcategory": 3,
+      "builtin": true
     },
     {
       "emoji": "🫶",
@@ -945,7 +1893,8 @@
       "subcategory": "support",
       "subcategory_label": "응원",
       "subcategory_order": 2,
-      "order_in_subcategory": 0
+      "order_in_subcategory": 0,
+      "builtin": true
     },
     {
       "emoji": "💌",
@@ -971,7 +1920,87 @@
       "subcategory": "support",
       "subcategory_label": "응원",
       "subcategory_order": 2,
-      "order_in_subcategory": 1
+      "order_in_subcategory": 1,
+      "builtin": true
+    },
+    {
+      "emoji": "🚀",
+      "id": "you_can",
+      "label": "할 수 있어",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "고마워 힘낼게",
+        "덕분에 힘나"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        30,
+        60,
+        30,
+        60,
+        30
+      ],
+      "vibration_name": "triple",
+      "animation_key": "cheer",
+      "icon": "lucide:rocket",
+      "subcategory": "support",
+      "subcategory_label": "응원",
+      "subcategory_order": 2,
+      "order_in_subcategory": 2,
+      "builtin": true
+    },
+    {
+      "emoji": "🛡️",
+      "id": "with_you",
+      "label": "내가 있잖아",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "고마워",
+        "든든해"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        60,
+        100,
+        120
+      ],
+      "vibration_name": "heart",
+      "animation_key": "arms_open",
+      "icon": "lucide:shield",
+      "subcategory": "support",
+      "subcategory_label": "응원",
+      "subcategory_order": 2,
+      "order_in_subcategory": 3,
+      "builtin": true
+    },
+    {
+      "emoji": "🎁",
+      "id": "congrats",
+      "label": "축하해",
+      "category": "love",
+      "category_label": "애정",
+      "reactions": [
+        "고마워!",
+        "같이 축하하자"
+      ],
+      "vibration_pattern_ms": [
+        0,
+        30,
+        60,
+        30,
+        60,
+        30
+      ],
+      "vibration_name": "triple",
+      "animation_key": "jump",
+      "icon": "lucide:gift",
+      "subcategory": "support",
+      "subcategory_label": "응원",
+      "subcategory_order": 2,
+      "order_in_subcategory": 4,
+      "builtin": true
     }
   ],
   "icon_note": "아이콘: Lucide (lucide_icons Flutter 패키지), stroke 1.75, 24px 그리드. emoji 필드는 푸시 알림 텍스트용으로 유지",
@@ -988,7 +2017,11 @@
             "happy",
             "excited",
             "calm",
-            "proud"
+            "proud",
+            "relieved",
+            "touched",
+            "confident",
+            "curious"
           ]
         },
         {
@@ -997,7 +2030,10 @@
           "emotion_ids": [
             "sad",
             "lonely",
-            "bored"
+            "bored",
+            "gloomy",
+            "disappointed",
+            "empty"
           ]
         },
         {
@@ -1006,7 +2042,11 @@
           "emotion_ids": [
             "angry",
             "anxious",
-            "stressed"
+            "stressed",
+            "annoyed",
+            "nervous",
+            "upset",
+            "surprised"
           ]
         }
       ]
@@ -1023,7 +2063,11 @@
             "sleepy",
             "tired",
             "energetic",
-            "busy"
+            "busy",
+            "refreshed",
+            "lazy",
+            "workout",
+            "sleepless"
           ]
         },
         {
@@ -1033,15 +2077,21 @@
             "sick",
             "headache",
             "hot",
-            "cold"
+            "cold",
+            "cold_flu",
+            "stomachache",
+            "sore"
           ]
         },
         {
           "id": "tummy",
-          "label": "배",
+          "label": "먹는 것",
           "emotion_ids": [
             "hungry",
-            "full"
+            "full",
+            "thirsty",
+            "diet",
+            "midnight_snack"
           ]
         }
       ]
@@ -1058,7 +2108,11 @@
             "want_hug",
             "want_call",
             "want_see",
-            "want_play"
+            "want_play",
+            "want_date",
+            "want_videocall",
+            "want_talk",
+            "want_pat"
           ]
         },
         {
@@ -1067,16 +2121,23 @@
           "emotion_ids": [
             "want_movie",
             "want_walk",
-            "want_trip"
+            "want_trip",
+            "want_cafe",
+            "want_shopping",
+            "want_concert",
+            "want_photo"
           ]
         },
         {
           "id": "treat",
-          "label": "휴식·간식",
+          "label": "휴식·먹거리",
           "emotion_ids": [
             "want_dessert",
             "want_drink",
-            "want_rest"
+            "want_rest",
+            "want_meat",
+            "want_noodles",
+            "want_bath"
           ]
         }
       ]
@@ -1092,17 +2153,22 @@
           "emotion_ids": [
             "love_you",
             "kiss",
-            "miss_you",
+            "flutter",
             "thinking_of_you",
-            "jealous"
+            "jealous",
+            "cute",
+            "hug_tight",
+            "thanks",
+            "sorry"
           ]
         },
         {
-          "id": "words",
-          "label": "마음 전하기",
+          "id": "greeting",
+          "label": "인사",
           "emotion_ids": [
-            "thanks",
-            "sorry",
+            "good_morning",
+            "take_care",
+            "welcome_home",
             "good_night"
           ]
         },
@@ -1111,10 +2177,63 @@
           "label": "응원",
           "emotion_ids": [
             "cheer_up",
-            "proud_of_you"
+            "proud_of_you",
+            "you_can",
+            "with_you",
+            "congrats"
           ]
         }
       ]
     }
-  ]
+  ],
+  "label_max_chars": 6,
+  "vibration_presets": {
+    "short": [
+      0,
+      40
+    ],
+    "double": [
+      0,
+      40,
+      80,
+      40
+    ],
+    "soft": [
+      0,
+      120
+    ],
+    "long": [
+      0,
+      400
+    ],
+    "heart": [
+      0,
+      60,
+      100,
+      120
+    ],
+    "triple": [
+      0,
+      30,
+      60,
+      30,
+      60,
+      30
+    ],
+    "slow": [
+      0,
+      200,
+      300,
+      200
+    ],
+    "buzz": [
+      0,
+      80,
+      50,
+      80,
+      50,
+      80
+    ]
+  },
+  "custom_emotion_note": "커플 커스텀 감정: couples/{coupleId}/customEmotions, id custom_<uuid>, 커플당 최대 30개, label 1–6자 권장(최대 8자), reactions 0–3개(기본 ['고마워','나도!']). 즐겨찾기는 사용자당 최대 24개."
 }

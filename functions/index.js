@@ -8,11 +8,42 @@ const {getMessaging} = require("firebase-admin/messaging");
 initializeApp();
 const db = getFirestore();
 
+// 레이트 리밋: 커플당 분당 감정 문서 상한, 같은 감정 푸시는 SAME_PUSH_SEC 안에 1회.
+const RATE_PER_MIN = 30;
+const SAME_PUSH_SEC = 10;
+
+/** 순수 함수(테스트용): 현재 상태 → {allowed, push, next} */
+function rateDecision(state, emotionId, nowMs) {
+  const s = state || {};
+  const inWindow = s.windowStart && nowMs - s.windowStart < 60000;
+  const n = inWindow ? (s.n || 0) + 1 : 1;
+  const windowStart = inWindow ? s.windowStart : nowMs;
+  const allowed = n <= RATE_PER_MIN;
+  const lastPush = Object.assign({}, s.lastPush || {});
+  const prev = lastPush[emotionId] || 0;
+  const push = allowed && nowMs - prev >= SAME_PUSH_SEC * 1000;
+  if (push) lastPush[emotionId] = nowMs;
+  return {allowed, push, next: {windowStart, n, lastPush}};
+}
+exports.rateDecision = rateDecision;
+
 exports.onEmotionCreated = onDocumentCreated(
   {document: "couples/{coupleId}/emotions/{emotionId}", region: "asia-northeast3"},
   async (event) => {
     const e = event.data && event.data.data();
     if (!e) return;
+    const rateRef = db.doc(`couples/${event.params.coupleId}/meta/rate`);
+    const decision = await db.runTransaction(async (tx) => {
+      const snap = await tx.get(rateRef);
+      const d = rateDecision(snap.exists ? snap.data() : null, e.emotionId, Date.now());
+      tx.set(rateRef, d.next);
+      return d;
+    });
+    if (!decision.allowed) {
+      await event.data.ref.delete(); // 분당 상한 초과분 삭제(스팸 방지)
+      return;
+    }
+    if (!decision.push) return;
     const couple = (await db.doc(`couples/${event.params.coupleId}`).get()).data();
     if (!couple) return;
     const partnerUid = couple.members.find((m) => m !== e.senderUid);

@@ -147,12 +147,17 @@ class _Part extends StatelessWidget {
   final Map<String, String>? recolor;
 
   @override
-  Widget build(BuildContext context) => FutureBuilder<String>(
-    future: loadPartSvg(part),
-    builder: (context, s) => s.hasData
-        ? SvgPicture.string(applyRecolor(s.data!, recolor))
-        : const SizedBox.shrink(),
-  );
+  Widget build(BuildContext context) {
+    // 캐시에 있으면 동기 사용(애니메이션 프레임마다 Future 생성 방지)
+    final cached = cachedPartSvg(part, recolor);
+    if (cached != null) return SvgPicture.string(cached);
+    return FutureBuilder<String>(
+      future: loadPartSvg(part),
+      builder: (context, s) => s.hasData
+          ? SvgPicture.string(cachedPartSvg(part, recolor) ?? s.data!)
+          : const SizedBox.shrink(),
+    );
+  }
 }
 
 /// 정적 아바타 (편집기 썸네일 등)
