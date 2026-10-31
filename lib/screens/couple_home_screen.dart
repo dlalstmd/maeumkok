@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../background/background.dart' show isSystemEvent;
 import '../avatar/touch_reactions.dart';
 import '../avatar/part_adjust.dart';
 import '../core/emotions.dart';
@@ -102,9 +103,12 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
       );
     }
     _sub = widget.emotions.watchEmotions(widget.coupleId, limit: 20).listen((
-      list,
+      all,
     ) {
-      for (final ev in list) {
+      // 시스템 이벤트(배경 변경)는 타임라인 전용
+      final list = all.where((e) => !isSystemEvent(e.emotionId)).toList();
+      for (final ev in all) {
+        if (isSystemEvent(ev.emotionId)) continue;
         if (_seen.add(ev.id) && !_first && ev.senderUid != widget.uid) {
           final e = emotionFor(ev.emotionId, ev.snapshot);
           if (e != null) {

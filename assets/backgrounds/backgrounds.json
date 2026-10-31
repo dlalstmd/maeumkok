@@ -1,0 +1,730 @@
+{
+ "version": 1,
+ "canvas": [
+  390,
+  844
+ ],
+ "format": "SVG(viewBox 390x844, slice로 화면 채움) → Flutter flutter_svg; 패턴은 1x 타일 반복",
+ "counts": {
+  "solid": 14,
+  "gradient": 12,
+  "pattern": 14,
+  "illustration": 18,
+  "time_of_day": 4,
+  "photo": 1,
+  "total": 63
+ },
+ "ink_rule": "ink=dark → 헤더·아이콘 #111/#6B6B6B, ink=light → #FFFFFF/rgba(255,255,255,.72). 아바타 뒤에 radial scrim(흰 18% 또는 검정 18%) 자동 적용",
+ "backgrounds": [
+  {
+   "id": "solid_01",
+   "category": "solid",
+   "sub": null,
+   "name": "스노우",
+   "asset": "assets/solid_01.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_02",
+   "category": "solid",
+   "sub": null,
+   "name": "화이트",
+   "asset": "assets/solid_02.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_03",
+   "category": "solid",
+   "sub": null,
+   "name": "페이퍼",
+   "asset": "assets/solid_03.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_04",
+   "category": "solid",
+   "sub": null,
+   "name": "라이트 그레이",
+   "asset": "assets/solid_04.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_05",
+   "category": "solid",
+   "sub": null,
+   "name": "스톤",
+   "asset": "assets/solid_05.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_06",
+   "category": "solid",
+   "sub": null,
+   "name": "웜 그레이",
+   "asset": "assets/solid_06.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_07",
+   "category": "solid",
+   "sub": null,
+   "name": "미스트 블루",
+   "asset": "assets/solid_07.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_08",
+   "category": "solid",
+   "sub": null,
+   "name": "세이지",
+   "asset": "assets/solid_08.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_09",
+   "category": "solid",
+   "sub": null,
+   "name": "샌드",
+   "asset": "assets/solid_09.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_10",
+   "category": "solid",
+   "sub": null,
+   "name": "탠저린 틴트",
+   "asset": "assets/solid_10.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_11",
+   "category": "solid",
+   "sub": null,
+   "name": "탠저린 소프트",
+   "asset": "assets/solid_11.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_12",
+   "category": "solid",
+   "sub": null,
+   "name": "탠저린",
+   "asset": "assets/solid_12.svg",
+   "ink": "light",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_13",
+   "category": "solid",
+   "sub": null,
+   "name": "차콜",
+   "asset": "assets/solid_13.svg",
+   "ink": "light",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "solid_14",
+   "category": "solid",
+   "sub": null,
+   "name": "잉크",
+   "asset": "assets/solid_14.svg",
+   "ink": "light",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_01",
+   "category": "gradient",
+   "sub": null,
+   "name": "새벽",
+   "asset": "assets/grad_01.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": "dawn"
+  },
+  {
+   "id": "grad_02",
+   "category": "gradient",
+   "sub": null,
+   "name": "한낮",
+   "asset": "assets/grad_02.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": "day"
+  },
+  {
+   "id": "grad_03",
+   "category": "gradient",
+   "sub": null,
+   "name": "노을",
+   "asset": "assets/grad_03.svg",
+   "ink": "dark",
+   "motion": "gradient_shift",
+   "time_of_day": "sunset"
+  },
+  {
+   "id": "grad_04",
+   "category": "gradient",
+   "sub": null,
+   "name": "밤",
+   "asset": "assets/grad_04.svg",
+   "ink": "light",
+   "motion": "gradient_shift",
+   "time_of_day": "night"
+  },
+  {
+   "id": "grad_05",
+   "category": "gradient",
+   "sub": null,
+   "name": "탠저린 페이드",
+   "asset": "assets/grad_05.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_06",
+   "category": "gradient",
+   "sub": null,
+   "name": "그레이 페이드",
+   "asset": "assets/grad_06.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_07",
+   "category": "gradient",
+   "sub": null,
+   "name": "복숭아 안개",
+   "asset": "assets/grad_07.svg",
+   "ink": "dark",
+   "motion": "gradient_shift",
+   "time_of_day": null
+  },
+  {
+   "id": "grad_08",
+   "category": "gradient",
+   "sub": null,
+   "name": "바다 안개",
+   "asset": "assets/grad_08.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_09",
+   "category": "gradient",
+   "sub": null,
+   "name": "숲 안개",
+   "asset": "assets/grad_09.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_10",
+   "category": "gradient",
+   "sub": null,
+   "name": "모래 언덕",
+   "asset": "assets/grad_10.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_11",
+   "category": "gradient",
+   "sub": null,
+   "name": "딥 차콜",
+   "asset": "assets/grad_11.svg",
+   "ink": "light",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "grad_12",
+   "category": "gradient",
+   "sub": null,
+   "name": "탠저린 선셋",
+   "asset": "assets/grad_12.svg",
+   "ink": "light",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "pattern_01",
+   "category": "pattern",
+   "sub": null,
+   "name": "도트",
+   "asset": "assets/pattern_01.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_01.svg"
+  },
+  {
+   "id": "pattern_02",
+   "category": "pattern",
+   "sub": null,
+   "name": "큰 도트",
+   "asset": "assets/pattern_02.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_02.svg"
+  },
+  {
+   "id": "pattern_03",
+   "category": "pattern",
+   "sub": null,
+   "name": "그리드",
+   "asset": "assets/pattern_03.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_03.svg"
+  },
+  {
+   "id": "pattern_04",
+   "category": "pattern",
+   "sub": null,
+   "name": "모눈 노트",
+   "asset": "assets/pattern_04.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_04.svg"
+  },
+  {
+   "id": "pattern_05",
+   "category": "pattern",
+   "sub": null,
+   "name": "사선",
+   "asset": "assets/pattern_05.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_05.svg"
+  },
+  {
+   "id": "pattern_06",
+   "category": "pattern",
+   "sub": null,
+   "name": "가로줄",
+   "asset": "assets/pattern_06.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_06.svg"
+  },
+  {
+   "id": "pattern_07",
+   "category": "pattern",
+   "sub": null,
+   "name": "물결",
+   "asset": "assets/pattern_07.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_07.svg"
+  },
+  {
+   "id": "pattern_08",
+   "category": "pattern",
+   "sub": null,
+   "name": "체크",
+   "asset": "assets/pattern_08.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_08.svg"
+  },
+  {
+   "id": "pattern_09",
+   "category": "pattern",
+   "sub": null,
+   "name": "플러스",
+   "asset": "assets/pattern_09.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_09.svg"
+  },
+  {
+   "id": "pattern_10",
+   "category": "pattern",
+   "sub": null,
+   "name": "하트 라인",
+   "asset": "assets/pattern_10.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_10.svg"
+  },
+  {
+   "id": "pattern_11",
+   "category": "pattern",
+   "sub": null,
+   "name": "별 라인",
+   "asset": "assets/pattern_11.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_11.svg"
+  },
+  {
+   "id": "pattern_12",
+   "category": "pattern",
+   "sub": null,
+   "name": "구름 라인",
+   "asset": "assets/pattern_12.svg",
+   "ink": "dark",
+   "motion": "drift",
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_12.svg"
+  },
+  {
+   "id": "pattern_13",
+   "category": "pattern",
+   "sub": null,
+   "name": "떡 블롭",
+   "asset": "assets/pattern_13.svg",
+   "ink": "dark",
+   "motion": "drift",
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_13.svg"
+  },
+  {
+   "id": "pattern_14",
+   "category": "pattern",
+   "sub": null,
+   "name": "탠저린 도트",
+   "asset": "assets/pattern_14.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null,
+   "thumb": "assets/thumbs/pattern_14.svg"
+  },
+  {
+   "id": "illust_01",
+   "category": "illustration",
+   "sub": "season",
+   "name": "봄 꽃잎",
+   "asset": "assets/illust_01.svg",
+   "ink": "dark",
+   "motion": "fall_petals",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_02",
+   "category": "illustration",
+   "sub": "season",
+   "name": "여름 햇살",
+   "asset": "assets/illust_02.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_03",
+   "category": "illustration",
+   "sub": "season",
+   "name": "가을 잎",
+   "asset": "assets/illust_03.svg",
+   "ink": "dark",
+   "motion": "fall_leaves",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_04",
+   "category": "illustration",
+   "sub": "season",
+   "name": "겨울 눈",
+   "asset": "assets/illust_04.svg",
+   "ink": "dark",
+   "motion": "snowfall",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_05",
+   "category": "illustration",
+   "sub": "weather",
+   "name": "비 오는 날",
+   "asset": "assets/illust_05.svg",
+   "ink": "dark",
+   "motion": "rain",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_06",
+   "category": "illustration",
+   "sub": "weather",
+   "name": "흐린 하늘",
+   "asset": "assets/illust_06.svg",
+   "ink": "dark",
+   "motion": "clouds_drift",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_07",
+   "category": "illustration",
+   "sub": "weather",
+   "name": "무지개",
+   "asset": "assets/illust_07.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_08",
+   "category": "illustration",
+   "sub": "weather",
+   "name": "맑은 날 구름",
+   "asset": "assets/illust_08.svg",
+   "ink": "dark",
+   "motion": "clouds_drift",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_09",
+   "category": "illustration",
+   "sub": "place",
+   "name": "바다",
+   "asset": "assets/illust_09.svg",
+   "ink": "dark",
+   "motion": "waves",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_10",
+   "category": "illustration",
+   "sub": "place",
+   "name": "산",
+   "asset": "assets/illust_10.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_11",
+   "category": "illustration",
+   "sub": "place",
+   "name": "도시 스카이라인",
+   "asset": "assets/illust_11.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_12",
+   "category": "illustration",
+   "sub": "place",
+   "name": "공원",
+   "asset": "assets/illust_12.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_13",
+   "category": "illustration",
+   "sub": "place",
+   "name": "카페 창가",
+   "asset": "assets/illust_13.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_14",
+   "category": "illustration",
+   "sub": "place",
+   "name": "우리 집",
+   "asset": "assets/illust_14.svg",
+   "ink": "dark",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_15",
+   "category": "illustration",
+   "sub": "night",
+   "name": "밤하늘 별",
+   "asset": "assets/illust_15.svg",
+   "ink": "light",
+   "motion": "twinkle",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_16",
+   "category": "illustration",
+   "sub": "night",
+   "name": "보름달",
+   "asset": "assets/illust_16.svg",
+   "ink": "light",
+   "motion": null,
+   "time_of_day": null
+  },
+  {
+   "id": "illust_17",
+   "category": "illustration",
+   "sub": "night",
+   "name": "별똥별",
+   "asset": "assets/illust_17.svg",
+   "ink": "light",
+   "motion": "shooting_star",
+   "time_of_day": null
+  },
+  {
+   "id": "illust_18",
+   "category": "illustration",
+   "sub": "night",
+   "name": "오로라",
+   "asset": "assets/illust_18.svg",
+   "ink": "light",
+   "motion": "aurora",
+   "time_of_day": null
+  }
+ ],
+ "time_of_day_sets": [
+  {
+   "id": "tod_gradient",
+   "name": "하루 그라데이션",
+   "slots": {
+    "dawn": "grad_01",
+    "day": "grad_02",
+    "sunset": "grad_03",
+    "night": "grad_04"
+   }
+  },
+  {
+   "id": "tod_sky",
+   "name": "하루 하늘",
+   "slots": {
+    "dawn": "illust_01",
+    "day": "illust_08",
+    "sunset": "grad_12",
+    "night": "illust_15"
+   }
+  },
+  {
+   "id": "tod_city",
+   "name": "하루 도시",
+   "slots": {
+    "dawn": "grad_07",
+    "day": "illust_11",
+    "sunset": "grad_03",
+    "night": "illust_16"
+   }
+  },
+  {
+   "id": "tod_neutral",
+   "name": "하루 무채색",
+   "slots": {
+    "dawn": "solid_03",
+    "day": "solid_01",
+    "sunset": "solid_09",
+    "night": "solid_13"
+   }
+  }
+ ],
+ "time_slots_local": {
+  "dawn": "05:00-08:59",
+  "day": "09:00-16:59",
+  "sunset": "17:00-19:59",
+  "night": "20:00-04:59"
+ },
+ "photo": {
+  "id": "photo_upload",
+  "name": "내 사진",
+  "dim_default": 0.25,
+  "dim_range": [
+   0,
+   0.6
+  ],
+  "blur_default": 8,
+  "blur_range": [
+   0,
+   24
+  ],
+  "ink": "auto(dim>=0.35 또는 평균 휘도<0.5 → light)",
+  "max_px": 2160,
+  "storage": "users/{uid}/backgrounds/{id}.jpg (Storage, 개인 전용)"
+ },
+ "motion_presets": {
+  "drift": "패턴 위치 60초 주기 8px 이동",
+  "gradient_shift": "그라데이션 정지점 20초 주기 ±6% 이동",
+  "fall_petals": "입자 6~10개 낙하 12초",
+  "fall_leaves": "입자 6~10개 낙하·회전",
+  "snowfall": "입자 20개 1.5px/s",
+  "rain": "빗줄기 투명도 깜빡임 낮은 대비",
+  "clouds_drift": "구름 x축 40초 주기",
+  "waves": "물결 y ±3px 6초",
+  "twinkle": "별 10% 투명도 0.5↔1 3초",
+  "shooting_star": "45초마다 1회 1.2초",
+  "aurora": "오로라 path opacity 0.5↔0.8 10초"
+ },
+ "motion_rules": "「은은한 움직임」 사용자 토글, 기본 ON. OS 동작 줄이기(MediaQuery.disableAnimations / iOS Reduce Motion / Android 애니메이션 배율 0) 켜짐 → 정지 프레임, 배터리 절약 모드·백그라운드 → 정지. 30fps 상한, 입자 최대 20개.",
+ "default_background": {
+  "type": "tod",
+  "id": "tod_gradient",
+  "reason": "가장 차분한 세트(무채색 세트는 빈 느낌), 새벽·낮·노을·밤 그라데이션"
+ },
+ "thumbnail_rule": {
+  "pattern": {
+   "zoom": 2.0,
+   "asset": "thumb 필드(assets/thumbs/, 진한 색 버전)"
+  },
+  "note": "피커 썸네일에만 적용, 실제 배경은 원본 그대로"
+ },
+ "sharing": {
+  "default": "individual",
+  "shared_default": false,
+  "partner_change_push": false,
+  "options": [
+   "individual",
+   "shared"
+  ],
+  "rule": "기본은 각자 고름(내 폰 메인에 내가 고른 배경). 커플 설정에서 \"같이 쓰기\" 켜면 couple.background를 둘 다 사용, 마지막으로 바꾼 사람 값으로 덮어씀(상대에게 푸시 알림 없음, 타임라인에만 \"배경을 바꿨어요\" 기록). 내 사진은 같이 쓰기일 때 상대에게 공유된다는 확인 후 couples/{id}/backgrounds 경로로 복사"
+ },
+ "data_model": {
+  "users/{uid}.background": {
+   "type": "preset|tod|photo",
+   "id": "grad_03 | tod_sky | photo_xxx",
+   "photo": {
+    "url": "...",
+    "dim": 0.25,
+    "blur": 8
+   },
+   "motion": true,
+   "updatedAt": "ts"
+  },
+  "couples/{coupleId}.backgroundShared": "bool (기본 false)",
+  "couples/{coupleId}.background": "users 와 같은 구조 (shared일 때만 사용)"
+ }
+}

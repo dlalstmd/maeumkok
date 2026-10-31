@@ -37,6 +37,8 @@ exports.onEmotionCreated = onDocumentCreated(
   async (event) => {
     const e = event.data && event.data.data();
     if (!e) return;
+    // 시스템 이벤트(배경 변경 등)는 타임라인 기록만, 푸시 없음
+    if (typeof e.emotionId === "string" && e.emotionId.startsWith("sys_")) return;
     const rateRef = db.doc(`couples/${event.params.coupleId}/meta/rate`);
     const decision = await db.runTransaction(async (tx) => {
       const snap = await tx.get(rateRef);

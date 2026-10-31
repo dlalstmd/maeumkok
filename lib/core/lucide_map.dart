@@ -4,6 +4,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 const Map<String, IconData> kLucideIcons = {
   'activity': LucideIcons.activity,
+  'image': LucideIcons.image,
   'angry': LucideIcons.angry,
   'badge-alert': LucideIcons.badgeAlert,
   'badge-check': LucideIcons.badgeCheck,

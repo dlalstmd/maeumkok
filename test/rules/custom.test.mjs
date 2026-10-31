@@ -64,3 +64,15 @@ test('emotion with snapshot', async () => {
     count: 1, snapshot: {label: '야근', icon: 'lucide:laptop', animationKey: 'rush', vibrationName: 'buzz', category: 'body', custom: true},
     createdAt: serverTimestamp()}));
 });
+
+test('couple background sharing rules', async () => {
+  const a = env.authenticatedContext('a').firestore();
+  const x = env.authenticatedContext('x').firestore();
+  const bg = (by) => ({type: 'preset', id: 'solid_03', photo: null, motion: true, updatedBy: by, updatedAt: serverTimestamp()});
+  await assertSucceeds(updateDoc(doc(a, `couples/${C}`), {backgroundShared: true, background: bg('a')}));
+  await assertFails(updateDoc(doc(a, `couples/${C}`), {background: bg('b')}));          // 남의 이름
+  await assertFails(updateDoc(doc(x, `couples/${C}`), {background: bg('x')}));          // 비회원
+  await assertFails(updateDoc(doc(a, `couples/${C}`), {members: ['a', 'x']}));          // 다른 필드
+  await assertSucceeds(setDoc(doc(a, `couples/${C}/emotions/e_bg`), {senderUid: 'a', emotionId: 'sys_bg_changed', count: 1,
+    snapshot: {label: '배경을 바꿨어요', icon: 'lucide:image', animationKey: ''}, createdAt: serverTimestamp()}));
+});

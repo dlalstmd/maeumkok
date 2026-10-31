@@ -130,7 +130,15 @@ service cloud.firestore {
         && request.resource.data.members == [uid(),
              get(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.claimedBy]
         && getAfter(/databases/$(database)/documents/inviteCodes/$(request.resource.data.inviteCode)).data.coupleId == coupleId;
-      allow update, delete: if false;
+      // 배경 같이 쓰기: 멤버가 backgroundShared/background만 변경(마지막 변경 우선)
+      allow update: if isMember(coupleId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['backgroundShared', 'background'])
+        && request.resource.data.get('backgroundShared', false) is bool
+        && (request.resource.data.get('background', null) == null
+            || (request.resource.data.background is map
+                && request.resource.data.background.size() <= 8
+                && request.resource.data.background.updatedBy == uid()));
+      allow delete: if false;
 
       match /emotions/{emotionId} {
         allow read: if isMember(coupleId);
