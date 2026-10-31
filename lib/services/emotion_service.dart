@@ -1,3 +1,5 @@
+import '../core/emotions.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EmotionEvent {
@@ -42,6 +44,29 @@ class ReactionEvent {
       m['reactionId'] as String,
     );
   }
+}
+
+/// [emotionDocId] 감정에 [senderUid]가 남긴 가장 최근 반응 (없으면 null).
+ReactionEvent? reactionFor(
+  Iterable<ReactionEvent> all,
+  String emotionDocId, {
+  String? senderUid,
+}) {
+  for (final r in all) {
+    if (r.emotionDocId == emotionDocId &&
+        (senderUid == null || r.senderUid == senderUid)) {
+      return r;
+    }
+  }
+  return null;
+}
+
+/// 감정의 추천 반응 id('0','1',..) → 표시 문구
+String reactionLabel(Emotion? e, String reactionId) {
+  for (final r in e?.reactions ?? const <Reaction>[]) {
+    if (r.id == reactionId) return r.label;
+  }
+  return reactionId;
 }
 
 class EmotionService {

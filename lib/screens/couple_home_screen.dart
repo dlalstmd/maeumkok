@@ -34,6 +34,11 @@ class CoupleHomeScreen extends StatefulWidget {
 
 class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
   StreamSubscription<List<EmotionEvent>>? _sub;
+  StreamSubscription<List<ReactionEvent>>? _reactSub;
+  List<ReactionEvent> _reacts = const [];
+  final _seenReacts = <String>{};
+  bool _firstReacts = true;
+  String? _error;
   final _seen = <String>{};
   bool _first = true;
   List<EmotionEvent> _list = const [];
@@ -64,12 +69,53 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
       }
       _first = false;
       if (mounted) setState(() => _list = list);
-    });
+    }, onError: (Object e) => _showError(e));
+    // 반응은 화면 상태에서 한 번만 구독한다(빌드마다 새 스트림을 만들지 않음).
+    _reactSub = widget.emotions
+        .watchReactions(widget.coupleId, limit: 50)
+        .listen((list) {
+          for (final r in list) {
+            if (_seenReacts.add(r.id) &&
+                !_firstReacts &&
+                r.senderUid != widget.uid) {
+              final ev = _list.where((x) => x.id == r.emotionDocId).firstOrNull;
+              final e = ev == null ? null : emotionById(ev.emotionId);
+              _playKey = 'jump';
+              _playToken = r.id;
+              widget.notify.showReaction(
+                reactionLabel(e, r.reactionId),
+                from: widget.partnerName ?? '상대',
+              );
+            }
+          }
+          _firstReacts = false;
+          if (mounted) setState(() => _reacts = list);
+        }, onError: (Object e) => _showError(e));
+  }
+
+  void _showError(Object e) {
+    if (mounted) setState(() => _error = '불러오지 못했어요: $e');
+  }
+
+  Future<void> _react(EmotionEvent ev, String reactionId) async {
+    try {
+      await widget.emotions.react(
+        widget.coupleId,
+        widget.uid,
+        ev.id,
+        reactionId,
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('반응을 보내지 못했어요: $e')));
+    }
   }
 
   @override
   void dispose() {
     _sub?.cancel();
+    _reactSub?.cancel();
     super.dispose();
   }
 
@@ -127,14 +173,15 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
               const SizedBox(height: 24),
               if (lastFromPartner != null) _lastChip(lastFromPartner),
               if (lastFromPartner != null) _reactions(lastFromPartner),
-              if (lastMine != null)
+              if (lastMine != null) _myLastLine(lastMine),
+              if (_error != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    '내가 보낸 ${emotionById(lastMine.emotionId)?.label ?? ''} · ${lastMine.readAt != null ? '읽음' : '전송됨'}',
+                    _error!,
                     style: const TextStyle(
                       fontSize: 12,
-                      color: MkColors.textSub,
+                      color: MkColors.danger,
                     ),
                   ),
                 ),
@@ -268,52 +315,61 @@ class _CoupleHomeScreenState extends State<CoupleHomeScreen> {
     );
   }
 
+  Widget _myLastLine(EmotionEvent mine) {
+    final e = emotionById(mine.emotionId);
+    final r = reactionFor(
+      _reacts.where((x) => x.senderUid != widget.uid),
+      mine.id,
+    );
+    final status = r != null
+        ? '상대 반응: ${reactionLabel(e, r.reactionId)}'
+        : (mine.readAt != null ? '읽음' : '전송됨');
+    return Padding(
+      key: const Key('myLastLine'),
+      padding: const EdgeInsets.only(top: 8),
+      child: Text(
+        '내가 보낸 ${e?.label ?? ''} · $status',
+        style: TextStyle(
+          fontSize: r != null ? 14 : 12,
+          color: r != null ? MkColors.text : MkColors.textSub,
+          fontWeight: r != null ? FontWeight.w600 : FontWeight.normal,
+        ),
+      ),
+    );
+  }
+
   Widget _reactions(EmotionEvent ev) {
     final e = emotionById(ev.emotionId);
     if (e == null) return const SizedBox.shrink();
-    return StreamBuilder<List<ReactionEvent>>(
-      stream: widget.emotions.watchReactions(widget.coupleId, limit: 20),
-      builder: (context, snap) {
-        final mine = (snap.data ?? const <ReactionEvent>[])
-            .where((r) => r.emotionDocId == ev.id && r.senderUid == widget.uid)
-            .firstOrNull;
-        if (mine != null) {
-          final label = e.reactions
-              .where((r) => r.id == mine.reactionId)
-              .firstOrNull
-              ?.label;
-          return Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(
-              '↳ ${label ?? ''}',
-              style: const TextStyle(fontSize: 13, color: MkColors.textSub),
+    final mine = reactionFor(_reacts, ev.id, senderUid: widget.uid);
+    if (mine != null) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Text(
+          '↳ 내 반응: ${reactionLabel(e, mine.reactionId)}',
+          key: const Key('myReaction'),
+          style: const TextStyle(fontSize: 13, color: MkColors.textSub),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Wrap(
+        spacing: 6,
+        children: [
+          for (final r in e.reactions)
+            OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: MkColors.text,
+                side: const BorderSide(color: MkColors.border),
+                visualDensity: VisualDensity.compact,
+                minimumSize: const Size(0, 36),
+              ),
+              onPressed: () => _react(ev, r.id),
+              child: Text(r.label, style: const TextStyle(fontSize: 13)),
             ),
-          );
-        }
-        return Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Wrap(
-            spacing: 6,
-            children: [
-              for (final r in e.reactions)
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: MkColors.text,
-                    side: const BorderSide(color: MkColors.border),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  onPressed: () => widget.emotions.react(
-                    widget.coupleId,
-                    widget.uid,
-                    ev.id,
-                    r.id,
-                  ),
-                  child: Text(r.label, style: const TextStyle(fontSize: 13)),
-                ),
-            ],
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
